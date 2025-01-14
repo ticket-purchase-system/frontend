@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
+import { BasketComponent } from '../basket/basket.component'
+import { AppointmentService, Appointment } from '../appointment.service'; 
+import { AbsenceComponent } from '../absence/absence.component';
 
-interface Appointment {
-  uuid?: string;
-  date: Date;
-  title: string;
-  startTime: string;
-  endTime: string;
-  color?: string;
-}
+// interface Appointment {
+//   uuid?: string;
+//   date: Date;
+//   title: string;
+//   startTime: string;
+//   endTime: string;
+//   color?: string;
+// }
 
 export enum CalendarView {
   Month = 'month',
@@ -24,190 +26,13 @@ export enum CalendarView {
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit {
   viewDate: Date = new Date();
   selectedDate: Date | null = null;
   selectedStartTime: string | undefined;
   weekDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   monthDays: Date[] = [];
-  appointments: Appointment[] = [
-    {
-      uuid: '00000000-0000-0000-0000-000000000001',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      ),
-      title: 'Meeting with Bob',
-      startTime: '09:00',
-      endTime: '10:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000002',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 2),
-      title: 'Lunch with Alice',
-      startTime: '12:00',
-      endTime: '13:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000003',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 3),
-      title: 'Project Deadline',
-      startTime: '15:00',
-      endTime: '16:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000004',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      ),
-      title: 'Doctor Appointment',
-      startTime: '10:00',
-      endTime: '11:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000005',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 1
-      ),
-      title: 'Team Meeting',
-      startTime: '14:00',
-      endTime: '15:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000006',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      ),
-      title: 'Coffee with Mike',
-      startTime: '11:00',
-      endTime: '12:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000007',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 4
-      ),
-      title: 'Client Call',
-      startTime: '09:30',
-      endTime: '10:30',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000008',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 8),
-      title: 'Gym',
-      startTime: '17:00',
-      endTime: '18:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000009',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1
-      ),
-      title: 'Dentist Appointment',
-      startTime: '11:30',
-      endTime: '12:30',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000a',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 2
-      ),
-      title: 'Birthday Party',
-      startTime: '19:00',
-      endTime: '21:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000b',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 11),
-      title: 'Conference',
-      startTime: '13:00',
-      endTime: '14:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000c',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 12),
-      title: 'Workshop',
-      startTime: '10:00',
-      endTime: '12:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000d',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 13),
-      title: 'Brunch with Sarah',
-      startTime: '11:00',
-      endTime: '12:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000e',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 2
-      ),
-      title: 'Networking Event',
-      startTime: '18:00',
-      endTime: '20:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-00000000000f',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 16),
-      title: 'Yoga Class',
-      startTime: '07:00',
-      endTime: '08:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000010',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 16),
-      title: 'Strategy Meeting',
-      startTime: '10:00',
-      endTime: '11:30',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000011',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 17),
-      title: 'Call with Investor',
-      startTime: '14:00',
-      endTime: '15:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000012',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 18),
-      title: 'Team Lunch',
-      startTime: '12:00',
-      endTime: '13:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000013',
-      date: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 3
-      ),
-      title: 'HR Meeting',
-      startTime: '16:00',
-      endTime: '17:00',
-    },
-    {
-      uuid: '00000000-0000-0000-0000-000000000014',
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 20),
-      title: 'Board Meeting',
-      startTime: '11:00',
-      endTime: '12:00',
-    },
-  ];
+  appointments: Appointment[] = [];
   currentView: CalendarView = CalendarView.Month;
   timeSlots: string[] = [];
 
@@ -215,13 +40,18 @@ export class CalendarComponent {
 
   public CalendarView = CalendarView;
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, private appointmentService: AppointmentService) {
     this.appointments.forEach((appointment) => {
       appointment.color = this.getRandomColor();
     });
     this.generateView(this.currentView, this.viewDate);
     this.generateTimeSlots();
   }
+
+  ngOnInit(): void {
+    this.fetchAppointments();  // Fetch appointments on component initialization
+  }
+
 
   generateView(view: CalendarView, date: Date) {
     switch (view) {
@@ -390,53 +220,35 @@ export class CalendarComponent {
     this.openDialog();
   }
 
-  generateUUID(): string {
-    let d = new Date().getTime(); //Timestamp
-    let d2 =
-      (typeof performance !== 'undefined' &&
-        performance.now &&
-        performance.now() * 1000) ||
-      0;
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        let r = Math.random() * 16; //random number between 0 and 16
-        if (d > 0) {
-          //Use timestamp until depleted
-          r = (d + r) % 16 | 0;
-          d = Math.floor(d / 16);
-        } else {
-          //Use microseconds since page-load if supported
-          r = (d2 + r) % 16 | 0;
-          d2 = Math.floor(d2 / 16);
-        }
-        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-      }
-    );
+  fetchAppointments(): void {
+    this.appointmentService.getAppointments().subscribe({
+      next: (appointments) => {
+        this.appointments = appointments; // Store fetched appointments
+      },
+      error: (error) => {
+        console.error('Error fetching appointments:', error); // Handle any error
+      },
+    });
   }
 
-  addAppointment(
-    date: Date,
-    title: string,
-    startTime: string,
-    endTime: string
-  ) {
-    this.appointments.push({
-      uuid: this.generateUUID(),
+
+  addAppointment(date: Date, title: string, startTime: string, endTime: string): void {
+    const newAppointment: Appointment = {
       date,
       title,
       startTime,
       endTime,
-      color: this.getRandomColor(),
-    });
-  }
+      // color: this.getRandomColor(),
+    };
 
-  deleteAppointment(appointment: Appointment, event: Event) {
-    event.stopPropagation();
-    const index = this.appointments.indexOf(appointment);
-    if (index > -1) {
-      this.appointments.splice(index, 1);
-    }
+    this.appointmentService.addAppointment(newAppointment).subscribe({
+      next: () => {
+        this.fetchAppointments(); // Fetch updated list after adding a new appointment
+      },
+      error: (err) => {
+        console.error('Error adding appointment:', err);
+      },
+    });
   }
 
   openDialog(): void {
@@ -466,6 +278,36 @@ export class CalendarComponent {
       }
     });
   }
+
+  openBasket(): void {
+    const dialogRef = this.dialog.open(BasketComponent, {
+      width: '500px', 
+      panelClass: 'dialog-container', 
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Koszyk zamknięty, wynik:', result);
+      }
+    });
+  }
+
+
+  addAbsence(): void {
+    const dialogRef = this.dialog.open(AbsenceComponent, {
+      width: '500px', 
+      panelClass: 'dialog-container', 
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Koszyk zamknięty, wynik:', result);
+      }
+    });
+  }
+
 
   getAppointmentsForDate(day: Date, timeSlots: string[]) {
     return this.appointments
@@ -520,24 +362,25 @@ export class CalendarComponent {
   }
 
   editAppointment(appointment: Appointment, event: Event) {
-    event.preventDefault();
-    const dialogRef = this.dialog.open(AppointmentDialogComponent, {
-      width: '500px',
-      panelClass: 'dialog-container',
-      data: appointment,
-    });
+  event.preventDefault();
+  const dialogRef = this.dialog.open(AppointmentDialogComponent, {
+    width: '500px',
+    panelClass: 'dialog-container',
+    data: appointment,
+  });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const index = this.appointments.findIndex(
-          (appointment) => appointment.uuid === result.uuid
-        );
-        if (result.remove) {
-          this.appointments.splice(index, 1);
-        } else {
-          this.appointments[index] = result;
-        }
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      const index = this.appointments.findIndex(
+        (appointment) => appointment.id === result.id
+      );
+      if (result.remove) {
+        this.appointments.splice(index, 1);  // Usunięcie wydarzenia
+      } else {
+        this.appointments[index] = result;  // Zaktualizowanie wydarzenia
       }
-    });
-  }
+    }
+  });
 }
+
+}  

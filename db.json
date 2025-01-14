@@ -1,0 +1,69 @@
+{
+  "appointments": [
+    {
+      "date": "2025-01-12",
+      "title": "Meeting with John",
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "color": "blue",
+      "id": "945c"
+    },
+    {
+      "date": "2025-01-13",
+      "title": "Lunch with Sarah",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "color": "green",
+      "id": "e5be"
+    },
+    {
+      "id": "6f5e",
+      "date": "2025-01-14T13:38:31.567Z",
+      "title": "stydu",
+      "startTime": "14:38",
+      "endTime": "14:38"
+    },
+    {
+      "id": "c98b",
+      "date": "2025-01-14T13:48:06.259Z",
+      "title": "do the laundry",
+      "startTime": "14:48",
+      "endTime": "14:48"
+    },
+    {
+      "id": "4a24",
+      "date": "2025-01-06T23:00:00.000Z",
+      "title": "do the asd",
+      "startTime": "14:54",
+      "endTime": "14:54"
+    },
+    {
+      "id": "be0b",
+      "date": "2025-01-07T23:00:00.000Z",
+      "title": "s",
+      "startTime": "14:56",
+      "endTime": "14:56"
+    },
+    {
+      "id": "0ac5",
+      "title": "be prod",
+      "date": "2025-01-08T23:00:00.000Z",
+      "startTime": "14:57",
+      "endTime": "14:57"
+    },
+    {
+      "id": "227b",
+      "date": "2025-01-14T14:04:13.354Z",
+      "title": "sth",
+      "startTime": "15:04",
+      "endTime": "15:04"
+    },
+    {
+      "id": "7d77",
+      "date": "2025-01-14T14:57:22.337Z",
+      "title": "g",
+      "startTime": "15:57",
+      "endTime": "15:57"
+    }
+  ]
+}

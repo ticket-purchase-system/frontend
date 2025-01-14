@@ -66,6 +66,25 @@
         >
           Add Appointment
         </button>
+
+        <button
+          mat-flat-button
+          (click)="openBasket()"
+          (keydown.enter)="openBasket()"
+          (keydown.space)="openBasket()"
+        >
+          Basket
+        </button>
+
+        <!-- <button
+          mat-flat-button
+          (click)="addAbsence()"
+          (keydown.enter)="addAbsence()"
+          (keydown.space)="addAbsence()"
+        >
+          Absence
+        </button> -->
+
       </div>
     </div>
 

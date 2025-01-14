@@ -1,4 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { AppointmentService, Appointment } from '../appointment.service';  // Zaimportuj AppointmentService i Appointment
+
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   AbstractControl,
@@ -15,13 +17,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
-import { AppointmentService } from '../appointment.service';
 
 
 @Component({
-  selector: 'app-appointment-dialog',
-  templateUrl: './appointment-dialog.component.html',
-  styleUrls: ['./appointment-dialog.component.scss'],
+  selector: 'app-absence',
+  templateUrl: './absence.component.html',
+  styleUrl: './absence.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -31,23 +32,24 @@ import { AppointmentService } from '../appointment.service';
     MatButtonModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-  ],
+  ]
 })
-export class AppointmentDialogComponent {
+
+export class AbsenceComponent {
+  
   appointmentForm: FormGroup;
   constructor(
-    public dialogRef: MatDialogRef<AppointmentDialogComponent>,
+    public dialogRef: MatDialogRef<AbsenceComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      id: string;
+      uuid: string;
       date: Date;
       title: string;
       startTime: string;
       endTime: string;
-      color?: string;
+      color: string;
     },
-    private formBuilder: FormBuilder,
-    private appointmentService: AppointmentService
+    private formBuilder: FormBuilder
   ) {
     this.appointmentForm = this.formBuilder.group(
       {
@@ -71,24 +73,15 @@ export class AppointmentDialogComponent {
         date: this.appointmentForm.controls['date'].value,
         startTime: this.appointmentForm.controls['startTime'].value,
         endTime: this.appointmentForm.controls['endTime'].value,
-        id: this.data.id,
+        uuid: this.data.uuid,
       };
       this.dialogRef.close(data);
     }
   }
 
   onDeleteClick(): void {
-    this.appointmentService.deleteAppointment(this.data.id).subscribe({
-      next: () => {
-        // Zamknięcie dialogu po pomyślnym usunięciu
-        this.dialogRef.close({ remove: true, id: this.data.id });
-      },
-      error: (err) => {
-        console.error('Error deleting appointment:', err);
-      },
-    });
+    this.dialogRef.close({ remove: true, uuid: this.data.uuid });
   }
-  
 
   timeRangeValidator: ValidatorFn = (
     control: AbstractControl
@@ -114,3 +107,4 @@ export class AppointmentDialogComponent {
     return null;
   };
 }
+

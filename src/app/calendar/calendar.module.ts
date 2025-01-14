@@ -10,12 +10,16 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
+import { BasketComponent } from '../basket/basket.component';
+import {AbsenceComponent} from '../absence/absence.component'
+import { AppComponent } from '../app.component';
 
 const routes: Routes = [{ path: '', component: CalendarComponent }];
 
 @NgModule({
-  declarations: [CalendarComponent],
+  declarations: [CalendarComponent, BasketComponent, ],
   imports: [
+    AppComponent,
     CommonModule,
     MatButtonModule,
     MatButtonToggleGroup,
@@ -24,6 +28,7 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     DragDropModule,
     AppointmentDialogComponent,
     RouterModule.forChild(routes),
-  ],
+    AbsenceComponent
+    ],
 })
 export class CalendarModule {}
