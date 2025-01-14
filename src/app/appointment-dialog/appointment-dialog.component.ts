@@ -77,6 +77,34 @@ export class AppointmentDialogComponent {
     }
   }
 
+  onEditClick(): void {
+    if (this.appointmentForm.valid) {
+      // Prepare the updated appointment data
+      const updatedAppointment = {
+        title: this.appointmentForm.controls['title'].value,
+        date: this.appointmentForm.controls['date'].value,
+        startTime: this.appointmentForm.controls['startTime'].value,
+        endTime: this.appointmentForm.controls['endTime'].value,
+        id: this.data.id, // Make sure the ID is passed for the update operation
+      };
+  
+      // Call the service method to update the appointment
+      this.appointmentService.updateAppointment(updatedAppointment).subscribe(
+        (response) => {
+          // Handle success (optional)
+          console.log('Appointment updated successfully:', response);
+          this.dialogRef.close(response);  // Close the dialog and pass the updated data back
+        },
+        (error) => {
+          // Handle error (optional)
+          console.error('Error updating appointment:', error);
+          // You can show an error message to the user here
+        }
+      );
+    }
+  }
+  
+
   onDeleteClick(): void {
     this.appointmentService.deleteAppointment(this.data.id).subscribe({
       next: () => {

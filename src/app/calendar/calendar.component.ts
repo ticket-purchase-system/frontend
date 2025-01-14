@@ -33,7 +33,7 @@ export class CalendarComponent implements OnInit {
   weekDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   monthDays: Date[] = [];
   appointments: Appointment[] = [];
-  currentView: CalendarView = CalendarView.Month;
+  currentView: CalendarView = CalendarView.Week;
   timeSlots: string[] = [];
 
   weeks: Date[][] = [];

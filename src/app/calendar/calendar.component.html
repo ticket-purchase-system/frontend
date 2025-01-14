@@ -23,10 +23,10 @@
         (change)="switchToView($event.value)"
         aria-label="Calendar-View"
       >
-        <mat-button-toggle checked="{{ true }}" value="{{ CalendarView.Month }}"
+        <mat-button-toggle value="{{ CalendarView.Month }}"
           >Month</mat-button-toggle
         >
-        <mat-button-toggle value="{{ CalendarView.Week }}"
+        <mat-button-toggle checked="{{ true }}" value="{{ CalendarView.Week }}"
           >Week</mat-button-toggle
         >
         <mat-button-toggle value="{{ CalendarView.Day }}"

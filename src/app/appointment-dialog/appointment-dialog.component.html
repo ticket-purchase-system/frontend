@@ -31,10 +31,15 @@
       </div>
     </div>
     <div mat-dialog-actions align="end">
-      <button type="submit" mat-flat-button (click)="onSaveClick()">
-        <span *ngIf="data.id">Edit Appointment</span>
-        <span *ngIf="!data.id">Add Appointment</span>
+      
+      <button *ngIf="!data.id" type="submit" mat-flat-button (click)="onSaveClick()">
+        Add Appointment
       </button>
+
+      <button *ngIf="data.id" type="submit" mat-flat-button (click)="onEditClick()">
+        Edit Appointment
+      </button>
+      
       <button
         (click)="onDeleteClick()"
         *ngIf="data.id"
