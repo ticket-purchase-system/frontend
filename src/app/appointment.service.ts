@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+// import { AngularFireDatabase } from '@angular/fire/compat/database';
+
 
 // Interface for Appointment data
 export interface Appointment {
@@ -17,9 +19,12 @@ export interface Appointment {
 })
 export class AppointmentService {
 
+  // private appointmentsRef = this.db.list('https://edoctorapp-d1d18-default-rtdb.europe-west1.firebasedatabase.app/appointments.json');
   private apiUrl = 'http://localhost:3000/appointments';  // The URL where JSON Server is running
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              // private db: AngularFireDatabase
+              ) { }
 
   // Fetch appointments from db.json
   getAppointments(): Observable<Appointment[]> {
@@ -52,4 +57,10 @@ export class AppointmentService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.delete<void>(url);
   }
+
+  //firebase
+  // getAppointments_from_firebase(): Observable<any[]> {
+  //   return this.appointmentsRef.valueChanges(); // Fetches the data as an observable
+  // }
+  
   }

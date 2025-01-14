@@ -6,14 +6,6 @@ import { BasketComponent } from '../basket/basket.component'
 import { AppointmentService, Appointment } from '../appointment.service'; 
 import { AbsenceComponent } from '../absence/absence.component';
 
-// interface Appointment {
-//   uuid?: string;
-//   date: Date;
-//   title: string;
-//   startTime: string;
-//   endTime: string;
-//   color?: string;
-// }
 
 export enum CalendarView {
   Month = 'month',
@@ -220,6 +212,7 @@ export class CalendarComponent implements OnInit {
     this.openDialog();
   }
 
+
   fetchAppointments(): void {
     this.appointmentService.getAppointments().subscribe({
       next: (appointments) => {
@@ -230,6 +223,20 @@ export class CalendarComponent implements OnInit {
       },
     });
   }
+
+
+  // // firebase ?????????
+  // fetchAppointments(): void {
+  //   this.appointmentService.getAppointments_from_firebase().subscribe({
+  //     next: (appointments) => {
+  //       this.appointments = appointments; // Store fetched appointments
+  //       console.log('Appointments fetched:', this.appointments); // Log appointments to check
+  //     },
+  //     error: (error) => {
+  //       console.error('Error fetching appointments:', error); // Handle any error
+  //     },
+  //   });
+  // }
 
 
   addAppointment(date: Date, title: string, startTime: string, endTime: string): void {

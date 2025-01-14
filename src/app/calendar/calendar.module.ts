@@ -14,11 +14,19 @@ import { BasketComponent } from '../basket/basket.component';
 import {AbsenceComponent} from '../absence/absence.component'
 import { AppComponent } from '../app.component';
 
+// firebase
+import { AngularFireModule } from "@angular/fire/compat";
+import { environment } from '../../environments/environment';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
+
 const routes: Routes = [{ path: '', component: CalendarComponent }];
 
 @NgModule({
   declarations: [CalendarComponent, BasketComponent, ],
   imports: [
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AppComponent,
     CommonModule,
     MatButtonModule,
