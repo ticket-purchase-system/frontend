@@ -7,7 +7,7 @@ import { Observable, map } from 'rxjs';
 // Interface for Appointment data
 export interface Appointment {
   id?: string;
-  date: Date;
+  date: string;
   title: string;
   startTime: string;
   endTime: string;
@@ -21,6 +21,7 @@ export class AppointmentService {
 
   // private appointmentsRef = this.db.list('https://edoctorapp-d1d18-default-rtdb.europe-west1.firebasedatabase.app/appointments.json');
   private apiUrl = 'http://localhost:3000/appointments';  // The URL where JSON Server is running
+  // private apiUrl = 'http://localhost:3000/api/products';
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase
@@ -28,11 +29,11 @@ export class AppointmentService {
 
   // Fetch appointments from db.json
   getAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(this.apiUrl).pipe(
+    return this.http.get<any[]>(this.apiUrl).pipe(
       map((appointments) =>
         appointments.map((appointment) => ({
           ...appointment,
-          date: new Date(appointment.date), 
+          id: appointment._id || appointment.id, // Map _id to id if it exists
         }))
       )
     );

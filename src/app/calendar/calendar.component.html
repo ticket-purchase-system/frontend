@@ -159,13 +159,19 @@
         <tr>
           <th></th>
           <th *ngFor="let day of weekDays; index as i">
-            {{ day }} {{ monthDays[i].getDate() }}
+            <div class="header-date">
+              {{ day }} {{ monthDays[i].getDate() }}
+            </div>
+            <span class="event-count">visits: {{ getEventCountForDay(monthDays[i]) }} </span>
           </th>
         </tr>
       </thead>
       <tbody cdkDropListGroup>
         <tr *ngFor="let timeSlot of timeSlots">
-          <td [width]="10" class="calendar-slot-cell">
+          <td [width]="10" 
+              class="calendar-slot-cell"
+              [class.current-time-slot]="isCurrentTimeSlot(timeSlot)"
+              >
             <span>{{ timeSlot }}</span>
           </td>
           <td
@@ -213,9 +219,23 @@
       class="calendar-view-day"
       *ngIf="currentView === 'day'"
     >
+
+    <thead>
+      <tr>
+        <th colspan="2" class="day-header">
+          <div>
+            <span class="event-count" style="text-align: left; font-size: 1rem; padding-bottom: 10px;">visits: {{ getEventCountForDay(monthDays[0]) }}</span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
       <tbody cdkDropListGroup>
         <tr *ngFor="let slot of timeSlots">
-          <td [width]="10" class="calendar-slot-cell">
+          <td [width]="10" 
+              class="calendar-slot-cell"
+              [class.current-time-slot]="isCurrentTimeSlot(slot)"
+              >
             <span>{{ slot }}</span>
           </td>
           <td

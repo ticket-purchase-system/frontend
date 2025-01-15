@@ -27,6 +27,7 @@ export class CalendarComponent implements OnInit {
   appointments: Appointment[] = [];
   currentView: CalendarView = CalendarView.Week;
   timeSlots: string[] = [];
+  now: Date = new Date();
 
   weeks: Date[][] = [];
 
@@ -59,6 +60,10 @@ export class CalendarComponent implements OnInit {
       default:
         this.generateMonthView(date);
     }
+  }
+
+  getEventCountForDay(date: Date): number {
+    return this.appointments.filter((appt) => this.isSameDate(appt.date, date)).length;
   }
 
   generateMonthView(date: Date) {
@@ -118,11 +123,22 @@ export class CalendarComponent implements OnInit {
   }
 
   generateTimeSlots() {
-    for (let hour = 0; hour <= 24; hour++) {
-      const time = hour < 10 ? `0${hour}:00` : `${hour}:00`;
-      this.timeSlots.push(time);
+    this.timeSlots = [];
+  
+    for (let hour = 9; hour <= 16; hour++) {
+      for (let min = 0; min < 60; min += 30) {
+        if (hour === 16 && min === 30) {
+          break;
+        }
+        const hh = hour < 10 ? '0' + hour : hour.toString();
+        const mm = min === 0 ? '00' : '30';
+        const time = `${hh}:${mm}`;
+        this.timeSlots.push(time);
+      }
     }
   }
+  
+  
 
   switchToView(view: CalendarView) {
     this.currentView = view;
@@ -183,6 +199,17 @@ export class CalendarComponent implements OnInit {
     );
   }
 
+  isCurrentTimeSlot(timeSlot: string): boolean {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinutes = now.getMinutes();
+  
+    const [slotHour, slotMinutes] = timeSlot.split(':').map(Number);
+  
+    // Check if the slot matches the current hour and minute range
+    return slotHour === currentHour && currentMinutes >= slotMinutes && currentMinutes < slotMinutes + 30;
+  }
+
   isSelected(date: Date): boolean {
     if (!this.selectedDate) {
       return false;
@@ -194,11 +221,13 @@ export class CalendarComponent implements OnInit {
     );
   }
 
-  isSameDate(date1: Date, date2: Date): boolean {
+  isSameDate(date1: string, date2: Date): boolean {
+    const convertedDate = new Date(date1);
+
     return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
+      convertedDate.getDate() === date2.getDate() &&
+      convertedDate.getMonth() === date2.getMonth() &&
+      convertedDate.getFullYear() === date2.getFullYear()
     );
   }
 
@@ -239,7 +268,7 @@ export class CalendarComponent implements OnInit {
   // }
 
 
-  addAppointment(date: Date, title: string, startTime: string, endTime: string): void {
+  addAppointment(date: string, title: string, startTime: string, endTime: string): void {
     const newAppointment: Appointment = {
       date,
       title,
@@ -337,9 +366,21 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  // viewToday(): void {
+  //   this.viewDate = new Date();
+  //   this.generateMonthView(this.viewDate);
+  // }
+
   viewToday(): void {
     this.viewDate = new Date();
-    this.generateMonthView(this.viewDate);
+  
+    if (this.currentView === 'month') {
+      this.generateMonthView(this.viewDate);
+    } else if (this.currentView === 'week') {
+      this.generateWeekView(this.viewDate);
+    } else if (this.currentView === 'day') {
+      this.generateDayView(this.viewDate);
+    }
   }
 
   isCurrentMonth(date: Date): boolean {

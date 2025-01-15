@@ -40,7 +40,7 @@ export class AppointmentDialogComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       id: string;
-      date: Date;
+      date: string;
       title: string;
       startTime: string;
       endTime: string;
@@ -60,15 +60,29 @@ export class AppointmentDialogComponent {
     );
   }
 
+  private formatAsYYYYMMDD(dateValue: any): string { 
+    const d = new Date(dateValue);
+  
+    // Extract the local date components
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    const day = String(d.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`; // Return in "YYYY-MM-DD" format
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   onSaveClick(): void {
     if (this.appointmentForm.valid) {
+      const rawDateValue = this.appointmentForm.controls['date'].value; // Likely a Date object
+      const dateString = this.formatAsYYYYMMDD(rawDateValue);
+  
       const data = {
         title: this.appointmentForm.controls['title'].value,
-        date: this.appointmentForm.controls['date'].value,
+        date: dateString,  // Store final string, not the raw Date
         startTime: this.appointmentForm.controls['startTime'].value,
         endTime: this.appointmentForm.controls['endTime'].value,
         id: this.data.id,
@@ -76,33 +90,37 @@ export class AppointmentDialogComponent {
       this.dialogRef.close(data);
     }
   }
+  
+
 
   onEditClick(): void {
     if (this.appointmentForm.valid) {
+      const rawDateValue = this.appointmentForm.controls['date'].value;
+      const dateString = this.formatAsYYYYMMDD(rawDateValue);
+  
       // Prepare the updated appointment data
       const updatedAppointment = {
         title: this.appointmentForm.controls['title'].value,
-        date: this.appointmentForm.controls['date'].value,
+        date: dateString, // Store "YYYY-MM-DD" instead of full ISO string
         startTime: this.appointmentForm.controls['startTime'].value,
         endTime: this.appointmentForm.controls['endTime'].value,
         id: this.data.id, // Make sure the ID is passed for the update operation
       };
   
       // Call the service method to update the appointment
-      this.appointmentService.updateAppointment(updatedAppointment).subscribe(
-        (response) => {
-          // Handle success (optional)
+      this.appointmentService.updateAppointment(updatedAppointment).subscribe({
+        next: (response) => {
           console.log('Appointment updated successfully:', response);
-          this.dialogRef.close(response);  // Close the dialog and pass the updated data back
+          this.dialogRef.close(response); // Close the dialog and pass updated data back
         },
-        (error) => {
-          // Handle error (optional)
-          console.error('Error updating appointment:', error);
-          // You can show an error message to the user here
-        }
-      );
+        error: (err) => {
+          console.error('Error updating appointment:', err);
+          // Optionally show an error message to the user
+        },
+      });
     }
   }
+  
   
 
   onDeleteClick(): void {
@@ -142,3 +160,5 @@ export class AppointmentDialogComponent {
     return null;
   };
 }
+
+
