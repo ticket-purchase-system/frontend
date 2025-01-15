@@ -28,8 +28,16 @@ export class CalendarComponent implements OnInit {
   currentView: CalendarView = CalendarView.Week;
   timeSlots: string[] = [];
   now: Date = new Date();
-
   weeks: Date[][] = [];
+
+  absences = [
+    {
+      startDate: '2025-01-16',
+      startTime: '15:00',
+      endDate: '2025-01-16',
+      endTime: '16:00',
+    },
+  ];
 
   public CalendarView = CalendarView;
 
@@ -138,7 +146,6 @@ export class CalendarComponent implements OnInit {
     }
   }
   
-  
 
   switchToView(view: CalendarView) {
     this.currentView = view;
@@ -209,6 +216,26 @@ export class CalendarComponent implements OnInit {
     // Check if the slot matches the current hour and minute range
     return slotHour === currentHour && currentMinutes >= slotMinutes && currentMinutes < slotMinutes + 30;
   }
+
+  isSlotInAbsence(date: Date, timeSlot: string): boolean {
+    return this.absences.some((absence) => {
+      const [startHours, startMinutes] = absence.startTime.split(':').map(Number);
+      const [endHours, endMinutes] = absence.endTime.split(':').map(Number);
+  
+      const absenceStart = new Date(absence.startDate);
+      absenceStart.setHours(startHours, startMinutes);
+  
+      const absenceEnd = new Date(absence.endDate);
+      absenceEnd.setHours(endHours, endMinutes);
+  
+      const slotDate = new Date(date);
+      const [slotHours, slotMinutes] = timeSlot.split(':').map(Number);
+      slotDate.setHours(slotHours, slotMinutes);
+  
+      return slotDate >= absenceStart && slotDate < absenceEnd;
+    });
+  }
+  
 
   isSelected(date: Date): boolean {
     if (!this.selectedDate) {

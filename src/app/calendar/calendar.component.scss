@@ -209,17 +209,22 @@
 }
 
 .event-count {
-  display: block; /* Forces the span to be on a new line */
-  font-size: 0.7rem; /* Smaller font size */
-  font-weight: bold; /* Make the text bold */
-  text-align: right; /* Align the count to the right */
-  margin-top: 4px; /* Add some spacing above the count */
-  color: #555; /* Optional: Add a subtle color */
+  display: block; 
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-align: right;
+  margin-top: 4px;
+  color: #555;
 }
 
 .current-time-slot {
-  border-left: 4px solid red; /* Add the red border to the left */
-  background-color: transparent; /* Ensure no background color spills over */
-  color: red; /* Optional: Change text color to red */
-  font-weight: bold; /* Optional: Make the time label bold */
+  border-left: 4px solid red;
+  background-color: transparent; 
+  color: red;
+  font-weight: bold;
+}
+
+.absence-slot {
+  background-color: rgba(231, 104, 104, 0.153);
+  pointer-events: none;
 }

@@ -18,7 +18,8 @@ import { AppComponent } from '../app.component';
 import { AngularFireModule } from "@angular/fire/compat";
 import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [{ path: '', component: CalendarComponent }];
 
@@ -36,7 +37,9 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     DragDropModule,
     AppointmentDialogComponent,
     RouterModule.forChild(routes),
-    AbsenceComponent
+    AbsenceComponent,
+    MatOptionModule, // Import MatOptionModule
+    MatSelectModule, // Import MatSelectModule
     ],
 })
 export class CalendarModule {}

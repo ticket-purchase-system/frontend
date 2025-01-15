@@ -175,11 +175,12 @@
             <span>{{ timeSlot }}</span>
           </td>
           <td
-            *ngFor="let day of weekDays; index as i"
-            cdkDropList
-            (cdkDropListDropped)="drop($event, monthDays[i], timeSlot)"
-            [cdkDropListData]="appointments"
-          >
+              *ngFor="let day of weekDays; index as i"
+              cdkDropList
+              (cdkDropListDropped)="drop($event, monthDays[i], timeSlot)"
+              [cdkDropListData]="appointments"
+              [class.absence-slot]="isSlotInAbsence(monthDays[i], timeSlot)"
+            >
             <div
               (click)="selectDate(monthDays[i], timeSlot)"
               (keydown.enter)="selectDate(monthDays[i], timeSlot)"
@@ -242,6 +243,7 @@
             cdkDropList
             (cdkDropListDropped)="drop($event, monthDays[0], slot)"
             [cdkDropListData]="appointments"
+            [class.absence-slot]="isSlotInAbsence(monthDays[0], slot)"
           >
             <div
               (click)="selectDate(monthDays[0], slot)"
@@ -273,5 +275,7 @@
         </tr>
       </tbody>
     </table>
+
+    
   </div>
 </div>
