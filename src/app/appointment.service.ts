@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../environments/environment';
 // import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 
@@ -19,9 +20,8 @@ export interface Appointment {
 })
 export class AppointmentService {
 
-  // private appointmentsRef = this.db.list('https://edoctorapp-d1d18-default-rtdb.europe-west1.firebasedatabase.app/appointments.json');
-  private apiUrl = 'http://localhost:3000/appointments';  // The URL where JSON Server is running
-  // private apiUrl = 'http://localhost:3000/api/products';
+
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase

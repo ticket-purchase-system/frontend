@@ -40,6 +40,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class AppointmentDialogComponent {
   appointmentForm: FormGroup;
   fullHourOptions: string[] = [];
+  absences: any[];
 
   constructor(
     public dialogRef: MatDialogRef<AppointmentDialogComponent>,
@@ -51,10 +52,12 @@ export class AppointmentDialogComponent {
       startTime: string;
       endTime: string;
       color?: string;
+      absences: any[];
     },
     private formBuilder: FormBuilder,
     private appointmentService: AppointmentService
   ) {
+    this.absences = data.absences;
     this.generateFullHourOptions();
 
     this.appointmentForm = this.formBuilder.group(
@@ -96,6 +99,33 @@ export class AppointmentDialogComponent {
     this.dialogRef.close();
   }
 
+  // private isOverlappingAbsence(date: string, startTime: string, endTime: string): boolean {
+  //   return this.absences.some(absence => {
+  //     // Check if the dates match
+  //     if (date === absence.startDate && date === absence.endDate) {
+  //       // Convert times to comparable formats
+  //       const absenceStart = this.parseTime(absence.startTime);
+  //       const absenceEnd = this.parseTime(absence.endTime);
+  //       const eventStart = this.parseTime(startTime);
+  //       const eventEnd = this.parseTime(endTime);
+  
+  //       // Check for time overlap
+  //       return (
+  //         (eventStart >= absenceStart && eventStart < absenceEnd) || // Event starts within absence
+  //         (eventEnd > absenceStart && eventEnd <= absenceEnd) || // Event ends within absence
+  //         (eventStart <= absenceStart && eventEnd >= absenceEnd) // Event spans the entire absence
+  //       );
+  //     }
+  //     return false;
+  //   });
+  // }
+  
+  // private parseTime(time: string): number {
+  //   const [hours, minutes] = time.split(':').map(Number);
+  //   return hours * 60 + minutes; // Convert time to minutes for easier comparison
+  // }
+
+
   onSaveClick(): void {
     if (this.appointmentForm.valid) {
       const rawDateValue = this.appointmentForm.controls['date'].value;
@@ -111,6 +141,7 @@ export class AppointmentDialogComponent {
       this.dialogRef.close(data);
     }
   }
+  
 
   onEditClick(): void {
     if (this.appointmentForm.valid) {

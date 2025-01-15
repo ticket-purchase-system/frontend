@@ -441,7 +441,7 @@ export class CalendarComponent implements OnInit {
   const dialogRef = this.dialog.open(AppointmentDialogComponent, {
     width: '500px',
     panelClass: 'dialog-container',
-    data: appointment,
+    data: { ...appointment, absences: this.absences },
   });
 
   dialogRef.afterClosed().subscribe((result) => {
