@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     apiUrl: 'http://localhost:3000/appointments',
-    absenceUrl: 'http://localhost:3000/absence',
+    absenceApiUrl: 'http://localhost:3000/absence',
     firebaseConfig: {
     apiKey: "AIzaSyAe7yDuX-g0CgloQWfCbiPfm0A4A-quJxk",
     authDomain: "edoctorapp-d1d18.firebaseapp.com",

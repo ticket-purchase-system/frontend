@@ -1,99 +1,10 @@
 {
   "appointments": [
     {
-      "name_and_surname": "Lidia M",
-      "date": "2025-01-15",
-      "startTime": "09:00",
-      "endTime": "10:30",
-      "id": "c2b1"
-    },
-    {
-      "name_and_surname": "Lidia Moryc",
-      "date": "2025-01-16",
-      "startTime": "09:00",
-      "endTime": "10:30",
-      "id": "06e4"
-    },
-    {
-      "id": "856f",
-      "date": "2025-01-16",
-      "name_and_surname": "Anna K",
-      "startTime": "10:30",
-      "endTime": "12:00"
-    },
-    {
-      "id": "6f55",
-      "date": "2025-01-18",
-      "name_and_surname": "Kasia",
-      "startTime": "09:30",
-      "endTime": "10:00"
-    },
-    {
-      "id": "d0c9",
-      "date": "2025-01-18",
-      "name_and_surname": "Pawel",
-      "type": "first consultation",
-      "startTime": "12:00",
-      "endTime": "12:30"
-    },
-    {
-      "name_and_surname": "Ana",
-      "type": "reception",
-      "age": 15,
-      "date": "2025-01-17",
-      "startTime": "11:00",
-      "endTime": "11:30",
-      "id": "843e"
-    },
-    {
-      "id": "accb",
-      "date": "2025-01-16",
-      "name_and_surname": "l",
-      "type": "reception",
-      "age": 34,
-      "gender": "female",
-      "startTime": "09:30",
-      "endTime": "11:00",
-      "additional_info": ""
-    },
-    {
-      "id": "93c1",
-      "date": "2025-01-17",
-      "name_and_surname": "Anna Kowalska",
-      "type": "reception",
-      "age": 45,
-      "gender": "female",
-      "startTime": "09:00",
-      "endTime": "11:00",
-      "additional_info": ""
-    },
-    {
-      "id": "c2f6",
-      "date": "2025-01-18",
-      "name_and_surname": "K",
-      "type": "first consultation",
-      "age": 23,
-      "gender": "female",
-      "startTime": "15:00",
-      "endTime": "15:30",
-      "additional_info": ""
-    },
-    {
-      "id": "a247",
-      "date": "2025-01-17",
-      "name_and_surname": "s",
-      "type": "first consultation",
-      "age": 23,
-      "gender": "female",
-      "startTime": "15:00",
-      "endTime": "15:30",
-      "additional_info": ""
-    },
-    {
       "id": "6056",
       "date": "2025-01-17",
-      "name_and_surname": "Maria",
-      "type": "reception",
+      "name_and_surname": "Maria Kowalska",
+      "type": "first consultation",
       "age": 34,
       "gender": "female",
       "startTime": "09:00",

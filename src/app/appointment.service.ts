@@ -32,7 +32,7 @@ export class AppointmentService {
 
 
   private apiUrl = environment.apiUrl;
-  private absenceApiUrl = environment.absenceUrl;
+  private absenceApiUrl =  environment.absenceApiUrl;
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase

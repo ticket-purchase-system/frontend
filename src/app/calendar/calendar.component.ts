@@ -31,15 +31,6 @@ export class CalendarComponent implements OnInit {
   weeks: Date[][] = [];
   absences: Absence[] = [];
 
-  // absences = [
-  //   {
-  //     startDate: '2025-01-16',
-  //     startTime: '15:00',
-  //     endDate: '2025-01-16',
-  //     endTime: '16:00',
-  //   },
-  // ];
-
   public CalendarView = CalendarView;
 
   constructor(public dialog: MatDialog, private appointmentService: AppointmentService) {
@@ -66,7 +57,6 @@ export class CalendarComponent implements OnInit {
       },
     });
   }
-
 
   generateView(view: CalendarView, date: Date) {
     switch (view) {

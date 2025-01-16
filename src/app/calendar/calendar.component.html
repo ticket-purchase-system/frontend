@@ -138,7 +138,9 @@
                   (keydown.space)="editAppointment(appointment, $event)"
                   matTooltip="
                     Name: {{ appointment.name_and_surname }} |
-                    Time: {{ appointment.startTime }} - {{ appointment.endTime }}
+                    Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                    Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
+                    Visit type: {{ appointment.type }} | 
                   "
                   matTooltipPosition="above"
                 >
@@ -209,6 +211,13 @@
               (click)="editAppointment(appointment, $event)"
               (keydown.enter)="editAppointment(appointment, $event)"
               (keydown.space)="editAppointment(appointment, $event)"
+              matTooltip="
+                Name: {{ appointment.name_and_surname }} |
+                Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
+                Visit type: {{ appointment.type }}
+              "
+              matTooltipPosition="above"
             >
               <span>{{ appointment.name_and_surname }}</span>
             </div>
@@ -273,7 +282,14 @@
               (click)="editAppointment(appointment, $event)"
               (keydown.enter)="editAppointment(appointment, $event)"
               (keydown.space)="editAppointment(appointment, $event)"
-            >
+              matTooltip="
+                Name: {{ appointment.name_and_surname }} |
+                Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
+                Visit type: {{ appointment.type }}
+              "
+              matTooltipPosition="above"
+              >
               <span>{{ appointment.name_and_surname }}</span>
             </div>
           </td>
