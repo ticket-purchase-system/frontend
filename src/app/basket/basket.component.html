@@ -1,0 +1,14 @@
+<div *ngIf="appointments.length > 0; else noAppointments">
+    <h3>Basket - List of Appointments</h3>
+    <ul>
+      <li *ngFor="let appointment of appointments">
+        {{ appointment.name_and_surname }}  <!-- Wyświetla tytuł spotkania -->
+      </li>
+    </ul>
+  </div>
+  
+  <ng-template #noAppointments>
+    <p>Brak spotkań w koszyku.</p>  <!-- Jeśli brak spotkań, wyświetli ten komunikat -->
+  </ng-template>
+  
+ 

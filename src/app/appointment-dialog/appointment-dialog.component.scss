@@ -1,0 +1,11 @@
+.dialog-content {
+  padding: 30px 30px 20px;
+  .form-field {
+    width: 100%;
+  }
+  .error {
+    font-style: italic;
+    color: rgb(215, 126, 126);
+    padding-bottom: 20px;
+  }
+}

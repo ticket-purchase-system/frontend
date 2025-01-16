@@ -1,0 +1,134 @@
+<div class="dialog-content">
+  <h5 mat-dialog-title *ngIf="!data.id">Add Appointment</h5>
+  <h5 mat-dialog-title *ngIf="data.id">Edit Appointment</h5>
+  <div [formGroup]="appointmentForm">
+    <div mat-dialog-content>
+      <!-- Name and Surname -->
+      <mat-form-field class="form-field">
+        <mat-label>Name and Surname</mat-label>
+        <input formControlName="name_and_surname" matInput placeholder="Full name and surname" />
+      </mat-form-field>
+
+      <!-- Type -->
+      <mat-form-field class="form-field">
+        <mat-label>Visit type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="first consultation">First Visit</mat-option>
+          <mat-option value="prescription">Prescription</mat-option>
+          <mat-option value="control visit">Control Visit</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Gender -->
+      <mat-form-field class="form-field">
+        <mat-label>Gender</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option value="male">Male</mat-option>
+          <mat-option value="female">Female</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Age -->
+      <mat-form-field class="form-field">
+        <mat-label>Age</mat-label>
+        <input formControlName="age" matInput type="number" placeholder="Enter age" />
+      </mat-form-field>
+
+      <!-- Date -->
+      <mat-form-field class="form-field">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Start Time -->
+      <mat-form-field class="form-field">
+        <mat-label>Start Time</mat-label>
+        <mat-select formControlName="startTime">
+          <mat-option *ngFor="let time of fullHourOptions" [value]="time">
+            {{ time }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- End Time -->
+      <mat-form-field class="form-field">
+        <mat-label>End Time</mat-label>
+        <mat-select formControlName="endTime">
+          <mat-option *ngFor="let time of fullHourOptions" [value]="time">
+            {{ time }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Validation Error for Time Range -->
+      <div
+        *ngIf="appointmentForm.errors && appointmentForm.errors['timeRangeInvalid']"
+        class="error"
+      >
+        End time must be after start time.
+      </div>
+
+      <!-- Validation Error for Overlapping Absences -->
+      <div
+        *ngIf="appointmentForm.errors && appointmentForm.errors['overlappingAbsence']"
+        class="error"
+      >
+        The selected time overlaps with an absence. Please choose a different time.
+      </div>
+
+      <!-- Additional Info -->
+      <mat-form-field class="form-field">
+        <mat-label>Additional Information</mat-label>
+        <textarea formControlName="additional_info" matInput placeholder="Enter additional details (optional)"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions align="end">
+      <!-- Edit Button -->
+      <button
+        *ngIf="data.id"
+        type="submit"
+        mat-flat-button
+        color="primary"
+        (click)="onEditClick()"
+        [disabled]="appointmentForm.invalid"
+      >
+        Edit Appointment
+      </button>
+
+      <!-- Add Button -->
+      <button
+        *ngIf="!data.id"
+        type="submit"
+        mat-flat-button
+        color="primary"
+        (click)="onSaveClick()"
+        [disabled]="appointmentForm.invalid"
+      >
+        Add Appointment
+      </button>
+
+      <!-- Delete Button -->
+      <button
+        *ngIf="data.id"
+        mat-stroked-button
+        color="warn"
+        (click)="onDeleteClick()"
+        style="margin-left: 10px"
+      >
+        Delete
+      </button>
+
+      <!-- Cancel Button -->
+      <button
+        mat-stroked-button
+        (click)="onNoClick()"
+        style="margin-left: 10px"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

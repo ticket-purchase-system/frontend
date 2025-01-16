@@ -1,0 +1,44 @@
+<div class="dialog-content">
+  <h5 mat-dialog-title>Add Absence</h5>
+  <div [formGroup]="absenceForm">
+    <div mat-dialog-content>
+      <mat-form-field class="form-field">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="form-field">
+        <mat-label>Start Time</mat-label>
+        <input matInput formControlName="startTime" type="time" />
+      </mat-form-field>
+      <mat-form-field class="form-field">
+        <mat-label>End Time</mat-label>
+        <input matInput formControlName="endTime" type="time" />
+      </mat-form-field>
+      <div
+        *ngIf="absenceForm.errors?.['timeRangeInvalid']"
+        class="error"
+      >
+        End time must be after start time.
+      </div>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="onSaveClick()"
+        [disabled]="absenceForm.invalid"
+      >
+        Save
+      </button>
+      <button
+        mat-stroked-button
+        (click)="onCancelClick()"
+        style="margin-left: 10px"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
