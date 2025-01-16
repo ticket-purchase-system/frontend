@@ -70,41 +70,62 @@
         End time must be after start time.
       </div>
 
+      <!-- Validation Error for Overlapping Absences -->
+      <div
+        *ngIf="appointmentForm.errors && appointmentForm.errors['overlappingAbsence']"
+        class="error"
+      >
+        The selected time overlaps with an absence. Please choose a different time.
+      </div>
+
       <!-- Additional Info -->
       <mat-form-field class="form-field">
         <mat-label>Additional Information</mat-label>
         <textarea formControlName="additional_info" matInput placeholder="Enter additional details (optional)"></textarea>
       </mat-form-field>
     </div>
+
     <div mat-dialog-actions align="end">
-      <button 
-        *ngIf="data.id" 
-        type="submit" 
-        mat-flat-button 
-        (click)="onEditClick()">
+      <!-- Edit Button -->
+      <button
+        *ngIf="data.id"
+        type="submit"
+        mat-flat-button
+        color="primary"
+        (click)="onEditClick()"
+        [disabled]="appointmentForm.invalid"
+      >
         Edit Appointment
       </button>
 
-      <button 
-        *ngIf="!data.id" 
-        type="submit" 
-        mat-flat-button 
-        (click)="onSaveClick()">
+      <!-- Add Button -->
+      <button
+        *ngIf="!data.id"
+        type="submit"
+        mat-flat-button
+        color="primary"
+        (click)="onSaveClick()"
+        [disabled]="appointmentForm.invalid"
+      >
         Add Appointment
       </button>
 
+      <!-- Delete Button -->
       <button
-        (click)="onDeleteClick()"
         *ngIf="data.id"
-        style="margin-left: 10px"
         mat-stroked-button
+        color="warn"
+        (click)="onDeleteClick()"
+        style="margin-left: 10px"
       >
         Delete
       </button>
+
+      <!-- Cancel Button -->
       <button
-        style="margin-left: 10px"
         mat-stroked-button
         (click)="onNoClick()"
+        style="margin-left: 10px"
       >
         Cancel
       </button>

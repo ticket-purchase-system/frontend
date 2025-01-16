@@ -343,6 +343,7 @@ export class CalendarComponent implements OnInit {
         startTime: this.selectedStartTime || `${h}:${m}`,
         endTime: this.selectedStartTime || `${h}:${m}`,
         additional_info: '',
+        absences: this.absences,
       },
     });
 
@@ -482,36 +483,29 @@ export class CalendarComponent implements OnInit {
   editAppointment(appointment: Appointment, event: Event) {
     event.preventDefault();
   
-    if (this.absences.length === 0) {
-      // Fetch absences if not already fetched
-      this.fetchAbsences();
-    }
+    const dialogRef = this.dialog.open(AppointmentDialogComponent, {
+      width: '500px',
+      panelClass: 'dialog-container',
+      data: {
+        ...appointment, 
+        absences: this.absences,
+      },
+    });
   
-    // Wait a moment to ensure absences are fetched
-    setTimeout(() => {
-      const dialogRef = this.dialog.open(AppointmentDialogComponent, {
-        width: '500px',
-        panelClass: 'dialog-container',
-        data: {
-          ...appointment, // Spread existing appointment data
-          absences: this.absences, // Pass the absences array
-        },
-      });
-  
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          const index = this.appointments.findIndex(
-            (appointment) => appointment.id === result.id
-          );
-          if (result.remove) {
-            this.appointments.splice(index, 1); // Remove the appointment
-          } else {
-            this.appointments[index] = result; // Update the appointment
-          }
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const index = this.appointments.findIndex(
+          (appointment) => appointment.id === result.id
+        );
+        if (result.remove) {
+          this.appointments.splice(index, 1); // Remove the appointment
+        } else {
+          this.appointments[index] = result; // Update the appointment
         }
-      });
-    }, 100); // Delay opening dialog to allow fetch to complete
+      }
+    });
   }
+  
   
   
 

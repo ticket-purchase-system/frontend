@@ -40,8 +40,6 @@ import { MatSelectModule } from '@angular/material/select';
 export class AppointmentDialogComponent {
   appointmentForm: FormGroup;
   fullHourOptions: string[] = [];
-  absences: Absence[];
-
   
   constructor(
     public dialogRef: MatDialogRef<AppointmentDialogComponent>,
@@ -62,7 +60,9 @@ export class AppointmentDialogComponent {
     private formBuilder: FormBuilder,
     private appointmentService: AppointmentService
   ) {
-    this.absences = data.absences;
+
+    console.log('Received absences:', this.data.absences);
+
     this.generateFullHourOptions();
 
     this.appointmentForm = this.formBuilder.group(
@@ -76,7 +76,10 @@ export class AppointmentDialogComponent {
         startTime: [this.data.startTime || '', Validators.required],
         endTime: [this.data.endTime || '', Validators.required],
       },
-      { validators: this.timeRangeValidator }
+      { validators: [this.timeRangeValidator,
+                    this.absenceValidator(this.data.absences || []),
+      ]
+       }
     );
   }
 
@@ -104,6 +107,40 @@ export class AppointmentDialogComponent {
     return `${year}-${month}-${day}`;
   }
 
+  absenceValidator(absences: Absence[]): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const date = this.formatAsYYYYMMDD(control.get('date')?.value);
+      const startTime = control.get('startTime')?.value;
+      const endTime = control.get('endTime')?.value;
+  
+      if (date && startTime && endTime) {
+        const [startHours, startMinutes] = startTime.split(':');
+        const [endHours, endMinutes] = endTime.split(':');
+  
+        const appointmentStart = new Date(`${date}T${startHours}:${startMinutes}`);
+        const appointmentEnd = new Date(`${date}T${endHours}:${endMinutes}`);
+  
+        const overlap = absences.some(absence => {
+          const absenceStart = new Date(`${absence.date}T${absence.startTime}`);
+          const absenceEnd = new Date(`${absence.date}T${absence.endTime}`);
+  
+          return (
+            (appointmentStart >= absenceStart && appointmentStart < absenceEnd) ||
+            (appointmentEnd > absenceStart && appointmentEnd <= absenceEnd) ||
+            (appointmentStart <= absenceStart && appointmentEnd >= absenceEnd)
+          );
+        });
+  
+        if (overlap) {
+          return { overlappingAbsence: true };
+        }
+      }
+  
+      return null;
+    };
+  }
+  
+
   onNoClick(): void {
     this.dialogRef.close();
   }
@@ -130,29 +167,6 @@ export class AppointmentDialogComponent {
     }
   }
 
-
-  // onSaveClick(): void {
-  //   if (this.appointmentForm.valid) {
-  //     const rawDateValue = this.appointmentForm.controls['date'].value;
-  //     const dateString = this.formatAsYYYYMMDD(rawDateValue);
-  
-  //     const newAppointment = {
-  //       title: this.appointmentForm.controls['title'].value,
-  //       date: dateString,
-  //       startTime: this.appointmentForm.controls['startTime'].value,
-  //       endTime: this.appointmentForm.controls['endTime'].value,
-  //       id: this.data.id,
-  //     };
-  
-  //     if (this.isOverlappingAbsence(newAppointment)) {
-  //       alert('The appointment overlaps with an existing absence. Please choose a different time.');
-  //       return;
-  //     }
-  
-  //     this.dialogRef.close(newAppointment); // Save the appointment
-  //   }
-  // }
-  
   
 
   onEditClick(): void {
@@ -196,51 +210,6 @@ export class AppointmentDialogComponent {
       },
     });
   }
-
-  // private isOverlappingAbsence(appointment: { date: string; startTime: string; endTime: string }): boolean {
-  //   if (!appointment.date || !appointment.startTime || !appointment.endTime) {
-  //     console.log('Invalid appointment data:', appointment);
-  //     return false; // Invalid appointment data
-  //   }
-  
-  //   console.log('Appointment:', appointment);
-  //   console.log('Absences:', this.absences);
-  
-  //   return this.absences.some((absence) => {
-  //     const absenceDate = new Date(absence.date).toISOString().split('T')[0];
-  //     console.log('Checking absence:', absence);
-  //     console.log('Formatted absence date:', absenceDate);
-  
-  //     if (appointment.date === absenceDate) {
-  //       const [appointmentStartHours, appointmentStartMinutes] = appointment.startTime.split(':').map(Number);
-  //       const [appointmentEndHours, appointmentEndMinutes] = appointment.endTime.split(':').map(Number);
-  //       const [absenceStartHours, absenceStartMinutes] = absence.startTime.split(':').map(Number);
-  //       const [absenceEndHours, absenceEndMinutes] = absence.endTime.split(':').map(Number);
-  
-  //       const appointmentStart = appointmentStartHours * 60 + appointmentStartMinutes;
-  //       const appointmentEnd = appointmentEndHours * 60 + appointmentEndMinutes;
-  //       const absenceStart = absenceStartHours * 60 + absenceStartMinutes;
-  //       const absenceEnd = absenceEndHours * 60 + absenceEndMinutes;
-  
-  //       console.log('Time comparison:', {
-  //         appointmentStart,
-  //         appointmentEnd,
-  //         absenceStart,
-  //         absenceEnd,
-  //       });
-  
-  //       return (
-  //         (appointmentStart >= absenceStart && appointmentStart < absenceEnd) || // Appointment starts during absence
-  //         (appointmentEnd > absenceStart && appointmentEnd <= absenceEnd) || // Appointment ends during absence
-  //         (appointmentStart <= absenceStart && appointmentEnd >= absenceEnd) // Appointment fully spans the absence
-  //       );
-  //     }
-  //     return false;
-  //   });
-  // }
-  
-  
-  
 
   timeRangeValidator: ValidatorFn = (
     control: AbstractControl
