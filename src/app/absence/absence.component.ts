@@ -1,28 +1,17 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { AppointmentService, Appointment } from '../appointment.service';  // Zaimportuj AppointmentService i Appointment
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { CommonModule } from '@angular/common';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-absence',
   templateUrl: './absence.component.html',
-  styleUrl: './absence.component.scss',
+  styleUrls: ['./absence.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -32,79 +21,42 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-  ]
+  ],
 })
-
 export class AbsenceComponent {
-  
-  appointmentForm: FormGroup;
+  absenceForm: FormGroup;
+
   constructor(
     public dialogRef: MatDialogRef<AbsenceComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      uuid: string;
-      date: Date;
-      title: string;
-      startTime: string;
-      endTime: string;
-      color: string;
-    },
+    public data: any, // Data from the parent component, if any
     private formBuilder: FormBuilder
   ) {
-    this.appointmentForm = this.formBuilder.group(
-      {
-        title: [this.data.title || '', Validators.required],
-        date: [this.data.date, Validators.required],
-        startTime: [this.data.startTime || '', Validators.required],
-        endTime: [this.data.startTime || '', Validators.required],
-      },
-      { validators: this.timeRangeValidator }
-    );
+    this.absenceForm = this.formBuilder.group({
+      date: [null, Validators.required], // Absence date
+      startTime: ['', Validators.required], // Start time
+      endTime: ['', Validators.required], // End time
+    }, { validators: this.timeRangeValidator }); // Add time range validation
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  // Validation: Ensure end time is after start time
+  timeRangeValidator(group: FormGroup): { [key: string]: boolean } | null {
+    const startTime = group.get('startTime')?.value;
+    const endTime = group.get('endTime')?.value;
+
+    if (startTime && endTime && startTime >= endTime) {
+      return { timeRangeInvalid: true }; // Invalid if start >= end
+    }
+    return null;
   }
 
   onSaveClick(): void {
-    if (this.appointmentForm.valid) {
-      const data = {
-        title: this.appointmentForm.controls['title'].value,
-        date: this.appointmentForm.controls['date'].value,
-        startTime: this.appointmentForm.controls['startTime'].value,
-        endTime: this.appointmentForm.controls['endTime'].value,
-        uuid: this.data.uuid,
-      };
-      this.dialogRef.close(data);
+    if (this.absenceForm.valid) {
+      this.dialogRef.close(this.absenceForm.value); // Send form data back to parent
     }
   }
 
-  onDeleteClick(): void {
-    this.dialogRef.close({ remove: true, uuid: this.data.uuid });
+  onCancelClick(): void {
+    this.dialogRef.close(); // Close dialog without saving
   }
-
-  timeRangeValidator: ValidatorFn = (
-    control: AbstractControl
-  ): ValidationErrors | null => {
-    const startTime = control.get('startTime')?.value;
-    const endTime = control.get('endTime')?.value;
-    if (startTime && endTime) {
-      const [startHours, startMinutes] = startTime.split(':');
-      const [endHours, endMinutes] = endTime.split(':');
-
-      const startDate = new Date();
-      startDate.setHours(startHours);
-      startDate.setMinutes(startMinutes);
-
-      const endDate = new Date();
-      endDate.setHours(endHours);
-      endDate.setMinutes(endMinutes);
-
-      if (startDate > endDate) {
-        return { timeRangeInvalid: true };
-      }
-    }
-    return null;
-  };
 }
-

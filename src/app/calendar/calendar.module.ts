@@ -13,13 +13,16 @@ import { AppointmentDialogComponent } from '../appointment-dialog/appointment-di
 import { BasketComponent } from '../basket/basket.component';
 import {AbsenceComponent} from '../absence/absence.component'
 import { AppComponent } from '../app.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 
 // firebase
 import { AngularFireModule } from "@angular/fire/compat";
 import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [{ path: '', component: CalendarComponent }];
 
@@ -40,6 +43,7 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     AbsenceComponent,
     MatOptionModule, // Import MatOptionModule
     MatSelectModule, // Import MatSelectModule
+    MatTooltipModule
     ],
 })
 export class CalendarModule {}

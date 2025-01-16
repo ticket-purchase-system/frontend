@@ -3,16 +3,46 @@
   <h5 mat-dialog-title *ngIf="data.id">Edit Appointment</h5>
   <div [formGroup]="appointmentForm">
     <div mat-dialog-content>
+      <!-- Name and Surname -->
       <mat-form-field class="form-field">
-        <mat-label>Title</mat-label>
-        <input formControlName="title" matInput />
+        <mat-label>Name and Surname</mat-label>
+        <input formControlName="name_and_surname" matInput placeholder="Enter name and surname" />
       </mat-form-field>
+
+      <!-- Type -->
+      <mat-form-field class="form-field">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="first consultation">First Consultation</mat-option>
+          <mat-option value="reception">Reception</mat-option>
+          <mat-option value="control visit">Control Visit</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Gender -->
+      <mat-form-field class="form-field">
+        <mat-label>Gender</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option value="male">Male</mat-option>
+          <mat-option value="female">Female</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Age -->
+      <mat-form-field class="form-field">
+        <mat-label>Age</mat-label>
+        <input formControlName="age" matInput type="number" placeholder="Enter age" />
+      </mat-form-field>
+
+      <!-- Date -->
       <mat-form-field class="form-field">
         <mat-label>Date</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+
+      <!-- Start Time -->
       <mat-form-field class="form-field">
         <mat-label>Start Time</mat-label>
         <mat-select formControlName="startTime">
@@ -21,6 +51,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- End Time -->
       <mat-form-field class="form-field">
         <mat-label>End Time</mat-label>
         <mat-select formControlName="endTime">
@@ -28,34 +60,39 @@
             {{ time }}
           </mat-option>
         </mat-select>
-      </mat-form-field>      
+      </mat-form-field>
+
+      <!-- Validation Error for Time Range -->
       <div
-        *ngIf="
-          appointmentForm.errors && appointmentForm.errors['timeRangeInvalid']
-        "
+        *ngIf="appointmentForm.errors && appointmentForm.errors['timeRangeInvalid']"
         class="error"
       >
         End time must be after start time.
       </div>
+
+      <!-- Additional Info -->
+      <mat-form-field class="form-field">
+        <mat-label>Additional Information</mat-label>
+        <textarea formControlName="additional_info" matInput placeholder="Enter additional details (optional)"></textarea>
+      </mat-form-field>
     </div>
     <div mat-dialog-actions align="end">
-      
       <button 
-    *ngIf="data.id" 
-    type="submit" 
-    mat-flat-button 
-    (click)="onEditClick()">
-    Edit Appointment
-  </button>
+        *ngIf="data.id" 
+        type="submit" 
+        mat-flat-button 
+        (click)="onEditClick()">
+        Edit Appointment
+      </button>
 
-  <button 
-    *ngIf="!data.id" 
-    type="submit" 
-    mat-flat-button 
-    (click)="onSaveClick()">
-    Add Appointment
-  </button>
-      
+      <button 
+        *ngIf="!data.id" 
+        type="submit" 
+        mat-flat-button 
+        (click)="onSaveClick()">
+        Add Appointment
+      </button>
+
       <button
         (click)="onDeleteClick()"
         *ngIf="data.id"

@@ -1,146 +1,69 @@
 {
   "appointments": [
     {
-      "date": "2025-01-12",
-      "title": "Meeting with John",
-      "startTime": "10:00",
-      "endTime": "11:00",
-      "color": "blue",
-      "id": "945c"
-    },
-    {
-      "date": "2025-01-13",
-      "title": "Lunch with Sarah",
-      "startTime": "12:00",
-      "endTime": "13:00",
-      "color": "green",
-      "id": "e5be"
-    },
-    {
-      "id": "6f5e",
-      "date": "2025-01-14T13:38:31.567Z",
-      "title": "stydu",
-      "startTime": "14:38",
-      "endTime": "14:38"
-    },
-    {
-      "id": "c98b",
-      "date": "2025-01-14T13:48:06.259Z",
-      "title": "do the laundry",
-      "startTime": "14:48",
-      "endTime": "14:48"
-    },
-    {
-      "title": "do the asd asap",
-      "date": "2025-01-06T23:00:00.000Z",
-      "startTime": "14:54",
-      "endTime": "14:54",
-      "id": "4a24"
-    },
-    {
-      "title": "sleep",
-      "date": "2025-01-07T23:00:00.000Z",
-      "startTime": "14:56",
-      "endTime": "14:56",
-      "id": "be0b"
-    },
-    {
-      "id": "0ac5",
-      "title": "be prod",
-      "date": "2025-01-08T23:00:00.000Z",
-      "startTime": "14:57",
-      "endTime": "14:57"
-    },
-    {
-      "id": "227b",
-      "date": "2025-01-14T14:04:13.354Z",
-      "title": "sth",
-      "startTime": "15:04",
-      "endTime": "15:04"
-    },
-    {
-      "id": "7d77",
-      "date": "2025-01-14T14:57:22.337Z",
-      "title": "g",
-      "startTime": "15:57",
-      "endTime": "15:57"
-    },
-    {
-      "id": "611b",
-      "date": "2025-01-14T16:12:21.133Z",
-      "title": "d o the ",
-      "startTime": "17:12",
-      "endTime": "17:12"
-    },
-    {
-      "id": "a64b",
-      "date": "2025-01-14T16:12:54.693Z",
-      "title": "f",
-      "startTime": "17:12",
-      "endTime": "17:12"
-    },
-    {
-      "id": "fb24",
-      "date": "2025-01-14T22:07:46.471Z",
-      "title": "do sth !",
-      "startTime": "23:07",
-      "endTime": "23:07"
-    },
-    {
-      "title": "math exam!",
+      "name_and_surname": "Lidia M",
       "date": "2025-01-15",
-      "startTime": "13:44",
-      "endTime": "13:44",
-      "id": "fbc7"
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "id": "c2b1"
     },
     {
-      "id": "1b6a",
-      "date": "2025-01-14",
-      "title": "df",
-      "startTime": "06:00",
-      "endTime": "06:00"
-    },
-    {
-      "id": "f91a",
-      "date": "2025-01-15",
-      "title": "sth",
-      "startTime": "13:57",
-      "endTime": "14:50"
-    },
-    {
-      "title": "ts",
+      "name_and_surname": "Lidia Moryc",
       "date": "2025-01-16",
-      "startTime": "15:40",
-      "endTime": "15:40",
-      "id": "6500"
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "id": "06e4"
     },
     {
-      "title": "okulista rusznikarskaa",
-      "date": "2025-01-10",
-      "startTime": "16:18",
-      "endTime": "16:18",
-      "id": "881c"
-    },
-    {
-      "title": "make dinner !",
-      "date": "2025-01-23",
-      "startTime": "16:29",
-      "endTime": "16:29",
-      "id": "521e"
-    },
-    {
-      "id": "9b83",
-      "date": "2025-01-15",
-      "title": "sth",
-      "startTime": "05:00",
-      "endTime": "06:00"
-    },
-    {
-      "title": "z",
+      "id": "856f",
       "date": "2025-01-16",
+      "name_and_surname": "Anna K",
+      "startTime": "10:30",
+      "endTime": "12:00"
+    },
+    {
+      "id": "6f55",
+      "date": "2025-01-18",
+      "name_and_surname": "Kasia",
       "startTime": "09:30",
-      "endTime": "10:00",
-      "id": "aad1"
+      "endTime": "10:00"
+    },
+    {
+      "id": "d0c9",
+      "date": "2025-01-18",
+      "name_and_surname": "Pawel",
+      "type": "first consultation",
+      "startTime": "12:00",
+      "endTime": "12:30"
+    },
+    {
+      "name_and_surname": "Ana",
+      "type": "reception",
+      "age": 15,
+      "date": "2025-01-17",
+      "startTime": "11:00",
+      "endTime": "11:30",
+      "id": "843e"
+    }
+  ],
+  "absence": [
+    {
+      "id": "2b9a",
+      "date": "2025-01-09T23:00:00.000Z",
+      "startTime": "11:00",
+      "endTime": "12:00"
+    },
+    {
+      "id": "c138",
+      "date": "2025-01-15T23:00:00.000Z",
+      "startTime": "11:00",
+      "endTime": "12:00"
+    },
+    {
+      "id": "255f",
+      "date": "2325-01-01T00:00:00.000Z",
+      "startTime": "11:00",
+      "endTime": "12:00"
     }
   ]
 }

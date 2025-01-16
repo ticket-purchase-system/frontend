@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
-import { AppointmentService } from '../appointment.service';
+import { AppointmentService, Absence } from '../appointment.service';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -40,19 +40,24 @@ import { MatSelectModule } from '@angular/material/select';
 export class AppointmentDialogComponent {
   appointmentForm: FormGroup;
   fullHourOptions: string[] = [];
-  absences: any[];
+  absences: Absence[];
 
+  
   constructor(
     public dialogRef: MatDialogRef<AppointmentDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       id: string;
       date: string;
-      title: string;
+      name_and_surname: string;
+      type?: string;
+      age?:number;
+      gender?:string;
       startTime: string;
       endTime: string;
+      additional_info?: string,
       color?: string;
-      absences: any[];
+      absences: Absence[];
     },
     private formBuilder: FormBuilder,
     private appointmentService: AppointmentService
@@ -62,7 +67,11 @@ export class AppointmentDialogComponent {
 
     this.appointmentForm = this.formBuilder.group(
       {
-        title: [this.data.title || '', Validators.required],
+        name_and_surname: [this.data.name_and_surname || '', Validators.required],
+        type: [this.data.type || '', Validators.required],
+        age: [this.data.age || '', [Validators.required, Validators.min(0), Validators.max(100)]],
+        gender: [this.data.gender || '', Validators.required], // Add gender field
+        additional_info: [this.data.additional_info || ''], // Add additional_info field (not required)
         date: [this.data.date, Validators.required],
         startTime: [this.data.startTime || '', Validators.required],
         endTime: [this.data.endTime || '', Validators.required],
@@ -99,67 +108,75 @@ export class AppointmentDialogComponent {
     this.dialogRef.close();
   }
 
-  // private isOverlappingAbsence(date: string, startTime: string, endTime: string): boolean {
-  //   return this.absences.some(absence => {
-  //     // Check if the dates match
-  //     if (date === absence.startDate && date === absence.endDate) {
-  //       // Convert times to comparable formats
-  //       const absenceStart = this.parseTime(absence.startTime);
-  //       const absenceEnd = this.parseTime(absence.endTime);
-  //       const eventStart = this.parseTime(startTime);
-  //       const eventEnd = this.parseTime(endTime);
-  
-  //       // Check for time overlap
-  //       return (
-  //         (eventStart >= absenceStart && eventStart < absenceEnd) || // Event starts within absence
-  //         (eventEnd > absenceStart && eventEnd <= absenceEnd) || // Event ends within absence
-  //         (eventStart <= absenceStart && eventEnd >= absenceEnd) // Event spans the entire absence
-  //       );
-  //     }
-  //     return false;
-  //   });
-  // }
-  
-  // private parseTime(time: string): number {
-  //   const [hours, minutes] = time.split(':').map(Number);
-  //   return hours * 60 + minutes; // Convert time to minutes for easier comparison
-  // }
-
 
   onSaveClick(): void {
     if (this.appointmentForm.valid) {
       const rawDateValue = this.appointmentForm.controls['date'].value;
       const dateString = this.formatAsYYYYMMDD(rawDateValue);
-
+  
       const data = {
-        title: this.appointmentForm.controls['title'].value,
+        name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
+        type: this.appointmentForm.controls['type'].value,
+        gender: this.appointmentForm.controls['gender'].value,
+        age: this.appointmentForm.controls['age'].value,
         date: dateString,
         startTime: this.appointmentForm.controls['startTime'].value,
         endTime: this.appointmentForm.controls['endTime'].value,
-        id: this.data.id,
+        id: this.data.id, // Include ID if it's an edit operation
+        additional_info: this.appointmentForm.controls['additional_info'].value,
       };
-      this.dialogRef.close(data);
+  
+      this.dialogRef.close(data); // Pass the data back to the caller
     }
   }
+
+
+  // onSaveClick(): void {
+  //   if (this.appointmentForm.valid) {
+  //     const rawDateValue = this.appointmentForm.controls['date'].value;
+  //     const dateString = this.formatAsYYYYMMDD(rawDateValue);
+  
+  //     const newAppointment = {
+  //       title: this.appointmentForm.controls['title'].value,
+  //       date: dateString,
+  //       startTime: this.appointmentForm.controls['startTime'].value,
+  //       endTime: this.appointmentForm.controls['endTime'].value,
+  //       id: this.data.id,
+  //     };
+  
+  //     if (this.isOverlappingAbsence(newAppointment)) {
+  //       alert('The appointment overlaps with an existing absence. Please choose a different time.');
+  //       return;
+  //     }
+  
+  //     this.dialogRef.close(newAppointment); // Save the appointment
+  //   }
+  // }
+  
   
 
   onEditClick(): void {
     if (this.appointmentForm.valid) {
       const rawDateValue = this.appointmentForm.controls['date'].value;
       const dateString = this.formatAsYYYYMMDD(rawDateValue);
-
+  
       const updatedAppointment = {
-        title: this.appointmentForm.controls['title'].value,
+        name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
+        type: this.appointmentForm.controls['type'].value,
+        gender: this.appointmentForm.controls['gender'].value,
+        age: this.appointmentForm.controls['age'].value,
         date: dateString,
         startTime: this.appointmentForm.controls['startTime'].value,
         endTime: this.appointmentForm.controls['endTime'].value,
-        id: this.data.id,
+        id: this.data.id, // Include ID for the edit operation
+        additional_info: this.appointmentForm.controls['additional_info'].value,
       };
-
+  
+      // Call the service to update the appointment
       this.appointmentService.updateAppointment(updatedAppointment).subscribe({
         next: (response) => {
           console.log('Appointment updated successfully:', response);
-          this.dialogRef.close(response);
+          this.dialogRef.close(response); // Close the dialog and pass the updated appointment
         },
         error: (err) => {
           console.error('Error updating appointment:', err);
@@ -167,6 +184,7 @@ export class AppointmentDialogComponent {
       });
     }
   }
+  
 
   onDeleteClick(): void {
     this.appointmentService.deleteAppointment(this.data.id).subscribe({
@@ -178,6 +196,51 @@ export class AppointmentDialogComponent {
       },
     });
   }
+
+  // private isOverlappingAbsence(appointment: { date: string; startTime: string; endTime: string }): boolean {
+  //   if (!appointment.date || !appointment.startTime || !appointment.endTime) {
+  //     console.log('Invalid appointment data:', appointment);
+  //     return false; // Invalid appointment data
+  //   }
+  
+  //   console.log('Appointment:', appointment);
+  //   console.log('Absences:', this.absences);
+  
+  //   return this.absences.some((absence) => {
+  //     const absenceDate = new Date(absence.date).toISOString().split('T')[0];
+  //     console.log('Checking absence:', absence);
+  //     console.log('Formatted absence date:', absenceDate);
+  
+  //     if (appointment.date === absenceDate) {
+  //       const [appointmentStartHours, appointmentStartMinutes] = appointment.startTime.split(':').map(Number);
+  //       const [appointmentEndHours, appointmentEndMinutes] = appointment.endTime.split(':').map(Number);
+  //       const [absenceStartHours, absenceStartMinutes] = absence.startTime.split(':').map(Number);
+  //       const [absenceEndHours, absenceEndMinutes] = absence.endTime.split(':').map(Number);
+  
+  //       const appointmentStart = appointmentStartHours * 60 + appointmentStartMinutes;
+  //       const appointmentEnd = appointmentEndHours * 60 + appointmentEndMinutes;
+  //       const absenceStart = absenceStartHours * 60 + absenceStartMinutes;
+  //       const absenceEnd = absenceEndHours * 60 + absenceEndMinutes;
+  
+  //       console.log('Time comparison:', {
+  //         appointmentStart,
+  //         appointmentEnd,
+  //         absenceStart,
+  //         absenceEnd,
+  //       });
+  
+  //       return (
+  //         (appointmentStart >= absenceStart && appointmentStart < absenceEnd) || // Appointment starts during absence
+  //         (appointmentEnd > absenceStart && appointmentEnd <= absenceEnd) || // Appointment ends during absence
+  //         (appointmentStart <= absenceStart && appointmentEnd >= absenceEnd) // Appointment fully spans the absence
+  //       );
+  //     }
+  //     return false;
+  //   });
+  // }
+  
+  
+  
 
   timeRangeValidator: ValidatorFn = (
     control: AbstractControl

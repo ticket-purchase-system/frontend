@@ -5,14 +5,24 @@ import { environment } from '../environments/environment';
 // import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 
-// Interface for Appointment data
 export interface Appointment {
   id?: string;
   date: string;
-  title: string;
+  name_and_surname: string;
+  type: string;
+  age: number;
+  gender?: string;
   startTime: string;
   endTime: string;
+  additional_info?: string;
   color?: string;
+}
+
+export interface Absence {
+  id?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
 }
 
 @Injectable({
@@ -22,6 +32,7 @@ export class AppointmentService {
 
 
   private apiUrl = environment.apiUrl;
+  private absenceApiUrl = 'http://localhost:3000/absence'
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase
@@ -59,9 +70,14 @@ export class AppointmentService {
     return this.http.delete<void>(url);
   }
 
-  //firebase
-  // getAppointments_from_firebase(): Observable<any[]> {
-  //   return this.appointmentsRef.valueChanges(); // Fetches the data as an observable
-  // }
-  
+  // Method to add a new absence
+  addAbsence(absence: Absence): Observable<Absence> {
+    return this.http.post<Absence>(this.absenceApiUrl, absence);
+  }
+
+  // Method to fetch absences (if needed for other operations)
+  getAbsences(): Observable<Absence[]> {
+    return this.http.get<Absence[]>(this.absenceApiUrl);
+  }
+
   }
