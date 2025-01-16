@@ -32,7 +32,7 @@ export class AppointmentService {
 
 
   private apiUrl = environment.apiUrl;
-  private absenceApiUrl = 'http://localhost:3000/absence'
+  private absenceApiUrl = environment.absenceUrl;
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase
@@ -77,7 +77,14 @@ export class AppointmentService {
 
   // Method to fetch absences (if needed for other operations)
   getAbsences(): Observable<Absence[]> {
-    return this.http.get<Absence[]>(this.absenceApiUrl);
+    return this.http.get<any[]>(this.absenceApiUrl).pipe(
+      map((absences) =>
+        absences.map((absence) => ({
+          ...absence,
+          id: absence._id || absence.id, // Map _id to id if it exists
+        }))
+      )
+    );
   }
-
+  
   }
