@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
-import { AppointmentService, Absence } from '../appointment.service';
+import { AppointmentService, Absence, Appointment } from '../appointment.service';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -56,6 +56,7 @@ export class AppointmentDialogComponent {
       additional_info?: string,
       color?: string;
       absences: Absence[];
+      appointments: Appointment[];
     },
     private formBuilder: FormBuilder,
     private appointmentService: AppointmentService
@@ -75,9 +76,11 @@ export class AppointmentDialogComponent {
         date: [this.data.date, Validators.required],
         startTime: [this.data.startTime || '', Validators.required],
         endTime: [this.data.endTime || '', Validators.required],
+        
       },
       { validators: [this.timeRangeValidator,
                     this.absenceValidator(this.data.absences || []),
+                    this.eventOverlapValidator(this.data.appointments || [])
       ]
        }
     );
@@ -106,6 +109,60 @@ export class AppointmentDialogComponent {
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
+  eventOverlapValidator(existingEvents: Appointment[]): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      // Skip overlap validation during edit operations
+      if (this.data.id) {
+        return null;
+      }
+  
+      const date = this.formatAsYYYYMMDD(control.get('date')?.value);
+      const startTime = control.get('startTime')?.value;
+      const endTime = control.get('endTime')?.value;
+  
+      if (date && startTime && endTime) {
+        const [startHours, startMinutes] = startTime.split(':');
+        const [endHours, endMinutes] = endTime.split(':');
+  
+        const newEventStart = new Date(`${date}T${startHours}:${startMinutes}`);
+        const newEventEnd = new Date(`${date}T${endHours}:${endMinutes}`);
+  
+        const overlap = existingEvents.some(event => {
+          // Skip the current appointment during edit operations
+          if (event.id === this.data.id) {
+            return false;
+          }
+  
+          const eventDate = this.formatAsYYYYMMDD(event.date);
+          const [eventStartHours, eventStartMinutes] = event.startTime.split(':');
+          const [eventEndHours, eventEndMinutes] = event.endTime.split(':');
+  
+          const eventStart = new Date(`${eventDate}T${eventStartHours}:${eventStartMinutes}`);
+          const eventEnd = new Date(`${eventDate}T${eventEndHours}:${eventEndMinutes}`);
+  
+          return (
+            date === eventDate &&
+            (
+              (newEventStart >= eventStart && newEventStart < eventEnd) ||
+              (newEventEnd > eventStart && newEventEnd <= eventEnd) ||
+              (newEventStart <= eventStart && newEventEnd >= eventEnd)
+            )
+          );
+        });
+  
+        if (overlap) {
+          return { overlappingEvent: true };
+        }
+      }
+  
+      return null;
+    };
+  }
+  
+
+  
+
 
   absenceValidator(absences: Absence[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -150,6 +207,9 @@ export class AppointmentDialogComponent {
     if (this.appointmentForm.valid) {
       const rawDateValue = this.appointmentForm.controls['date'].value;
       const dateString = this.formatAsYYYYMMDD(rawDateValue);
+
+      const type = this.appointmentForm.controls['type'].value;
+      const color = type === 'first consultation' ? 'rgba(186, 162, 255, 0.61)': 'rgba(129, 196, 250, 0.61)';
   
       const data = {
         name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
@@ -161,6 +221,7 @@ export class AppointmentDialogComponent {
         endTime: this.appointmentForm.controls['endTime'].value,
         id: this.data.id, // Include ID if it's an edit operation
         additional_info: this.appointmentForm.controls['additional_info'].value,
+        color: color,
       };
   
       this.dialogRef.close(data); // Pass the data back to the caller
@@ -173,6 +234,9 @@ export class AppointmentDialogComponent {
     if (this.appointmentForm.valid) {
       const rawDateValue = this.appointmentForm.controls['date'].value;
       const dateString = this.formatAsYYYYMMDD(rawDateValue);
+
+      const type = this.appointmentForm.controls['type'].value;
+      const color = type === 'first consultation' ? 'rgba(186, 162, 255, 0.61)': 'rgba(129, 196, 250, 0.61)';
   
       const updatedAppointment = {
         name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
@@ -184,13 +248,13 @@ export class AppointmentDialogComponent {
         endTime: this.appointmentForm.controls['endTime'].value,
         id: this.data.id, // Include ID for the edit operation
         additional_info: this.appointmentForm.controls['additional_info'].value,
+        color: color,
       };
   
-      // Call the service to update the appointment
       this.appointmentService.updateAppointment(updatedAppointment).subscribe({
         next: (response) => {
           console.log('Appointment updated successfully:', response);
-          this.dialogRef.close(response); // Close the dialog and pass the updated appointment
+          this.dialogRef.close(response); 
         },
         error: (err) => {
           console.error('Error updating appointment:', err);

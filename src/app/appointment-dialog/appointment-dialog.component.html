@@ -61,6 +61,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      
 
       <!-- Validation Error for Time Range -->
       <div
@@ -76,6 +77,12 @@
         class="error"
       >
         The selected time overlaps with an absence. Please choose a different time.
+      </div>
+
+      
+      <!-- Event overlapping error -->
+      <div *ngIf="appointmentForm.errors?.['overlappingEvent']" class="error-message">
+        The selected time slot overlaps with an existing event. Please choose a different time.
       </div>
 
       <!-- Additional Info -->

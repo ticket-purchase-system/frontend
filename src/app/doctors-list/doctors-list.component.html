@@ -1,0 +1,30 @@
+<div class="user-list-container">
+
+    <button mat-flat-button color="primary" (click)="navigateToLogin()">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <h2>Doctors List</h2>
+  
+    <div *ngIf="isLoading" class="loading">Loading users...</div>
+    
+    <div *ngIf="!isLoading && users.length === 0" class="no-users">
+      No users found.
+    </div>
+  
+    <table *ngIf="!isLoading && users.length > 0" class="user-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.username }}</td>
+          <td class="role {{ user.role }}">{{ user.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

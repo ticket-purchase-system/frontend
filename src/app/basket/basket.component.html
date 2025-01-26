@@ -1,14 +1,23 @@
-<div *ngIf="appointments.length > 0; else noAppointments">
-    <h3>Basket - List of Appointments</h3>
-    <ul>
-      <li *ngFor="let appointment of appointments">
-        {{ appointment.name_and_surname }}  <!-- Wyświetla tytuł spotkania -->
-      </li>
-    </ul>
-  </div>
-  
-  <ng-template #noAppointments>
-    <p>Brak spotkań w koszyku.</p>  <!-- Jeśli brak spotkań, wyświetli ten komunikat -->
-  </ng-template>
-  
- 
+<div class="basket-container" *ngIf="appointments.length > 0; else noAppointments">
+  <h3 class="basket-title">List of Appointments</h3>
+  <mat-card class="basket-card">
+    <mat-list>
+      <mat-list-item *ngFor="let appointment of appointments" class="list-item">
+        <!-- <mat-icon mat-list-icon>person</mat-icon> -->
+        <div class="appointment-details">
+          <p>{{ appointment.name_and_surname }} : {{ appointment.type }}</p>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card>
+
+  <button mat-fab color="primary" class="payment-button" (click)="startPayment()">
+    <mat-icon>payment</mat-icon>
+  </button>
+</div>
+
+<ng-template #noAppointments>
+  <mat-card class="empty-basket">
+    <p>No appointments in the basket.</p> <!-- Message when the basket is empty -->
+  </mat-card>
+</ng-template>

@@ -74,10 +74,6 @@
   }
 }
 
-.dialog-container {
-
-}
-
 .calendar-view-week {
   margin-top: 1rem;
   thead {
@@ -227,5 +223,60 @@
 .absence-slot {
   background-color: rgba(231, 104, 104, 0.153);
   pointer-events: none;
+  position: relative; /* Ensures stacking context */
+  z-index: 2; /* Higher priority than today column */
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  span {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  button {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+
+.presence-slot {
+  background-color: #d4f7d4b8; /* Light green to indicate presence */
+  position: relative; /* Ensures stacking context */
+  z-index: 3; /* Highest priority */
+}
+
+.today-column {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(160, 182, 238, 0.2),
+    rgba(242, 204, 204, 0.2) 10px,
+    rgba(244, 212, 212, 0.2) 10px,
+    rgba(255, 255, 255, 0.2) 20px
+  ); 
+  position: relative;
+  z-index: 1;
+}
+
+
+.header {
+  background-color: #ecf5fc;
+  color: white;
+  padding: 10px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}

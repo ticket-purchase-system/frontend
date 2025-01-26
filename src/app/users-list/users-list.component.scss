@@ -1,0 +1,56 @@
+.user-list-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .loading, .no-users {
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-table th,
+  .user-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .user-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .role.admin {
+    color: #d32f2f; /* Red for admin */
+    font-weight: bold;
+  }
+  
+  .role.user {
+    color: #1976d2; /* Blue for user */
+  }
+  
+  .role.patient {
+    color: #388e3c; /* Green for patient */
+  }
+  
+  @media (max-width: 600px) {
+    .user-table {
+      font-size: 14px;
+    }
+  }
+  

@@ -1,18 +1,63 @@
 {
   "appointments": [
     {
-      "id": "6056",
-      "date": "2025-01-17",
       "name_and_surname": "Maria Kowalska",
       "type": "first consultation",
-      "age": 34,
       "gender": "female",
-      "startTime": "09:00",
+      "age": 34,
+      "date": "2025-01-17",
+      "startTime": "09:30",
+      "endTime": "10:00",
+      "id": "6056",
+      "additional_info": "i have a headache since 2025-01-01",
+      "color": "rgba(186, 162, 255, 0.61)"
+    },
+    {
+      "id": "3ded",
+      "date": "2025-01-07",
+      "name_and_surname": "Aleksandra Wrona",
+      "type": "prescription",
+      "age": 80,
+      "gender": "female",
+      "startTime": "09:30",
+      "endTime": "10:30",
+      "additional_info": "I need prescription for medicines that i used to take until now.",
+      "color": "rgba(129, 196, 250, 0.61)"
+    },
+    {
+      "id": "26cc",
+      "date": "2025-01-14",
+      "name_and_surname": "Maria Kowalska",
+      "type": "prescription",
+      "age": 45,
+      "gender": "female",
+      "startTime": "09:30",
+      "endTime": "10:00",
+      "additional_info": "",
+      "color": "rgba(129, 196, 250, 0.61)"
+    },
+    {
+      "id": "7c22",
+      "date": "2025-01-18",
+      "name_and_surname": "Adam Małysz",
+      "type": "first consultation",
+      "age": 56,
+      "gender": "male",
+      "startTime": "09:30",
       "endTime": "11:00",
-      "additional_info": ""
+      "additional_info": "",
+      "color": "rgba(186, 162, 255, 0.61)"
     }
   ],
   "absence": [
+    {
+      "id": "1dec",
+      "date": "2025-01-19",
+      "startTime": "09:00",
+      "endTime": "14:00"
+    }
+  ],
+  "presence": [
     {
       "id": "2b9a",
       "date": "2025-01-09T23:00:00.000Z",
@@ -20,34 +65,197 @@
       "endTime": "12:00"
     },
     {
-      "id": "c138",
-      "date": "2025-01-15T23:00:00.000Z",
+      "id": "09b8",
+      "date": "2025-01-17",
       "startTime": "11:00",
       "endTime": "12:00"
     },
     {
-      "id": "255f",
-      "date": "2325-01-01T00:00:00.000Z",
-      "startTime": "11:00",
-      "endTime": "12:00"
-    },
-    {
-      "id": "6559",
-      "date": "2025-01-17T23:00:00.000Z",
+      "id": "d1ca",
+      "date": "2025-01-10",
       "startTime": "15:00",
       "endTime": "16:00"
     },
     {
-      "id": "1f2f",
-      "date": "2025-01-18T23:00:00.000Z",
-      "startTime": "11:00",
+      "id": "2723",
+      "date": "2025-01-14",
+      "startTime": "14:00",
       "endTime": "15:00"
     },
     {
-      "id": "b5c0",
+      "id": "c04b",
+      "date": "2025-01-12",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "2100",
+      "date": "2025-01-13",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "bd52",
+      "date": "2025-01-14",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "c910",
+      "date": "2025-01-15",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "f908",
+      "date": "2025-01-16",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "be44",
       "date": "2025-01-17",
       "startTime": "11:00",
-      "endTime": "14:00"
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "89b9",
+      "date": "2025-01-18",
+      "startTime": "11:00",
+      "endTime": "15:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "f692",
+      "date": "2025-01-13",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "6726",
+      "date": "2025-01-14",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "c6c8",
+      "date": "2025-01-15",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "0c49",
+      "date": "2025-01-16",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "d7f5",
+      "date": "2025-01-17",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    },
+    {
+      "id": "ea65",
+      "date": "2025-01-18",
+      "startTime": "09:30",
+      "endTime": "11:00",
+      "name_and_surname": null,
+      "type": null,
+      "age": null,
+      "gender": null,
+      "additional_info": null
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "admin",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "user1",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "69d3",
+      "username": "user2",
+      "password": "123",
+      "role": "user"
+    },
+    {
+      "id": "495b",
+      "username": "dr Marcin Adamczyk",
+      "password": "123",
+      "role": "doctor"
+    },
+    {
+      "id": "495c",
+      "username": "dr Katarzyna Wak",
+      "password": "123",
+      "role": "doctor"
     }
   ]
 }

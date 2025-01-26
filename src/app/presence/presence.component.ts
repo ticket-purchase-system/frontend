@@ -10,10 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 
+
 @Component({
-  selector: 'app-absence',
-  templateUrl: './absence.component.html',
-  styleUrls: ['./absence.component.scss'],
+  selector: 'app-presence',
+  templateUrl: './presence.component.html',
+  styleUrl: './presence.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -27,22 +28,26 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule
   ],
 })
-export class AbsenceComponent {
-  absenceForm: FormGroup;
+
+export class PresenceComponent {
+
+
+  presenceForm: FormGroup;
 
   constructor(
-    public dialogRef: MatDialogRef<AbsenceComponent>,
+    public dialogRef: MatDialogRef<PresenceComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: any, // Data from the parent component, if any
     private formBuilder: FormBuilder
   ) {
-    this.absenceForm = this.formBuilder.group({
-      date: [null, Validators.required], // Start date
+    this.presenceForm = this.formBuilder.group({
+      date: [null, Validators.required], // Presence date
       startTime: ['', Validators.required], // Start time
       endTime: ['', Validators.required], // End time
       repeat: ['none'], // Repeat options: none, daily, weekly
       until: [null], // End date for repetition
     }, { validators: this.timeRangeValidator });
+    
   }
 
   // Validation: Ensure end time is after start time
@@ -74,33 +79,32 @@ export class AbsenceComponent {
   
     return dates;
   }
-  
 
   onSaveClick(): void {
-    if (this.absenceForm.valid) {
-      const rawStartDate = this.absenceForm.value.date;
-      const formattedStartDate = this.formatDateToISOString(rawStartDate);
-      const repeat = this.absenceForm.value.repeat;
-      const untilDate = this.absenceForm.value.until
-        ? new Date(this.absenceForm.value.until)
-        : null;
-  
-      // Generate repeated dates
-      const repeatedDates = repeat !== 'none' && untilDate
-        ? this.generateRepeatedDates(new Date(formattedStartDate), repeat, untilDate)
-        : [new Date(formattedStartDate)];
-  
-      // Create absence records for each date
-      const absences = repeatedDates.map(date => ({
-        date: this.formatDateToISOString(date), // Format date as YYYY-MM-DD
-        startTime: this.absenceForm.value.startTime,
-        endTime: this.absenceForm.value.endTime,
-      }));
-  
-      this.dialogRef.close(absences); // Send the list of absences back to the parent
-    }
+  if (this.presenceForm.valid) {
+    const rawStartDate = this.presenceForm.value.date;
+    const formattedStartDate = this.formatDateToISOString(rawStartDate);
+    const repeat = this.presenceForm.value.repeat;
+    const untilDate = this.presenceForm.value.until
+      ? new Date(this.presenceForm.value.until)
+      : null;
+
+    // Generate repeated dates
+    const repeatedDates = repeat !== 'none' && untilDate
+      ? this.generateRepeatedDates(new Date(formattedStartDate), repeat, untilDate)
+      : [new Date(formattedStartDate)];
+
+    // Create presence records for each date
+    const presences = repeatedDates.map(date => ({
+      date: this.formatDateToISOString(date), // Format date as YYYY-MM-DD
+      startTime: this.presenceForm.value.startTime,
+      endTime: this.presenceForm.value.endTime,
+    }));
+
+    this.dialogRef.close(presences); // Send the list of presences back to the parent
   }
-  
+}
+
   
   // Utility to format the date to YYYY-MM-DD (without timezone adjustments)
   private formatDateToISOString(date: Date): string {

@@ -17,6 +17,11 @@ export class BasketComponent implements OnInit {
     this.loadAppointments();  // Załaduj dane przy inicjalizacji komponentu
   }
 
+  startPayment(): void {
+    console.log('Payment process started!');
+  }
+  
+
   // Metoda do załadowania danych o spotkaniach
   loadAppointments(): void {
     this.appointmentService.getAppointments().subscribe({

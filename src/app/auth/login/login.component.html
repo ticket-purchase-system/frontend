@@ -1,0 +1,51 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <h2 class="login-title">Welcome Back</h2>
+    <form (ngSubmit)="login()" class="login-form">
+      <!-- Username -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" required />
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          required
+        />
+      </mat-form-field>
+
+      <!-- Login Button -->
+      <button mat-flat-button color="primary" type="submit" class="full-width">
+        Login
+      </button>
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+
+    <!-- Signup and Guest Buttons -->
+    <div class="action-buttons">
+      <button
+        mat-button
+        color="accent"
+        class="signup-button"
+        (click)="navigateToSignup()"
+      >
+        Create an Account
+      </button>
+
+      <button
+        mat-button
+        color="warn"
+        class="guest-button"
+        (click)="enterAsGuest()"
+      >
+        Enter as a Guest
+      </button>
+    </div>
+  </mat-card>
+</div>

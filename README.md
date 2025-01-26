@@ -19,8 +19,15 @@ ng serve
 
 run the frontend using rest api data (mongo db):
 
+
 ```
 ng serve --configuration=production
+
+
+run the frontend using firebase:
+
+```
+ng serve
 
 
 

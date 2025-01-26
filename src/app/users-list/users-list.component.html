@@ -1,0 +1,32 @@
+<div class="user-list-container">
+  <h2>Users List</h2>
+
+  <div *ngIf="isLoading" class="loading">Loading users...</div>
+
+  <div *ngIf="!isLoading && users.length === 0" class="no-users">
+    No users found.
+  </div>
+
+  <table *ngIf="!isLoading && users.length > 0" class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Actions</th> <!-- New Actions column -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td class="role {{ user.role }}">{{ user.role }}</td>
+        <td>
+          <button (click)="deleteUser(user.id)" mat-icon-button color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
