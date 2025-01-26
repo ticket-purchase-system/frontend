@@ -36,12 +36,14 @@ Ensure you have the following installed on your system:
 Run the JSON server with the provided `db.json`:
 ```bash
 json-server --watch db.json
+```
 
 #### REST API Server
 Pull the backend repository for the REST API and navigate to the folder. Then start the server:
 
 ```bash
 npm run dev
+```
 
 ### Running the Backends
 
@@ -49,16 +51,19 @@ npm run dev
 
 ```bash
 ng serve
+```
 
 - To use the REST API backend, run:
 
 ```bash
 ng serve --configuration=production
+```
 
 - To run the frontend with Firebase as the backend turn off the servers running on localhosts and run:
 
 ```bash
 ng serve
+```
 
 ---
 
