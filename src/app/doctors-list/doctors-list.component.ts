@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService, User } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
@@ -32,4 +33,11 @@ export class DoctorsListComponent {
   navigateToLogin(): void {
     this.router.navigate(['/auth/login']); // Redirect to login page
   }
+
+  navigateToCalendar(): void {
+    this.router.navigate(['/calendar']);
+  }
+
+
 }
+

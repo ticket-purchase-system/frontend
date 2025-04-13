@@ -31,7 +31,7 @@ export const routes: Routes = [
   },
 
   // Default route redirects to the login page
-  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/doctors', pathMatch: 'full' },
 
 
 ];
