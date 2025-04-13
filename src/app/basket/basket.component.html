@@ -1,5 +1,5 @@
 <div class="basket-container" *ngIf="appointments.length > 0; else noAppointments">
-  <h3 class="basket-title">List of Appointments</h3>
+  <h3 class="basket-title">List of Your Chosen Events</h3>
   <mat-card class="basket-card">
     <mat-list>
       <mat-list-item *ngFor="let appointment of appointments" class="list-item">
@@ -18,6 +18,6 @@
 
 <ng-template #noAppointments>
   <mat-card class="empty-basket">
-    <p>No appointments in the basket.</p> <!-- Message when the basket is empty -->
+    <p>No events chosen.</p> <!-- Message when the basket is empty -->
   </mat-card>
 </ng-template>
