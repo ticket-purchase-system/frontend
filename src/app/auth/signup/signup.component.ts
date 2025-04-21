@@ -13,14 +13,31 @@ export class SignupComponent {
   role = 'user'; // Default role
   successMessage = '';
   errorMessage = '';
+  firstName = '';
+  lastName = '';
+  email = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   signup(): void {
-    const newUser: Partial<User> = {
+    console.log('Form values:', {
       username: this.username,
+      email: this.email,
       password: this.password,
+      firstName: this.firstName,
+      lastName: this.lastName,
       role: this.role,
+    });
+
+    const newUser = {
+      user: {
+        username: this.username,
+        password: this.password,
+        email: this.email
+      },
+      first_name: this.firstName,
+      last_name: this.lastName,
+      role: this.role
     };
 
     // Check if username exists

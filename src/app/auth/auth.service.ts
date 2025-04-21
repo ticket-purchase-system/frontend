@@ -1,67 +1,83 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { HttpClient,  HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, tap, switchMap, of } from 'rxjs';
 
 export interface User {
   id: number;
   username: string;
-  password: string;
   role: string;
+  first_name: string;
+  last_name: string;
+  email?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/users'; // Adjust the URL as needed
+  private apiUrl = 'http://127.0.0.1:8000/api'; // Adjust the URL as needed
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
   constructor(private http: HttpClient) {}
 
-  // Method to verify user credentials
-  login(username: string, password: string): Observable<User | null> {
-    return new Observable((observer) => {
-      this.http.get<User[]>(this.apiUrl).subscribe({
-        next: (users) => {
-          const user = users.find(
-            (u) => u.username === username && u.password === password
-          );
-          if (user) {
-            this.currentUserSubject.next(user); // Set logged-in user
-          }
-          observer.next(user || null); // Return user if found, otherwise null
-          observer.complete();
-        },
-        error: (err) => observer.error(err),
-      });
+  // Method to verify user credentials and generate JWT tokens
+  login(username: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/token/`, { username, password }).pipe(
+      tap((res: any) => {
+        localStorage.setItem('access_token', res.access);
+        localStorage.setItem('refresh_token', res.refresh);
+        this.loadUserProfile().subscribe(); // Load user info if needed
+      })
+    );
+  }
+
+  loadUserProfile(): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<User>(`${this.apiUrl}/users/me`).pipe(
+      tap(user => this.currentUserSubject.next(user))
+    );
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
   }
 
   checkUsernameExists(username: string): Observable<boolean> {
-    return new Observable((observer) => {
-      this.http.get<User[]>(this.apiUrl).subscribe({
-        next: (users) => {
-          const exists = users.some((u) => u.username === username);
-          observer.next(exists); // Return true if username exists, otherwise false
-          observer.complete();
-        },
-        error: (err) => observer.error(err),
-      });
+    return this.getAllUsers().pipe(
+      switchMap((users) =>
+        of(users.some((user) => user.username === username))
+      )
+    );
+  }
+
+  deleteUser(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.apiUrl}/users/${id}`);
+  }
+
+  createUser(user: any): Observable<User> {
+    console.log('Sending user payload:', {
+      user: {
+        username: user.username,
+        password: user.password,
+        email: user.email
+      },
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
     });
+    return this.http.post<User>(`${this.apiUrl}/users`, user);
   }
-
-  deleteUser(userId: number): Observable<void> {
-    const url = `${this.apiUrl}/${userId}`; // API endpoint for deleting a user
-    return this.http.delete<void>(url); // Delete user from the backend
-  }
-
-  createUser(user: Partial<User>): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user); // Add user to db.json
-  }
-
+  
+  
 
   logout(): void {
-    this.currentUserSubject.next(null); // Clear logged-in user
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    this.currentUserSubject.next(null);
   }
 
   getCurrentUser(): Observable<User | null> {
@@ -69,7 +85,8 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    const headers = this.getAuthHeaders();
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
   getDoctors(): Observable<User[]> {
@@ -86,8 +103,8 @@ export class AuthService {
   }
 
   updateUserPassword(user: User): Observable<User> {
-    const url = `${this.apiUrl}/${user.id}`;
-    return this.http.put<User>(url, user); // Update user in db.json
+    const headers = this.getAuthHeaders();
+    return this.http.put<User>(`${this.apiUrl}/users/${user.id}`, user);
   }
   
 }
