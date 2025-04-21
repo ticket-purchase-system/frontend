@@ -25,6 +25,10 @@
         Login
       </button>
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <p *ngIf="errorMessage === 'Invalid username or password'" class="forgot-password">
+        <a [routerLink]="['/auth/newpassword']">Forgot password?</a>
+      </p>
     </form>
 
     <!-- Signup and Guest Buttons -->

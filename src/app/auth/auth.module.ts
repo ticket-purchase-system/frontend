@@ -10,15 +10,20 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { NewPasswordComponent } from './newpassword/newpassword.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
+
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'newpassword', component: NewPasswordComponent },
 ];
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent],
+  declarations: [LoginComponent, SignupComponent, NewPasswordComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
@@ -28,7 +33,8 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     MatSelectModule,
-    MatCardModule
+    MatCardModule,
+    MatFormFieldModule
   ],
 })
 export class AuthModule {}

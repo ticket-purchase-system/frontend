@@ -84,6 +84,10 @@ export class AuthService {
       });
     });
   }
-  
+
+  updateUserPassword(user: User): Observable<User> {
+    const url = `${this.apiUrl}/${user.id}`;
+    return this.http.put<User>(url, user); // Update user in db.json
+  }
   
 }
