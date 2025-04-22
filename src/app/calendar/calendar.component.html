@@ -70,11 +70,11 @@
           (click)="selectDate()"
           (keydown.enter)="selectDate()"
           (keydown.space)="selectDate()"
-          matTooltip="Add new appointment"
+          matTooltip="Add new event"
           matTooltipPosition="above"
           [ngStyle]="{ 'background-color': '#b8d4ee', 'color': '#2f76b6' }"
         >
-          <mat-icon>add</mat-icon> Appointment
+          <mat-icon>add</mat-icon> Event
         </button>
 
         <button
@@ -89,7 +89,7 @@
           <mat-icon>shopping_cart</mat-icon>
         </button>
 
-        <button
+        <!-- <button
           mat-flat-button
           (click)="addAbsence()"
           (keydown.enter)="addAbsence()"
@@ -97,12 +97,12 @@
           matTooltip="Add a new absence record"
           matTooltipPosition="above"
           [ngStyle]="{ 'background-color': '#FFCDD2', 'color': '#B71C1C' }"
-        >
-
+        > -->
+<!-- 
         <mat-icon>close</mat-icon>
-        </button>
+        </button> -->
 
-        <button
+        <!-- <button
           mat-flat-button
           (click)="addPresence()"
           (keydown.enter)="addPresence()"
@@ -112,7 +112,7 @@
           [ngStyle]="{ 'background-color': '#C8E6C9', 'color': '#1B5E20' }"
         >
         <mat-icon>check</mat-icon>
-        </button>
+        </button> -->
 
 
       </div>
@@ -168,7 +168,7 @@
                   (keydown.space)="editAppointment(appointment, $event)"
                   matTooltip="
                     Name: {{ appointment.name_and_surname }} |
-                    Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                    Age: {{ appointment.age }} | Artist name: {{ appointment.artist_name }} |
                     Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
                     Visit type: {{ appointment.type }} | 
                   "
@@ -245,7 +245,7 @@
               (keydown.space)="editAppointment(appointment, $event)"
               matTooltip="
                 Name: {{ appointment.name_and_surname }} |
-                Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                Age: {{ appointment.age }} | Artist name: {{ appointment.artist_name }} |
                 Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
                 Visit type: {{ appointment.type }}
               "
@@ -317,7 +317,7 @@
               (keydown.space)="editAppointment(appointment, $event)"
               matTooltip="
                 Name: {{ appointment.name_and_surname }} |
-                Age: {{ appointment.age }} | Gender: {{ appointment.gender }} |
+                Age: {{ appointment.age }} | Artist name: {{ appointment.artist_name }} |
                 Time: {{ appointment.startTime }} - {{ appointment.endTime }} |
                 Visit type: {{ appointment.type }}
               "

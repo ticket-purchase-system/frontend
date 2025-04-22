@@ -50,7 +50,7 @@ export class AppointmentDialogComponent {
       name_and_surname: string;
       type?: string;
       age?:number;
-      gender?:string;
+      artist_name?:string;
       startTime: string;
       endTime: string;
       additional_info?: string,
@@ -71,7 +71,7 @@ export class AppointmentDialogComponent {
         name_and_surname: [this.data.name_and_surname || '', Validators.required],
         type: [this.data.type || '', Validators.required],
         age: [this.data.age || '', [Validators.required, Validators.min(0), Validators.max(100)]],
-        gender: [this.data.gender || '', Validators.required], // Add gender field
+        artist_name: [this.data.artist_name || '', Validators.required], // Add gender field
         additional_info: [this.data.additional_info || ''], // Add additional_info field (not required)
         date: [this.data.date, Validators.required],
         startTime: [this.data.startTime || '', Validators.required],
@@ -214,7 +214,7 @@ export class AppointmentDialogComponent {
       const data = {
         name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
         type: this.appointmentForm.controls['type'].value,
-        gender: this.appointmentForm.controls['gender'].value,
+        artist_name: this.appointmentForm.controls['artist_name'].value,
         age: this.appointmentForm.controls['age'].value,
         date: dateString,
         startTime: this.appointmentForm.controls['startTime'].value,
@@ -241,7 +241,7 @@ export class AppointmentDialogComponent {
       const updatedAppointment = {
         name_and_surname: this.appointmentForm.controls['name_and_surname'].value,
         type: this.appointmentForm.controls['type'].value,
-        gender: this.appointmentForm.controls['gender'].value,
+        artist_name: this.appointmentForm.controls['artist_name'].value,
         age: this.appointmentForm.controls['age'].value,
         date: dateString,
         startTime: this.appointmentForm.controls['startTime'].value,

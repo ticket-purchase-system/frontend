@@ -9,8 +9,8 @@ export interface Appointment {
   date: string;
   name_and_surname: string;
   type: string;
-  age: number;
-  gender?: string;
+  age?: number;
+  artist_name?: string;
   startTime: string;
   endTime: string;
   additional_info?: string;

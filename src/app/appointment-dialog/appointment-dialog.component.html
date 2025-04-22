@@ -1,37 +1,38 @@
 <div class="dialog-content">
-  <h5 mat-dialog-title *ngIf="!data.id">Add Appointment</h5>
-  <h5 mat-dialog-title *ngIf="data.id">Edit Appointment</h5>
+  <h5 mat-dialog-title *ngIf="!data.id">Add New Event</h5>
+  <h5 mat-dialog-title *ngIf="data.id">Edit Event</h5>
   <div [formGroup]="appointmentForm">
     <div mat-dialog-content>
-      <!-- Name and Surname -->
+      <!-- Title -->
       <mat-form-field class="form-field">
-        <mat-label>Name and Surname</mat-label>
-        <input formControlName="name_and_surname" matInput placeholder="Full name and surname" />
+        <mat-label>Title</mat-label>
+        <input formControlName="name_and_surname" matInput placeholder="Enter event's title" />
       </mat-form-field>
 
       <!-- Type -->
       <mat-form-field class="form-field">
-        <mat-label>Visit type</mat-label>
+        <mat-label>Event type</mat-label>
         <mat-select formControlName="type">
-          <mat-option value="first consultation">First Visit</mat-option>
-          <mat-option value="prescription">Prescription</mat-option>
-          <mat-option value="control visit">Control Visit</mat-option>
+          <mat-option value="first consultation">Concert</mat-option>
+          <!-- <mat-option value="prescription">Prescription</mat-option>
+          <mat-option value="control visit">Control Visit</mat-option> -->
         </mat-select>
       </mat-form-field>
 
       <!-- Gender -->
       <mat-form-field class="form-field">
-        <mat-label>Gender</mat-label>
-        <mat-select formControlName="gender">
+        <mat-label>Artist(s) name</mat-label>
+        <input formControlName="artist_name" matInput placeholder="Enter artist(s) name" />
+        <!-- <mat-select formControlName="gender">
           <mat-option value="male">Male</mat-option>
-          <mat-option value="female">Female</mat-option>
-        </mat-select>
+          <mat-option value="female">Female</mat-option> -->
+        <!-- </mat-select> -->
       </mat-form-field>
 
-      <!-- Age -->
+      <!-- Artist Name -->
       <mat-form-field class="form-field">
-        <mat-label>Age</mat-label>
-        <input formControlName="age" matInput type="number" placeholder="Enter age" />
+        <mat-label>Number of seats</mat-label>
+        <input formControlName="age" matInput type="number" placeholder="Enter artist name" />
       </mat-form-field>
 
       <!-- Date -->
@@ -114,7 +115,7 @@
         (click)="onSaveClick()"
         [disabled]="appointmentForm.invalid"
       >
-        Add Appointment
+        Add Event
       </button>
 
       <!-- Delete Button -->

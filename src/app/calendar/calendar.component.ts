@@ -361,7 +361,7 @@ export class CalendarComponent implements OnInit {
                 name_and_surname: string, 
                 type: string, 
                 age: number, 
-                gender: string, 
+                artist_name: string, 
                 startTime: string, 
                 endTime: string, 
                 additional_info: string,
@@ -371,7 +371,7 @@ export class CalendarComponent implements OnInit {
       name_and_surname,
       type,
       age,
-      gender,
+      artist_name,
       startTime,
       endTime,
       additional_info,
@@ -401,7 +401,7 @@ export class CalendarComponent implements OnInit {
         name_and_surname: '',
         type: '',
         age: 0,
-        gender: '',
+        artist_name: '',
         startTime: this.selectedStartTime || `${h}:${m}`,
         endTime: this.selectedStartTime || `${h}:${m}`,
         additional_info: '',
@@ -418,7 +418,7 @@ export class CalendarComponent implements OnInit {
           result.name_and_surname,
           result.type,
           result.age,
-          result.gender,
+          result.artist_name,
           result.startTime,
           result.endTime,
           result.additional_info,
@@ -491,7 +491,7 @@ export class CalendarComponent implements OnInit {
             name_and_surname: presence.name_and_surname || null, // Optional field
             type: presence.type || null, // Optional field
             age: presence.age || null, // Optional field
-            gender: presence.gender || null, // Optional field
+            artist_name: presence.artist_name || null, // Optional field
             additional_info: presence.additional_info || null, // Optional field
           };
   
