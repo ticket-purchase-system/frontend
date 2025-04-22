@@ -603,7 +603,9 @@ export class CalendarComponent implements OnInit {
     });
   }
   
-  
+  goToEditProfile(): void {
+    this.router.navigate(['/auth/edit-profile']);
+  }
   
 
 }  

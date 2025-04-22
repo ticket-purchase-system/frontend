@@ -58,7 +58,6 @@ export class AuthService {
   
 
   deleteUser(id: number): Observable<any> {
-    const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/users/${id}`);
   }
 
@@ -76,7 +75,14 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/users`, user);
   }
   
-  
+  updateUserProfile(user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${user.id}`, {
+      ...user,
+      user: {
+        email: user.user.email
+      }
+    });
+  }
 
   logout(): void {
     localStorage.removeItem('access_token');
