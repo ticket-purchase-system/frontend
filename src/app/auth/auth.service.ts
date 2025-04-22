@@ -4,18 +4,21 @@ import { Observable, BehaviorSubject, tap, switchMap, of } from 'rxjs';
 
 export interface User {
   id: number;
-  username: string;
-  role: string;
   first_name: string;
   last_name: string;
-  email?: string;
+  role: string;
+  user: {
+    username?: string;
+    email?: string;
+  };
 }
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/api'; // Adjust the URL as needed
+  private apiUrl = 'http://127.0.0.1:8000/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
   constructor(private http: HttpClient) {}
@@ -26,14 +29,14 @@ export class AuthService {
       tap((res: any) => {
         localStorage.setItem('access_token', res.access);
         localStorage.setItem('refresh_token', res.refresh);
-        this.loadUserProfile().subscribe(); // Load user info if needed
+        this.loadUserProfile(username).subscribe(); // Load user info if needed
       })
     );
   }
 
-  loadUserProfile(): Observable<User> {
+  loadUserProfile(username: string): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User>(`${this.apiUrl}/users/me`).pipe(
+    return this.http.get<User>(`${this.apiUrl}/users/${username}`).pipe(
       tap(user => this.currentUserSubject.next(user))
     );
   }
@@ -48,13 +51,13 @@ export class AuthService {
   checkUsernameExists(username: string): Observable<boolean> {
     return this.getAllUsers().pipe(
       switchMap((users) =>
-        of(users.some((user) => user.username === username))
+        of(users.some((user) => user.user.username === username))
       )
     );
   }
+  
 
   deleteUser(id: number): Observable<any> {
-    const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/users/${id}`);
   }
 
@@ -72,7 +75,14 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/users`, user);
   }
   
-  
+  updateUserProfile(user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${user.id}`, {
+      ...user,
+      user: {
+        email: user.user.email
+      }
+    });
+  }
 
   logout(): void {
     localStorage.removeItem('access_token');
@@ -85,7 +95,6 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<User[]> {
-    const headers = this.getAuthHeaders();
     return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
@@ -103,7 +112,6 @@ export class AuthService {
   }
 
   updateUserPassword(user: User): Observable<User> {
-    const headers = this.getAuthHeaders();
     return this.http.put<User>(`${this.apiUrl}/users/${user.id}`, user);
   }
   

@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { NewPasswordComponent } from './newpassword/newpassword.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
 
 
@@ -20,10 +21,11 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'newpassword', component: NewPasswordComponent },
+  { path: 'edit-profile', component: EditProfileComponent },
 ];
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent, NewPasswordComponent],
+  declarations: [LoginComponent, SignupComponent, NewPasswordComponent, EditProfileComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
