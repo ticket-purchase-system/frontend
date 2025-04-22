@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./newpassword.component.scss'],
 })
 export class NewPasswordComponent {
-  email = '';
+  username = '';
   newPassword = '';
   confirmPassword = '';
   successMessage = '';
@@ -26,13 +26,22 @@ export class NewPasswordComponent {
 
     this.authService.getAllUsers().subscribe({
       next: (users) => {
-        const user = users.find((u) => u.username === this.email);
+        const user = users.find((u) => u.user.username === this.username);
 
         if (!user) {
           this.successMessage = '';
-          this.errorMessage = 'Email not found.';
+          this.errorMessage = 'Username not found.';
         } else {
-          const updatedUser = { ...user, password: this.newPassword };
+          const updatedUser = {
+            ...user,
+            user: {
+              email: user.user.email,
+              password: this.newPassword
+            }
+          };
+          
+          console.log('Updating user with:', updatedUser);
+          
 
           this.authService.updateUserPassword(updatedUser).subscribe({
             next: () => {

@@ -16,22 +16,21 @@ export class LoginComponent {
 
   login(): void {
     this.authService.login(this.username, this.password).subscribe({
-      next: (user) => {
-        if (user) {
-          this.errorMessage = ''; // Clear any previous errors
-          // Save the user to localStorage/sessionStorage if needed
-          // e.g., localStorage.setItem('user', JSON.stringify(user));
-          this.router.navigate(['/calendar']); // Redirect to the home page or another route
-        } else {
-          this.errorMessage = 'Invalid username or password';
-        }
+      next: () => {
+        this.errorMessage = '';
+        this.router.navigate(['/calendar']);
       },
       error: (err) => {
-        console.error('Login error', err);
-        this.errorMessage = 'Something went wrong. Please try again.';
-      },
+        if (err.status === 401) {
+          this.errorMessage = 'Invalid username or password';
+        } else {
+          console.error('Login error', err);
+          this.errorMessage = 'Something went wrong. Please try again.';
+        }
+      }
     });
   }
+  
 
   navigateToSignup(): void {
     this.router.navigate(['/auth/signup']); // Redirect to signup page
