@@ -2,6 +2,23 @@
   <mat-card class="signup-card">
     <h2 class="signup-title">Sign Up</h2>
     <form (ngSubmit)="signup()" class="signup-form">
+      <!-- First Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>First Name</mat-label>
+        <input matInput [(ngModel)]="firstName" name="firstName" required />
+      </mat-form-field>
+      
+      <!-- Last Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Last Name</mat-label>
+        <input matInput [(ngModel)]="lastName" name="lastName" required />
+      </mat-form-field>
+      
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="email" name="email" required />
+      </mat-form-field>
       <!-- Username -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Username</mat-label>
