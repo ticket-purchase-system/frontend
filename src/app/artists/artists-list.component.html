@@ -1,0 +1,68 @@
+<div class="artist-list-container">
+  <div class="artist-list-header">
+    <h1>Artists</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Add New Artist
+    </button>
+  </div>
+
+  <div class="artist-list-content">
+    <div *ngIf="loading" class="loading-spinner">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <mat-card *ngIf="!loading && artists.length === 0" class="empty-state">
+      <mat-card-content>
+        <p>No artists found. Add your first artist to get started!</p>
+      </mat-card-content>
+    </mat-card>
+
+    <table mat-table [dataSource]="artists" class="artist-table" *ngIf="!loading && artists.length > 0">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let artist">{{ artist.name }}</td>
+      </ng-container>
+
+      <!-- Genre Column -->
+      <ng-container matColumnDef="genre">
+        <th mat-header-cell *matHeaderCellDef>Genre</th>
+        <td mat-cell *matCellDef="let artist">{{ artist.genre || 'Not specified' }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let artist">
+          <button mat-icon-button color="primary" (click)="openEditDialog(artist)" matTooltip="Edit artist">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteArtist(artist)" matTooltip="Delete artist">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- Card View Alternative -->
+    <div class="artist-cards" *ngIf="!loading && artists.length > 0">
+      <mat-card *ngFor="let artist of artists" class="artist-card">
+        <mat-card-header>
+          <mat-card-title>{{ artist.name }}</mat-card-title>
+          <mat-card-subtitle *ngIf="artist.genre">{{ artist.genre }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content *ngIf="artist.bio">
+          <p>{{ artist.bio }}</p>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button color="primary" (click)="openEditDialog(artist)">EDIT</button>
+          <button mat-button color="warn" (click)="deleteArtist(artist)">DELETE</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

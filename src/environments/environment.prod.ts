@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:8000/api/appointments',
+    apiUrl: 'http://localhost:8000/api',
     absenceApiUrl: 'http://localhost:8000/api/absence',
     firebaseConfig: {
       apiKey: "AIzaSyAe7yDuX-g0CgloQWfCbiPfm0A4A-quJxk",

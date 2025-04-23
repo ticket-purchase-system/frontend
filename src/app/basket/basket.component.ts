@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppointmentService, Appointment } from '../appointment.service';  // Zaimportuj AppointmentService i Appointment
+import { EventService, EventWithDetails } from '../event.service';  // Zaimportuj EventService i Appointment
 
 @Component({
   selector: 'app-basket',
@@ -8,10 +8,10 @@ import { AppointmentService, Appointment } from '../appointment.service';  // Za
 })
 export class BasketComponent implements OnInit {
 
-  appointments: Appointment[] = [];  // Tablica, która przechowa wszystkie spotkania
+  events: EventWithDetails[] = [];  // Tablica, która przechowa wszystkie spotkania
   errorMessage: string = '';  // Do przechowywania komunikatu o błędzie (jeśli wystąpi)
 
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(private eventService: EventService) {}
 
   ngOnInit(): void {
     this.loadAppointments();  // Załaduj dane przy inicjalizacji komponentu
@@ -20,13 +20,13 @@ export class BasketComponent implements OnInit {
   startPayment(): void {
     console.log('Payment process started!');
   }
-  
+
 
   // Metoda do załadowania danych o spotkaniach
   loadAppointments(): void {
-    this.appointmentService.getAppointments().subscribe({
+    this.eventService.getEvents().subscribe({
       next: (appointments) => {
-        this.appointments = appointments;  // Przypisz pobrane dane do tablicy
+        this.events = appointments;  // Przypisz pobrane dane do tablicy
       },
       error: (error) => {
         this.errorMessage = 'Nie udało się załadować spotkań';  // Obsługuje błąd, jeśli wystąpi

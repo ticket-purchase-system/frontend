@@ -29,11 +29,18 @@ export const routes: Routes = [
       import('./doctors-list/doctors.module').then((m) => m.DoctorsModule),
     // canActivate: [AuthGuard], // Apply the AuthGuard here
   },
-  
+
   {
     path: 'profile',
     loadChildren: () =>
       import('./profile/profile.module').then((m) => m.ProfileModule),
+    canActivate: [AuthGuard], // Require authentication for all profile routes
+  },
+
+  {
+    path: 'artists',
+    loadChildren: () =>
+      import('./artists/artists.module').then((m) => m.ArtistModule),
     canActivate: [AuthGuard], // Require authentication for all profile routes
   },
 

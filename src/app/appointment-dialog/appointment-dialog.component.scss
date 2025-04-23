@@ -1,17 +1,23 @@
 .dialog-content {
   padding: 30px 30px 20px;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
+
+  .scrollable-form {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 10px; // Optional for scrollbar space
+  }
+
   .form-field {
     width: 100%;
   }
+
   .error {
     font-style: italic;
     color: rgb(215, 126, 126);
     padding-bottom: 20px;
   }
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9rem;
-  margin-top: 5px;
 }

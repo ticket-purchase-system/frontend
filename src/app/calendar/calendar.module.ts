@@ -9,7 +9,7 @@ import {
 } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
+import { EventDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { BasketComponent } from '../basket/basket.component';
 import {AbsenceComponent} from '../absence/absence.component'
 import { AppComponent } from '../app.component';
@@ -26,6 +26,7 @@ import { MatListModule } from '@angular/material/list';
 import { AngularFireModule } from "@angular/fire/compat";
 import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 const routes: Routes = [{ path: '', component: CalendarComponent }];
 
@@ -41,7 +42,7 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     MatButtonToggle,
     MatIconModule,
     DragDropModule,
-    AppointmentDialogComponent,
+    EventDialogComponent,
     RouterModule.forChild(routes),
     AbsenceComponent,
     MatOptionModule, // Import MatOptionModule
@@ -50,6 +51,9 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     PresenceComponent,
     MatCardModule,
     MatListModule,
-    ],
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+  ],
 })
 export class CalendarModule {}

@@ -1,11 +1,11 @@
-<div class="basket-container" *ngIf="appointments.length > 0; else noAppointments">
+<div class="basket-container" *ngIf="events.length > 0; else noAppointments">
   <h3 class="basket-title">List of Your Chosen Events</h3>
   <mat-card class="basket-card">
     <mat-list>
-      <mat-list-item *ngFor="let appointment of appointments" class="list-item">
+      <mat-list-item *ngFor="let event of events" class="list-item">
         <!-- <mat-icon mat-list-icon>person</mat-icon> -->
         <div class="appointment-details">
-          <p>{{ appointment.name_and_surname }} : {{ appointment.type }}</p>
+          <p>{{ event.event.title }} : {{ event.event.type }}</p>
         </div>
       </mat-list-item>
     </mat-list>
