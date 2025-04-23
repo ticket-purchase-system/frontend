@@ -1,4 +1,28 @@
 <div class="issues-list-container">
+  <!-- Top navigation bar -->
+  <div class="top-nav-bar">
+    <div class="nav-left">
+      <button 
+        mat-icon-button 
+        color="primary" 
+        [routerLink]="['/calendar']"
+        matTooltip="Back to Calendar"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="page-title">My Profile</h2>
+    </div>
+    <div class="nav-right">
+      <button 
+        mat-raised-button 
+        color="accent" 
+        [routerLink]="['/profile/loyalty-program']"
+      >
+        <mat-icon>card_giftcard</mat-icon> Loyalty Program
+      </button>
+    </div>
+  </div>
+
   <mat-card>
     <mat-card-header>
       <mat-card-title>My Technical Issues</mat-card-title>

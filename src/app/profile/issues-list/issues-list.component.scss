@@ -13,9 +13,11 @@ mat-card {
 }
 
 mat-card-header {
+  position: relative;
   display: flex;
   align-items: center;
   margin-bottom: 1.5rem;
+  padding-left: 30px; /* Add padding to make room for the back button */
 }
 
 .loading-container {
@@ -84,4 +86,39 @@ mat-card-header {
 .status-closed {
   background-color: #f5f5f5;
   color: #757575;
+}
+
+.header-actions {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ml-2 {
+  margin-left: 8px;
+}
+
+.top-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.page-title {
+  margin: 0 0 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 500;
 }

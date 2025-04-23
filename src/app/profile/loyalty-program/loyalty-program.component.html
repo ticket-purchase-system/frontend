@@ -1,0 +1,228 @@
+<div class="loyalty-program-container">
+  <!-- Top navigation bar -->
+  <div class="top-nav-bar">
+    <div class="nav-left">
+      <button 
+        mat-icon-button 
+        color="primary" 
+        [routerLink]="['/profile/issues']"
+        matTooltip="Back to Issues"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="page-title">My Profile</h2>
+    </div>
+    <div class="nav-right">
+      <!-- Placeholder for potential additional buttons -->
+    </div>
+  </div>
+
+  <mat-card class="loyalty-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h2>Loyalty Program</h2>
+      </mat-card-title>
+      <mat-card-subtitle>Earn points and enjoy rewards</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <!-- Membership details for existing members -->
+      <ng-container *ngIf="!isLoading && isMember && membership">
+        <div class="membership-info">
+          <div class="tier-badge" [style.background-color]="getTierColor(membership.tier)">
+            {{ membership.tier | uppercase }}
+          </div>
+          
+          <div class="membership-details">
+            <p><strong>Member since:</strong> {{ membership.join_date | date:'mediumDate' }}</p>
+            <p><strong>Points:</strong> {{ membership.points }}</p>
+            <p><strong>Status:</strong> {{ membership.is_active ? 'Active' : 'Inactive' }}</p>
+          </div>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <div class="benefits-section">
+          <h3>Your Benefits</h3>
+          <ul class="benefits-list">
+            <li *ngIf="membership.tier === 'bronze'">
+              <mat-icon>stars</mat-icon> 5% discount on all events
+            </li>
+            <li *ngIf="membership.tier === 'silver' || membership.tier === 'gold' || membership.tier === 'platinum'">
+              <mat-icon>stars</mat-icon> 10% discount on all events
+            </li>
+            <li *ngIf="membership.tier === 'gold' || membership.tier === 'platinum'">
+              <mat-icon>priority_high</mat-icon> Priority booking for popular events
+            </li>
+            <li *ngIf="membership.tier === 'platinum'">
+              <mat-icon>diamond</mat-icon> Free companion ticket once a year
+            </li>
+            <li>
+              <mat-icon>card_giftcard</mat-icon> Birthday special offer
+            </li>
+          </ul>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <div class="preferences-section">
+          <h3>Preferences</h3>
+          <form [formGroup]="preferencesForm" (ngSubmit)="updatePreferences()">
+            <div class="form-row">
+              <mat-checkbox formControlName="emailNotifications">
+                Email notifications
+              </mat-checkbox>
+            </div>
+
+            <div class="form-row">
+              <mat-checkbox formControlName="smsNotifications">
+                SMS notifications
+              </mat-checkbox>
+            </div>
+
+            <div class="form-row">
+              <mat-checkbox formControlName="pushNotifications">
+                Push notifications
+              </mat-checkbox>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Preferred Event Categories</mat-label>
+                <mat-select formControlName="preferredCategories" multiple>
+                  <mat-option *ngFor="let category of eventCategories" [value]="category.value">
+                    {{ category.viewValue }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="preferencesForm.invalid || isSubmitting">
+                <mat-icon>save</mat-icon> Update Preferences
+              </button>
+              
+              <button 
+                mat-button 
+                color="warn" 
+                type="button" 
+                [disabled]="isSubmitting"
+                (click)="leaveLoyaltyProgram()">
+                <mat-icon>exit_to_app</mat-icon> Leave Program
+              </button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+
+      <!-- Join form for non-members -->
+      <ng-container *ngIf="!isLoading && !isMember">
+        <div class="join-loyalty">
+          <h3>Join Our Loyalty Program</h3>
+          <p>Become a member and enjoy exclusive benefits:</p>
+          
+          <ul class="benefits-list">
+            <li><mat-icon>stars</mat-icon> Earn points with every purchase</li>
+            <li><mat-icon>discount</mat-icon> Get discounts on events</li>
+            <li><mat-icon>priority_high</mat-icon> Priority booking for popular events</li>
+            <li><mat-icon>card_giftcard</mat-icon> Special birthday offers</li>
+          </ul>
+
+          <form [formGroup]="joinForm" (ngSubmit)="joinLoyaltyProgram()">
+            <div class="preferences-section">
+              <h4>Your Information</h4>
+              
+              <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" required type="email">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Phone Number</mat-label>
+                  <input matInput formControlName="phoneNumber">
+                </mat-form-field>
+              </div>
+
+              <h4>Notification Preferences</h4>
+              <div formGroupName="notifications">
+                <div class="form-row">
+                  <mat-checkbox formControlName="email">
+                    Email notifications
+                  </mat-checkbox>
+                </div>
+  
+                <div class="form-row">
+                  <mat-checkbox formControlName="sms">
+                    SMS notifications
+                  </mat-checkbox>
+                </div>
+  
+                <div class="form-row">
+                  <mat-checkbox formControlName="push">
+                    Push notifications
+                  </mat-checkbox>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Preferred Event Categories</mat-label>
+                  <mat-select formControlName="preferredCategories" multiple>
+                    <mat-option *ngFor="let category of eventCategories" [value]="category.value">
+                      {{ category.viewValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="form-row terms-checkbox">
+              <mat-checkbox formControlName="acceptTerms" required>
+                I agree to the <a href="#" (click)="$event.preventDefault()">terms and conditions</a>
+              </mat-checkbox>
+              <mat-error *ngIf="joinForm.get('acceptTerms')?.invalid && joinForm.get('acceptTerms')?.touched">
+                You must agree to the terms to continue
+              </mat-error>
+            </div>
+
+            <div class="form-actions">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="joinForm.invalid || isSubmitting">
+                <mat-icon>add_circle</mat-icon> Join Loyalty Program
+              </button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>
