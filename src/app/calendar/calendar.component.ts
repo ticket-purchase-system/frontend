@@ -59,11 +59,10 @@ export class CalendarComponent implements OnInit {
     this.authService.logout(); // Clear user session if necessary
     this.router.navigate(['/auth/login']); // Navigate to login page
   }
-  // logout(): void {
-  //   this.authService.logout();
-  //   window.location.href = '/auth/login'; // Redirect to login page
-  // }
-
+  
+  navigateToProfile(): void {
+    this.router.navigate(['/profile/issues']); // Navigate to the technical issues page
+  }
 
   //////////////////////////////////////////////////////////////// fetching
   fetchAbsences(): void {

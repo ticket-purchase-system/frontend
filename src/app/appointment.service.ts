@@ -39,7 +39,7 @@ export class AppointmentService {
   private baseUrl = 'https://edoctorapp-d1d18-default-rtdb.europe-west1.firebasedatabase.app/';
   private appointmentUrl = environment.apiUrl;
   private absenceApiUrl =  environment.absenceApiUrl;
-  private presenceApiUrl = 'http://localhost:3000/presence';
+  private presenceApiUrl = 'http://localhost:8000/api/presence';
 
   constructor(private http: HttpClient,
               // private db: AngularFireDatabase

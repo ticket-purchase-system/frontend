@@ -1,7 +1,12 @@
 <div class="header">
   <div class="header-content">
     <h1 style="font-size: 2rem;">Hello!</h1>
-    <button mat-flat-button class="logout-button" style="background-color: #b8d4ee;" (click)="logout()">Logout</button>
+    <div class="header-buttons">
+      <button mat-flat-button class="profile-button" style="background-color: #c8e6c9; margin-right: 10px;" (click)="navigateToProfile()">
+        <mat-icon>person</mat-icon> Profile
+      </button>
+      <button mat-flat-button class="logout-button" style="background-color: #b8d4ee;" (click)="logout()">Logout</button>
+    </div>
   </div>
 </div>
 
