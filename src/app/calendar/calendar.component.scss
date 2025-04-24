@@ -269,3 +269,29 @@
     }
   }
 }
+
+.calendar-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #f1f1f1;
+  font-size: 0.9rem;
+  border-top: 1px solid #ccc;
+
+  .footer-links {
+    margin-bottom: 0.5rem;
+
+    a {
+      margin: 0 1rem;
+      color: #1976d2;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .footer-info {
+    color: #666;
+  }
+}
