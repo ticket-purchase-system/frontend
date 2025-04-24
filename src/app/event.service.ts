@@ -73,9 +73,8 @@ export class EventService {
     return this.http.put<Event>(url, event, { headers: httpHelper.getAuthHeaders() });
   }
 
-  // Delete an event
   deleteEvent(id: string): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
+    const url = `${this.apiUrl}/${id}/`;
     return this.http.delete(url, { headers: httpHelper.getAuthHeaders() });
   }
 }

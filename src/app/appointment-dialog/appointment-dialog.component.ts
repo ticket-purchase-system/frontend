@@ -86,7 +86,7 @@ export class EventDialogComponent implements OnInit {
       end_hour?: string;
       place?: string;
       price: number;
-      seats_no?: number;
+      seats_no: number;
       description?: string;
       created_by: number;
       events: Event[];
@@ -228,7 +228,7 @@ export class EventDialogComponent implements OnInit {
         seats_no: this.eventForm.controls['seats_no'].value,
         description: this.eventForm.controls['description'].value,
         created_by: this.data.created_by, // User ID
-        artists: this.eventForm.controls['artists'].value
+        artists: this.eventForm.controls['artists'].value.map((a: any) => a.id)
       };
 
       this.dialogRef.close(eventData);

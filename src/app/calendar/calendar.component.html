@@ -155,11 +155,11 @@
               <div
                 *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"
                 class="event-card"
-                [style.background-color]="generateRandomColor()"
+                [style.background-color]="getColorForEventType(eventWithDetails.event.type)"
                 (click)="editEvent(eventWithDetails, $event)"
               >
                 <div class="event-time">
-                  {{ eventWithDetails.event.start_hour }} - {{ eventWithDetails.event.end_hour }}
+                  {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
                 </div>
                 <div class="event-title">{{ eventWithDetails.event.title }}</div>
                 <div class="event-location" *ngIf="eventWithDetails.event.place">

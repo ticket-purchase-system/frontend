@@ -135,8 +135,9 @@
   .time-grid {
     display: flex;
     flex: 1;
-    height: calc(100vh - 150px);
+    height: 60px;
     overflow-y: auto;
+    align-items: stretch;
 
     .time-column {
       width: 60px;
@@ -273,15 +274,24 @@
 .calendar-footer {
   text-align: center;
   padding: 2rem 1rem;
-  background-color: #f1f1f1;
+  background-color: #f5f5f5;
   font-size: 0.9rem;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ddd;
+  color: #444;
 
   .footer-links {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+
+    button {
+      margin: 0 0.5rem;
+    }
+  }
+
+  .footer-info {
+    max-width: 600px;
+    margin: 0 auto;
 
     a {
-      margin: 0 1rem;
       color: #1976d2;
       text-decoration: none;
 
@@ -289,9 +299,9 @@
         text-decoration: underline;
       }
     }
-  }
 
-  .footer-info {
-    color: #666;
+    p {
+      margin: 0.3rem 0;
+    }
   }
 }
