@@ -5,6 +5,7 @@ import { BasketComponent } from '../basket/basket.component';
 import { EventService, Event as CustomEvent, EventWithDetails } from '../event.service';
 import { AuthService, User } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { OrdersListComponent } from '../orders/orders-list.component';
 
 export enum CalendarView {
   Month = 'month',
@@ -442,4 +443,14 @@ export class CalendarComponent implements OnInit {
       }
     });
   }
+
+    
+  openOrders(): void {
+    this.dialog.open(OrdersListComponent, {
+      width: '1000px',
+      panelClass: 'dialog-container'
+    });
+  }
+
+
 }

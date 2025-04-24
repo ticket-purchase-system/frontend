@@ -1,0 +1,56 @@
+<div class="basket-container">
+    <h2 class="basket-title">Your orders</h2>
+  
+    <div *ngIf="loading" class="empty-basket">Loading...</div>
+    <div *ngIf="error" class="empty-basket">{{ error }}</div>
+  
+    <div *ngIf="!loading && !error && !selectedOrder">
+      <div *ngIf="orders && orders.length > 0; else noOrders">
+        <div class="basket-scroll">
+          <div class="basket-card" *ngFor="let order of orders" (click)="selectOrder(order)" style="cursor: pointer;">
+            <mat-list-item class="list-item">
+              <mat-icon>receipt_long</mat-icon>
+              <div class="appointment-details">
+                <h3>Order #{{ order.id }}</h3>
+                <p><strong>Date:</strong> {{ order.date | date:'fullDate' }}</p>
+                <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}</p>
+              </div>
+            </mat-list-item>
+          </div>
+        </div>
+      </div>
+      <ng-template #noOrders>
+        <p class="empty-basket">No orders.</p>
+      </ng-template>
+    </div>
+  
+    <div *ngIf="selectedOrder" class="basket-card" style="margin-top: 20px;">
+      <div class="appointment-details">
+        <h3>Order #{{ selectedOrder.id }}</h3>
+        <ul>
+            <li *ngFor="let product of selectedOrder.products">
+            {{ product.description }} - {{ product.price }}$
+            </li>
+        </ul>
+        <p><strong>Date:</strong> {{ selectedOrder.date | date:'fullDate' }}</p>
+        <p><strong>Address:</strong> {{ selectedOrder.address }}, {{ selectedOrder.city }}</p>
+        <p><strong>Price:</strong> {{ selectedOrder.price }}$</p>
+        <p><strong>Email:</strong> {{ selectedOrder.email }}</p>
+        <p><strong>Phone number:</strong> {{ selectedOrder.phoneNumber }}</p>
+      </div>
+  
+      <div style="margin-top: 15px;">
+        <button mat-flat-button color="primary" (click)="downloadTicketPdf(selectedOrder)">Download Ticket PDF</button>
+        <button mat-stroked-button (click)="sendTicketByEmail(selectedOrder)">Send Ticket by Email</button>
+        <button mat-stroked-button color="primary" (click)="submitReview(selectedOrder)">Leave a Review</button>
+        <button mat-stroked-button color="primary" (click)="requestRefund(selectedOrder)">Request a Refund</button>
+        <button mat-stroked-button color="warn" (click)="reportIssue(selectedOrder)">Report an Issue</button>
+        <button mat-button (click)="clearSelection()">
+          <mat-icon>arrow_back</mat-icon> Back to List
+        </button>
+        
+    </div>
+  </div>
+</div>
+
+
