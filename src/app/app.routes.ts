@@ -44,8 +44,23 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // Require authentication for all profile routes
   },
 
+  {
+    path: 'regulation',
+    loadChildren: () =>
+      import('./regulation/regulation.module').then((m) => m.RegulationModule),
+  },
+
+  {
+    path: 'faq',
+    loadChildren: () =>
+      import('./faq/faq.module').then((m) => m.FaqModule),
+  },
+  
   // Default route redirects to the login page
   { path: '', redirectTo: '/doctors', pathMatch: 'full' },
+
+  // { path: 'regulations', component: RegulationsComponent },
+  // { path: 'faq', component: FaqComponent }
 
 
 ];

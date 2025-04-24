@@ -155,11 +155,11 @@
               <div
                 *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"
                 class="event-card"
-                [style.background-color]="generateRandomColor()"
+                [style.background-color]="getColorForEventType(eventWithDetails.event.type)"
                 (click)="editEvent(eventWithDetails, $event)"
               >
                 <div class="event-time">
-                  {{ eventWithDetails.event.start_hour }} - {{ eventWithDetails.event.end_hour }}
+                  {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
                 </div>
                 <div class="event-title">{{ eventWithDetails.event.title }}</div>
                 <div class="event-location" *ngIf="eventWithDetails.event.place">
@@ -172,4 +172,21 @@
       </div>
     </div>
   </div>
+
+<footer class="calendar-footer">
+  <!-- Navigation buttons -->
+  <div class="footer-links">
+    <button mat-button routerLink="/regulation">Regulations</button>
+    <button mat-button routerLink="/faq">FAQ</button>
+  </div>
+
+  <!-- Contact Info & Policy -->
+  <div class="footer-info">
+    <p>Contact us: <a href="mailto:support@example.com">support(at)example.com</a> | Phone: +48 123 456 789</p>
+    <p>© 2025 Eventify Inc.</p>
+  </div>
+</footer>
+
+
+
 </div>
