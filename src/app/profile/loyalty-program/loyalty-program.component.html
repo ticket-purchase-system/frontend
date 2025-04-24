@@ -13,7 +13,21 @@
       <h2 class="page-title">My Profile</h2>
     </div>
     <div class="nav-right">
-      <!-- Placeholder for potential additional buttons -->
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [routerLink]="['/profile/gift-vouchers']"
+        class="mr-2"
+      >
+        <mat-icon>card_giftcard</mat-icon> Gift Vouchers
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [routerLink]="['/profile/recommended-events']"
+      >
+        <mat-icon>recommend</mat-icon> Recommended Events
+      </button>
     </div>
   </div>
 
