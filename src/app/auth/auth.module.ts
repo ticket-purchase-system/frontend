@@ -10,7 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
-
+import { AuthInterceptor } from './auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,6 +30,13 @@ const routes: Routes = [
     HttpClientModule,
     MatSelectModule,
     MatCardModule
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
 })
 export class AuthModule {}

@@ -1,0 +1,43 @@
+.faq-wrapper {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+  
+    .faq-search {
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+  
+    .faq-item {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+      h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+  
+      p {
+        margin: 0;
+      }
+    }
+  
+    button {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+  
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+  
