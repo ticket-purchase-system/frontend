@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Buy Ticket</h2>
+<mat-dialog-content>
+  <form [formGroup]="ticketForm">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Select Seat</mat-label>
+      <mat-select formControlName="seat">
+        <mat-option *ngFor="let seat of availableSeats" [value]="seat">{{ seat }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Number of Tickets</mat-label>
+      <input matInput type="number" formControlName="quantity" min="1">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="is_group">Group Reservation</mat-checkbox>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onPurchase()">Buy</button>
+</mat-dialog-actions>

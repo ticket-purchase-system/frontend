@@ -5,6 +5,10 @@ import { BasketComponent } from '../basket/basket.component';
 import { EventService, Event as CustomEvent, EventWithDetails } from '../event.service';
 import { AuthService, User } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import { BasketService } from '../basket.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 export enum CalendarView {
   Month = 'month',
@@ -29,6 +33,11 @@ export class CalendarComponent implements OnInit {
   timeSlots: string[] = [];
   now: Date = new Date();
   weeks: Date[][] = [];
+  eventColors: Map<number, string> = new Map();
+
+  parseId(id: string | undefined): number {
+    return id ? Number(id) : -1;
+  }
 
   public CalendarView = CalendarView;
 
@@ -36,7 +45,9 @@ export class CalendarComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private eventService: EventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private basketService: BasketService,
+    private snackBar: MatSnackBar
   ) {
     this.generateView(this.currentView, this.viewDate);
     this.generateTimeSlots();
@@ -69,6 +80,12 @@ export class CalendarComponent implements OnInit {
     this.eventService.getEvents().subscribe({
       next: (events) => {
         this.events = events.map((eventWithDetails) => {
+          this.events.forEach(e => {
+            if (!this.eventColors.has(Number(e.event.id))) {
+              this.eventColors.set(Number(e.event.id), this.generateRandomColor());
+            }
+          });
+          
           if (this.isPastDate(eventWithDetails.event.date)) {
             return {
               ...eventWithDetails,
@@ -88,6 +105,12 @@ export class CalendarComponent implements OnInit {
   }
 
   //////////////////////////////////////////////////////////////// fetching
+
+  getColorForEvent(eventId: string | undefined): string | undefined {
+    if (!eventId) return undefined;
+    return this.eventColors.get(Number(eventId));
+  }
+  
 
   isPastDate(date: string | Date): boolean {
     const eventDate = new Date(date);
@@ -410,36 +433,68 @@ export class CalendarComponent implements OnInit {
 
     const event = eventWithDetails.event;
 
-    const dialogRef = this.dialog.open(EventDialogComponent, {
-      width: '500px',
-      panelClass: 'dialog-container',
-      data: {
-        id: event.id,
-        title: event.title,
-        type: event.type,
-        date: event.date,
-        start_hour: event.start_hour,
-        end_hour: event.end_hour,
-        place: event.place,
-        price: event.price,
-        seats_no: event.seats_no,
-        description: event.description,
-        created_by: event.created_by,
-        artists: event.artists,
-        events: this.events.map(e => e.event)
-      },
+    if(this.currentUser.role =='admin'){
+      const dialogRef = this.dialog.open(EventDialogComponent, {
+        width: '500px',
+        panelClass: 'dialog-container',
+        data: {
+          id: event.id,
+          title: event.title,
+          type: event.type,
+          date: event.date,
+          start_hour: event.start_hour,
+          end_hour: event.end_hour,
+          place: event.place,
+          price: event.price,
+          seats_no: event.seats_no,
+          description: event.description,
+          created_by: event.created_by,
+          artists: event.artists,
+          events: this.events.map(e => e.event)
+        },
+      });
+      
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          if (result.remove) {
+            // Handle deleted event
+            this.events = this.events.filter(e => e.event.id !== result.id);
+          } else {
+            // Refresh events list after update
+            this.fetchEvents();
+          }
+        }
+      });
+    }
+   else {
+    if (this.isPastDate(event.date)) {
+      this.snackBar.open('Nie można kupić biletu na wydarzenie z przeszłości.', 'Zamknij', {
+        duration: 3000,
+      });
+      return;
+    }    
+    // UŻYTKOWNIK -> otwiera formularz zakupu biletu
+    const dialogRef = this.dialog.open(TicketPurchaseDialogComponent, {
+      width: '400px',
+      data: event,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (result.remove) {
-          // Handle deleted event
-          this.events = this.events.filter(e => e.event.id !== result.id);
-        } else {
-          // Refresh events list after update
-          this.fetchEvents();
-        }
-      }
-    });
+        this.basketService.addToBasket({
+          event: result.event,           // <- tylko ID!
+          seat: result.seat,
+          quantity: result.quantity,
+          is_group: result.is_group
+        }).subscribe(() => {
+          this.snackBar.open('Bilet dodany do koszyka!', 'Zamknij', { duration: 3000 });
+        });
+    }
+  });
+  dialogRef.afterClosed().subscribe((result) => {
+    console.log('Zamknięty dialog:', result);
+  });
+  
   }
-}
+}}

@@ -24,6 +24,7 @@ export class AuthService {
   // Initialize user from token if available
   private initUserFromToken(): void {
     const token = localStorage.getItem('access_token');
+    console.log('[AuthService] Zapisano token:', localStorage.getItem('access_token'));
     if (token) {
       // If we have a token, fetch the user data
       this.http.get<any[]>(this.apiUrl, {
