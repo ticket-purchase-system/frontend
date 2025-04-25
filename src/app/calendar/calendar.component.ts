@@ -74,6 +74,27 @@ export class CalendarComponent implements OnInit {
     this.router.navigate(['/artists']);
   }
 
+  getColorForEventType(type: string): string {
+    switch (type.toLowerCase()) {
+      case 'concert':
+        return 'rgb(252, 206, 248)'; 
+      case 'sports':
+        return 'rgb(182, 214, 130)'; 
+      case 'festival':
+        return 'rgb(240, 212, 169)';
+      case 'theather':
+        return 'rgb(244, 143, 107)';;
+      default:
+        return '#9E9E9E'; 
+    }
+  }
+
+  formatTime(timeString?: string): string {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    return `${hours}:${minutes}`;
+  }
+  
 
   //////////////////////////////////////////////////////////////// fetching
   fetchEvents(): void {

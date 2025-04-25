@@ -1,0 +1,230 @@
+<div class="gift-vouchers-container">
+  <!-- Top navigation bar -->
+  <div class="top-nav-bar">
+    <div class="nav-left">
+      <button 
+        mat-icon-button 
+        color="primary" 
+        [routerLink]="['/profile/issues']"
+        matTooltip="Back to Profile"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="page-title">Gift Vouchers</h2>
+    </div>
+    <div class="nav-right">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [routerLink]="['/profile/recommended-events']"
+        class="ml-2"
+      >
+        <mat-icon>recommend</mat-icon> Recommended Events
+      </button>
+      <button 
+        mat-raised-button 
+        color="accent" 
+        [routerLink]="['/profile/loyalty-program']"
+        class="ml-2"
+      >
+        <mat-icon>card_giftcard</mat-icon> Loyalty Program
+      </button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-tab-group>
+        <!-- Buy a Voucher Tab -->
+        <mat-tab label="Buy a Voucher">
+          <div class="tab-content">
+            <div class="voucher-intro">
+              <h3>Gift Vouchers</h3>
+              <p>
+                Purchase a gift voucher and give the gift of tickets to any event! 
+                The recipient can use the voucher code when booking tickets.
+              </p>
+            </div>
+
+            <div class="purchase-card">
+              <h3>Select Voucher Amount</h3>
+              
+              <div class="amount-options">
+                <div 
+                  *ngFor="let amount of predefinedAmounts" 
+                  class="amount-button"
+                  [class.selected]="purchaseForm.get('amount')?.value === amount"
+                  (click)="onAmountSelect(amount)"
+                >
+                  {{ amount }} PLN
+                </div>
+                
+                <div class="custom-amount">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Custom Amount</mat-label>
+                    <input 
+                      matInput 
+                      type="number" 
+                      formControlName="customAmount"
+                      min="10" 
+                      max="1000"
+                      (change)="onCustomAmountChange()"
+                    >
+                    <span matSuffix>PLN</span>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="voucher-details">
+                <h4>Voucher Details</h4>
+                <ul>
+                  <li>Valid for 6 months from date of purchase</li>
+                  <li>Can be used for any event on our platform</li>
+                  <li>Can be sent as a gift via email</li>
+                  <li>Unique code that can be redeemed during checkout</li>
+                </ul>
+              </div>
+
+              <div class="purchase-actions">
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  [disabled]="purchaseForm.invalid || isLoading"
+                  (click)="purchaseVoucher()"
+                  class="purchase-button"
+                >
+                  <mat-icon>shopping_cart</mat-icon>
+                  Purchase Voucher for {{ purchaseForm.get('amount')?.value || 0 }} PLN
+                </button>
+                <mat-spinner *ngIf="isLoading" diameter="24" class="spinner"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <!-- My Vouchers Tab -->
+        <mat-tab label="My Vouchers">
+          <div class="tab-content">
+            <div *ngIf="loadingVouchers" class="loading-spinner-container">
+              <mat-spinner diameter="40"></mat-spinner>
+              <p>Loading your vouchers...</p>
+            </div>
+            
+            <div *ngIf="!loadingVouchers && vouchers.length === 0" class="empty-state">
+              <mat-icon>card_giftcard</mat-icon>
+              <h3>No Vouchers</h3>
+              <p>You don't have any gift vouchers yet. Purchase one to get started!</p>
+            </div>
+            
+            <div *ngIf="!loadingVouchers && vouchers.length > 0" class="vouchers-list">
+              <h3>Your Gift Vouchers</h3>
+              
+              <div class="voucher-cards">
+                <mat-card *ngFor="let voucher of vouchers" class="voucher-card">
+                  <div class="voucher-header" [ngStyle]="{'border-color': getVoucherStatus(voucher).color}">
+                    <div class="voucher-amount">{{ voucher.initialAmount }} PLN</div>
+                    <div class="voucher-status" [ngStyle]="{'background-color': getVoucherStatus(voucher).color}">
+                      {{ getVoucherStatus(voucher).text }}
+                    </div>
+                  </div>
+                  
+                  <div class="voucher-content">
+                    <div class="voucher-code">
+                      <span class="code-label">Code:</span>
+                      <span class="code-value">{{ voucher.code }}</span>
+                      <button 
+                        mat-icon-button 
+                        matTooltip="Copy code" 
+                        [cdkCopyToClipboard]="voucher.code"
+                        (click)="copyVoucherCode(voucher.code)"
+                      >
+                        <mat-icon>content_copy</mat-icon>
+                      </button>
+                    </div>
+                    
+                    <div class="voucher-details">
+                      <div class="detail-row">
+                        <mat-icon>event</mat-icon>
+                        <span>Purchased: {{ voucher.createdAt | date:'mediumDate' }}</span>
+                      </div>
+                      
+                      <div class="detail-row">
+                        <mat-icon>schedule</mat-icon>
+                        <span>Expires: {{ voucher.expiresAt | date:'mediumDate' }}</span>
+                      </div>
+                      
+                      <div class="detail-row" *ngIf="!isExpired(voucher) && voucher.status !== 'used'">
+                        <mat-icon>hourglass_empty</mat-icon>
+                        <span>{{ getRemainingDays(voucher.expiresAt) }} days remaining</span>
+                      </div>
+                      
+                      <div class="detail-row" *ngIf="voucher.sentTo">
+                        <mat-icon>send</mat-icon>
+                        <span>Sent to: {{ voucher.sentTo }}</span>
+                      </div>
+                      
+                      <div class="detail-row" *ngIf="voucher.status === 'used'">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Used ({{ voucher.initialAmount }} PLN)</span>
+                      </div>
+                      
+                      <div class="detail-row" *ngIf="voucher.status === 'active' && voucher.amount < voucher.initialAmount">
+                        <mat-icon>money_off</mat-icon>
+                        <span>Remaining: {{ voucher.amount }} PLN</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="voucher-actions" *ngIf="voucher.status === 'active' && !voucher.sentTo">
+                    <button 
+                      mat-raised-button 
+                      color="primary" 
+                      (click)="sendVoucher(voucher)"
+                    >
+                      <mat-icon>email</mat-icon> Send as Gift
+                    </button>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <!-- Redeem Voucher Tab -->
+        <mat-tab label="Redeem a Voucher">
+          <div class="tab-content">
+            <div class="redeem-intro">
+              <h3>Redeem a Gift Voucher</h3>
+              <p>
+                Enter a gift voucher code below to add it to your account.
+                You can use it later when booking tickets for events.
+              </p>
+            </div>
+            
+            <div class="redeem-form">
+              <mat-form-field appearance="outline" class="redeem-input">
+                <mat-label>Voucher Code</mat-label>
+                <input matInput placeholder="e.g. GIFT-12345">
+                <mat-hint>Enter the voucher code you received</mat-hint>
+              </mat-form-field>
+              
+              <button mat-raised-button color="primary">
+                <mat-icon>redeem</mat-icon> Redeem Voucher
+              </button>
+            </div>
+            
+            <div class="redeem-info">
+              <h4>How to use your voucher</h4>
+              <ol>
+                <li>Add the voucher to your account by entering the code above</li>
+                <li>Browse events and select tickets</li>
+                <li>At checkout, you will see an option to apply your voucher</li>
+                <li>The voucher amount will be deducted from your total</li>
+              </ol>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div> 

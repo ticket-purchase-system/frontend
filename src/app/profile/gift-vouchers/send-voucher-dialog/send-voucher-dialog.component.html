@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Send Gift Voucher</h2>
+<mat-dialog-content>
+  <p class="dialog-subtitle">Send a {{ data.voucher.amount }} PLN voucher to someone as a gift</p>
+  
+  <form [formGroup]="sendForm" class="send-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Recipient's Name</mat-label>
+      <input matInput formControlName="name" placeholder="John Doe">
+      <mat-error *ngIf="sendForm.get('name')?.invalid">Name is required</mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Recipient's Email</mat-label>
+      <input matInput formControlName="email" placeholder="example@email.com" type="email">
+      <mat-error *ngIf="sendForm.get('email')?.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="sendForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Personal Message (Optional)</mat-label>
+      <textarea matInput formControlName="message" rows="4" placeholder="Write a personal message to accompany your gift..."></textarea>
+    </mat-form-field>
+  </form>
+  
+  <div class="voucher-preview">
+    <h4>Voucher Details</h4>
+    <div class="preview-details">
+      <div class="preview-row">
+        <span class="label">Amount:</span>
+        <span class="value">{{ data.voucher.amount }} PLN</span>
+      </div>
+      <div class="preview-row">
+        <span class="label">Code:</span>
+        <span class="value code">{{ data.voucher.code }}</span>
+      </div>
+      <div class="preview-row">
+        <span class="label">Expires:</span>
+        <span class="value">{{ data.voucher.expiresAt | date:'mediumDate' }}</span>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="sendForm.invalid" (click)="onSend()">
+    Send Voucher
+  </button>
+</mat-dialog-actions> 

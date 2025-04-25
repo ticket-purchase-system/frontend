@@ -15,8 +15,25 @@
     <div class="nav-right">
       <button 
         mat-raised-button 
+        color="primary" 
+        [routerLink]="['/profile/gift-vouchers']"
+        class="ml-2"
+      >
+        <mat-icon>card_giftcard</mat-icon> Gift Vouchers
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [routerLink]="['/profile/recommended-events']"
+        class="ml-2"
+      >
+        <mat-icon>recommend</mat-icon> Recommended Events
+      </button>
+      <button 
+        mat-raised-button 
         color="accent" 
         [routerLink]="['/profile/loyalty-program']"
+        class="ml-2"
       >
         <mat-icon>card_giftcard</mat-icon> Loyalty Program
       </button>
