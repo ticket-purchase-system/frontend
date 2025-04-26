@@ -50,7 +50,7 @@ export class EventDetailsService {
       formData.append('rules_pdf', data.get('rules_pdf') as File);
     }
 
-    return this.http.post<EventDetails>(`${this.apiUrl}/api/event-details/`, formData, { headers: httpHelper.getAuthHeaders() });
+    return this.http.post<EventDetails>(`${this.apiUrl}/event-details/`, formData, { headers: httpHelper.getAuthHeaders() });
   }
 
   downloadRulesPdf(eventDetailsId: number): Observable<Blob> {
@@ -74,7 +74,7 @@ export class EventDetailsService {
     formData.append('description', description);
     formData.append('file', file);
 
-    return this.http.post<EventAttachment>(`${this.apiUrl}/api/attachments/`, formData, { headers: httpHelper.getAuthHeaders() });
+    return this.http.post<EventAttachment>(`${this.apiUrl}/attachments/`, formData, { headers: httpHelper.getAuthHeaderWithoutContentType() });
   }
 
   deleteAttachment(attachmentId: number): Observable<any> {
