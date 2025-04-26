@@ -25,6 +25,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { EventService } from '../event.service';
 import { ArtistService } from '../artist.service';
+import {RouterLink} from "@angular/router";
 
 export interface Event {
   id?: string;
@@ -67,6 +68,7 @@ export interface Artist {
     MatDialogActions,
     MatDialogContent,
     MatDialogTitle,
+    RouterLink,
   ],
 })
 export class EventDialogComponent implements OnInit {
