@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {environment} from "../environments/environment";
+import {httpHelper} from "./utils/HttpHelper";
 
 export interface EventDetails {
   id: number;
@@ -30,11 +31,12 @@ export class EventDetailsService {
   constructor(private http: HttpClient) { }
 
   getEventDetails(eventId: number): Observable<EventDetails> {
-    return this.http.get<EventDetails>(`${this.apiUrl}/api/events/${eventId}/details/`);
+    return this.http.get<EventDetails>(`${this.apiUrl}/events/${eventId}/details/`, { headers: httpHelper.getAuthHeaders() });
   }
 
   updateEventDetails(eventDetailsId: number, data: FormData): Observable<EventDetails> {
-    return this.http.patch<EventDetails>(`${this.apiUrl}/api/event-details/${eventDetailsId}/`, data);
+    return this.http.put<EventDetails>(`${this.apiUrl}/event-details/${eventDetailsId}/`, data,
+      { headers: httpHelper.getAuthHeaderWithoutContentType() });
   }
 
   createEventDetails(eventId: number, data: FormData): Observable<EventDetails> {
@@ -48,18 +50,20 @@ export class EventDetailsService {
       formData.append('rules_pdf', data.get('rules_pdf') as File);
     }
 
-    return this.http.post<EventDetails>(`${this.apiUrl}/api/event-details/`, formData);
+    return this.http.post<EventDetails>(`${this.apiUrl}/api/event-details/`, formData, { headers: httpHelper.getAuthHeaders() });
   }
 
   downloadRulesPdf(eventDetailsId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/api/event-details/${eventDetailsId}/download-rules/`, {
-      responseType: 'blob'
+    return this.http.get(`${this.apiUrl}/event-details/${eventDetailsId}/download-rules/`, {
+      responseType: 'blob',
+      headers: httpHelper.getAuthHeaders()
     });
   }
 
   getAttachments(eventDetailsId: number): Observable<EventAttachment[]> {
     return this.http.get<EventAttachment[]>(
-      `${this.apiUrl}/api/attachments/by_event_details/?event_details=${eventDetailsId}`
+      `${this.apiUrl}/attachments/by_event_details/?event_details=${eventDetailsId}`,
+      { headers: httpHelper.getAuthHeaders() }
     );
   }
 
@@ -70,16 +74,17 @@ export class EventDetailsService {
     formData.append('description', description);
     formData.append('file', file);
 
-    return this.http.post<EventAttachment>(`${this.apiUrl}/api/attachments/`, formData);
+    return this.http.post<EventAttachment>(`${this.apiUrl}/api/attachments/`, formData, { headers: httpHelper.getAuthHeaders() });
   }
 
   deleteAttachment(attachmentId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/attachments/${attachmentId}/`);
+    return this.http.delete(`${this.apiUrl}/attachments/${attachmentId}/`, { headers: httpHelper.getAuthHeaders() });
   }
 
   downloadAttachment(attachmentId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/api/attachments/${attachmentId}/download/`, {
-      responseType: 'blob'
+    return this.http.get(`${this.apiUrl}/attachments/${attachmentId}/download/`, {
+      responseType: 'blob',
+      headers: httpHelper.getAuthHeaders()
     });
   }
 }

@@ -1,9 +1,9 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-md-12">
-      <h2>Event Details</h2>
-      <a [routerLink]="['/events', eventId]" class="btn btn-outline-secondary mb-3">
-        &laquo; Back to Event
+      <h2>Event details</h2>
+      <a [routerLink]="['/calendar']" class="event-back">
+        &laquo; Back to event
       </a>
     </div>
   </div>
@@ -19,35 +19,32 @@
   <!-- Event Details Form -->
   <mat-card class="mb-4" *ngIf="eventDetails && !isLoading">
     <mat-card-header>
-      <mat-card-title>Event Rules</mat-card-title>
+      <mat-card-title>Event rules</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="rulesForm" (ngSubmit)="saveRules()">
         <!-- Rules Text -->
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-          <mat-label>Rules Text</mat-label>
+        <mat-form-field appearance="outline" class="w-100 mb-3" *ngIf="currentUser?.role === 'admin'">
+          <mat-label>Rules text</mat-label>
           <textarea matInput formControlName="rules_text" rows="10" placeholder="Enter event rules text"></textarea>
         </mat-form-field>
 
         <!-- Rules PDF -->
-        <div class="mb-3">
+        <div class="mb-3" *ngIf="currentUser?.role === 'admin'">
           <label class="form-label">Rules PDF</label>
           <input type="file" class="form-control" (change)="onRulesPdfChange($event)" accept=".pdf">
           <div class="form-text">Upload a PDF file (max 10MB)</div>
-
-          <!-- Show current PDF if available -->
-          <div *ngIf="eventDetails.rules_pdf_url" class="mt-2">
-            <a [href]="eventDetails.rules_pdf_url" target="_blank" class="btn btn-sm btn-info me-2">
-              <mat-icon>visibility</mat-icon> View Current PDF
-            </a>
-            <button type="button" class="btn btn-sm btn-secondary" (click)="downloadRulesPdf()">
-              <mat-icon>download</mat-icon> Download PDF
-            </button>
-          </div>
         </div>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting">
-          <mat-icon>save</mat-icon> Save Rules
+        <!-- Show current PDF if available -->
+        <div *ngIf="eventDetails.rules_pdf_url" class="mt-2">
+          <button type="button" class="btn button-1" (click)="downloadRulesPdf()">
+            <mat-icon>download</mat-icon> Download PDF
+          </button>
+        </div>
+
+        <button *ngIf="currentUser?.role === 'admin'" class="btn button-1" type="submit" [disabled]="isSubmitting">
+          <mat-icon>save</mat-icon> Save rules
         </button>
       </form>
     </mat-card-content>
@@ -56,12 +53,12 @@
   <!-- Attachments Section -->
   <mat-card *ngIf="eventDetails && !isLoading">
     <mat-card-header>
-      <mat-card-title>Event Attachments</mat-card-title>
+      <mat-card-title>Event attachments</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content *ngIf="currentUser?.role === 'admin'">
       <!-- Upload Attachment Form -->
       <form [formGroup]="attachmentForm" (ngSubmit)="uploadAttachment()" class="mb-4 p-3 border rounded">
-        <h3>Upload New Attachment</h3>
+        <h3>Upload new attachment</h3>
 
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Title</mat-label>
@@ -82,13 +79,13 @@
           <div class="form-text">Max file size: 10MB</div>
         </div>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="attachmentForm.invalid || !selectedAttachmentFile || isSubmitting">
-          <mat-icon>upload</mat-icon> Upload Attachment
+        <button class="btn button-1" type="submit" [disabled]="attachmentForm.invalid || !selectedAttachmentFile || isSubmitting">
+          <mat-icon>upload</mat-icon> Upload attachment
         </button>
       </form>
 
       <!-- Attachments List -->
-      <h3>Current Attachments</h3>
+      <h3>Current attachments</h3>
       <div *ngIf="eventDetails.attachments.length === 0" class="text-muted">
         No attachments have been uploaded yet.
       </div>
@@ -110,7 +107,7 @@
                   <mat-icon>download</mat-icon>
                   <span>Download</span>
                 </button>
-                <button mat-menu-item (click)="deleteAttachment(attachment)">
+                <button  *ngIf="currentUser?.role === 'admin'" mat-menu-item (click)="deleteAttachment(attachment)">
                   <mat-icon>delete</mat-icon>
                   <span>Delete</span>
                 </button>

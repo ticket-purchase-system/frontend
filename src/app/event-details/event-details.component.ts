@@ -10,7 +10,11 @@ import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatList, MatListItem} from "@angular/material/list";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import {DatePipe} from "@angular/common";
+import {DatePipe, NgForOf, NgIf} from "@angular/common";
+import {MatInput} from "@angular/material/input";
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import {AuthService, User} from "../auth/auth.service";
 
 @Component({
   selector: 'app-event-details',
@@ -32,7 +36,12 @@ import {DatePipe} from "@angular/common";
     MatMenuItem,
     MatList,
     DatePipe,
-    MatMenuTrigger
+    MatMenuTrigger,
+    MatInput,
+    NgForOf,
+    NgIf,
+    MatInputModule,
+    MatCardModule
   ],
   styleUrls: ['./event-details.component.scss']
 })
@@ -45,12 +54,14 @@ export class EventDetailsComponent implements OnInit {
   isSubmitting = false;
   selectedFile: File | null = null;
   selectedAttachmentFile: File | null = null;
+  currentUser: User | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private eventDetailsService: EventDetailsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService,
   ) {
     this.eventId = +this.route.snapshot.paramMap.get('id')!;
 
@@ -68,6 +79,9 @@ export class EventDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEventDetails();
+    this.authService.getCurrentUser().subscribe((user) => {
+      this.currentUser = user;
+    });
   }
 
   loadEventDetails(): void {
@@ -130,6 +144,7 @@ export class EventDetailsComponent implements OnInit {
     this.isSubmitting = true;
     const formData = new FormData();
 
+    formData.append('event', this.eventDetails.event.toString());
     formData.append('rules_text', this.rulesForm.get('rules_text')!.value);
 
     if (this.selectedFile) {

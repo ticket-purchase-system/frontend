@@ -350,6 +350,8 @@ export class CalendarComponent implements OnInit {
       return;
     }
 
+    if (this.currentUser.role !== 'admin') return;
+
     const hour = new Date().getHours();
     const minutes = new Date().getMinutes();
     const h = hour < 10 ? `0${hour}` : hour;

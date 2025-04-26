@@ -35,8 +35,12 @@ import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import {EventDetailsComponent} from "../event-details/event-details.component";
 
-const routes: Routes = [{ path: '', component: CalendarComponent }];
+const routes: Routes = [
+  { path: '', component: CalendarComponent },
+  { path: 'event/:id', component: EventDetailsComponent }  // Add this nested route
+];
 
 @NgModule({
   declarations: [
@@ -72,6 +76,7 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     MatCheckboxModule,
     ReactiveFormsModule,
     HttpClientModule,
+    EventDetailsComponent,
   ],
   providers: [
     {

@@ -95,9 +95,13 @@
         <mat-label>Description</mat-label>
         <textarea formControlName="description" matInput placeholder="Enter event description (optional)"></textarea>
       </mat-form-field>
+
+      <a *ngIf="data.id" mat-button [routerLink]="['/calendar/event', data.id]">Specify event details (optional)</a>
+
     </div>
 
     <div mat-dialog-actions align="end">
+
       <!-- Edit Button -->
       <button
         *ngIf="data.id"

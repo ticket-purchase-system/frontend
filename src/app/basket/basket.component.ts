@@ -21,7 +21,7 @@ export class BasketComponent implements OnInit {
     this.basketService.getBasket().subscribe({
       next: (items) => {
         console.log('Dane z backendu:', items);
-  
+
         // Dla uproszczenia – pobierz wszystkie eventy i przypisz do każdego ticketu
         this.eventService.getEvents().subscribe(events => {
           this.events = items.map(ticket => {
@@ -38,22 +38,9 @@ export class BasketComponent implements OnInit {
       }
     });
   }
-  
+
 
   startPayment(): void {
     console.log('Payment process started!');
-  }
-
-
-  // Metoda do załadowania danych o spotkaniach
-  loadAppointments(): void {
-    this.eventService.getEvents().subscribe({
-      next: (appointments) => {
-        this.events = appointments;  // Przypisz pobrane dane do tablicy
-      },
-      error: (error) => {
-        this.errorMessage = 'Nie udało się załadować spotkań';  // Obsługuje błąd, jeśli wystąpi
-      }
-    });
   }
 }
