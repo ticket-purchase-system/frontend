@@ -1,23 +1,38 @@
-<div class="basket-container" *ngIf="events.length > 0; else noAppointments">
-  <h3 class="basket-title">List of Your Chosen Events</h3>
-  <mat-card class="basket-card">
-    <mat-list>
-      <mat-list-item *ngFor="let event of events" class="list-item">
-        <!-- <mat-icon mat-list-icon>person</mat-icon> -->
-        <div class="appointment-details">
-          <p>{{ event.event.title }} : {{ event.event.type }}</p>
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </mat-card>
+<!-- Refactored Basket Component -->
+<div class="basket-container">
+  <div *ngIf="events.length > 0; else noAppointments" class="basket-content">
+    <div class="basket-header">
+      <h3 class="basket-title">Your selected events</h3>
+      <span class="event-count">{{events.length}} {{events.length === 1 ? 'item' : 'items'}}</span>
+    </div>
 
-  <button mat-fab color="primary" class="payment-button" (click)="startPayment()">
-    <mat-icon>payment</mat-icon>
-  </button>
+    <div class="events-list">
+      <div *ngFor="let event of events" class="event-card">
+        <div class="event-info">
+          <div class="event-title">{{event.event.title}}</div>
+          <div class="event-type">{{event.event.type}}</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="basket-actions">
+
+      <button mat-raised-button color="primary" class="payment-button" (click)="startPayment()">
+        Proceed to Payment
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>
 
 <ng-template #noAppointments>
-  <mat-card class="empty-basket">
-    <p>No events chosen.</p> <!-- Message when the basket is empty -->
-  </mat-card>
+  <div class="empty-basket">
+    <mat-icon class="empty-icon">shopping_basket</mat-icon>
+    <p class="empty-text">Your basket is empty</p>
+    <p class="empty-subtext">Select events to add them to your basket</p>
+    <button mat-stroked-button color="primary" routerLink="/events">
+      Browse Events
+    </button>
+  </div>
 </ng-template>
