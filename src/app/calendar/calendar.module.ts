@@ -19,6 +19,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {PresenceComponent} from '../presence/presence.component'
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from '../auth/auth.interceptor'; // zmień ścieżkę jeśli inna
 
 
 
@@ -27,15 +34,24 @@ import { AngularFireModule } from "@angular/fire/compat";
 import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import {EventDetailsComponent} from "../event-details/event-details.component";
 
-const routes: Routes = [{ path: '', component: CalendarComponent }];
+const routes: Routes = [
+  { path: '', component: CalendarComponent },
+  { path: 'event/:id', component: EventDetailsComponent }  // Add this nested route
+];
 
 @NgModule({
-  declarations: [CalendarComponent, BasketComponent, ],
+  declarations: [
+    CalendarComponent,
+    BasketComponent,
+    TicketPurchaseDialogComponent,
+  ],
   imports: [
     AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AppComponent,
+    // AppComponent,
     CommonModule,
     MatButtonModule,
     MatButtonToggleGroup,
@@ -54,6 +70,20 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     MatMenuTrigger,
     MatMenu,
     MatMenuItem,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    EventDetailsComponent,
   ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ]
 })
 export class CalendarModule {}

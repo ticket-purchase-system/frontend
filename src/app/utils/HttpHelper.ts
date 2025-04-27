@@ -7,5 +7,12 @@ export const httpHelper = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
+  },
+
+  getAuthHeaderWithoutContentType(): HttpHeaders {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
   }
 }
