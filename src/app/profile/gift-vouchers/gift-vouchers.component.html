@@ -65,7 +65,7 @@
                     <input 
                       matInput 
                       type="number" 
-                      formControlName="customAmount"
+                      [formControl]="customAmountControl"
                       min="10" 
                       max="1000"
                       (change)="onCustomAmountChange()"
@@ -122,7 +122,9 @@
               <div class="voucher-cards">
                 <mat-card *ngFor="let voucher of vouchers" class="voucher-card">
                   <div class="voucher-header" [ngStyle]="{'border-color': getVoucherStatus(voucher).color}">
-                    <div class="voucher-amount">{{ voucher.initialAmount }} PLN</div>
+                    <div class="voucher-amount" *ngIf="voucher.amount !== undefined">{{ voucher.amount }} PLN</div>
+                    <div class="voucher-amount" *ngIf="voucher.amount === undefined && voucher.initialAmount !== undefined">{{ voucher.initialAmount }} PLN</div>
+                    <div class="voucher-amount" *ngIf="voucher.amount === undefined && voucher.initialAmount === undefined">N/A</div>
                     <div class="voucher-status" [ngStyle]="{'background-color': getVoucherStatus(voucher).color}">
                       {{ getVoucherStatus(voucher).text }}
                     </div>
@@ -204,12 +206,14 @@
             <div class="redeem-form">
               <mat-form-field appearance="outline" class="redeem-input">
                 <mat-label>Voucher Code</mat-label>
-                <input matInput placeholder="e.g. GIFT-12345">
+                <input matInput placeholder="e.g. GIFT-12345" [formControl]="voucherCodeInput">
                 <mat-hint>Enter the voucher code you received</mat-hint>
               </mat-form-field>
               
-              <button mat-raised-button color="primary">
-                <mat-icon>redeem</mat-icon> Redeem Voucher
+              <button mat-raised-button color="primary" (click)="redeemVoucher()" [disabled]="voucherCodeInput.invalid || redeemLoading">
+                <mat-icon *ngIf="!redeemLoading">redeem</mat-icon>
+                <mat-spinner *ngIf="redeemLoading" diameter="24"></mat-spinner>
+                Redeem Voucher
               </button>
             </div>
             

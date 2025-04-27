@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -47,9 +47,12 @@ import { SendVoucherDialogComponent } from './send-voucher-dialog/send-voucher-d
 export class GiftVouchersComponent implements OnInit {
   isLoading = false;
   loadingVouchers = false;
+  redeemLoading = false;
   purchaseForm: FormGroup;
   vouchers: Voucher[] = [];
   predefinedAmounts = [50, 100, 150, 200, 500];
+  voucherCodeInput = new FormControl('', [Validators.required, Validators.pattern(/^GIFT-[A-Z0-9]+$/)]);
+  customAmountControl = new FormControl(null);
   
   constructor(
     private fb: FormBuilder,
@@ -59,7 +62,13 @@ export class GiftVouchersComponent implements OnInit {
   ) {
     this.purchaseForm = this.fb.group({
       amount: [100, [Validators.required, Validators.min(10), Validators.max(1000)]],
-      customAmount: [null]
+    });
+    
+    // Subscribe to changes in customAmountControl
+    this.customAmountControl.valueChanges.subscribe(value => {
+      if (value) {
+        this.purchaseForm.patchValue({ amount: value });
+      }
     });
   }
 
@@ -70,14 +79,7 @@ export class GiftVouchersComponent implements OnInit {
   loadUserVouchers(): void {
     this.loadingVouchers = true;
     
-    // Since we don't have a real backend yet, let's simulate some vouchers
-    setTimeout(() => {
-      this.simulateVouchers();
-      this.loadingVouchers = false;
-    }, 1000);
-    
-    // When backend is ready, use this instead:
-    /*
+    // Use the voucher service to load vouchers from backend
     this.voucherService.getUserVouchers().subscribe({
       next: (vouchers) => {
         this.vouchers = vouchers;
@@ -86,64 +88,22 @@ export class GiftVouchersComponent implements OnInit {
       error: (error) => {
         console.error('Error loading vouchers:', error);
         this.loadingVouchers = false;
+        this.snackBar.open('Failed to load vouchers. Please try again later.', 'Close', {
+          duration: 5000
+        });
       }
     });
-    */
-  }
-
-  simulateVouchers(): void {
-    const now = new Date();
-    const sixMonthsLater = new Date();
-    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-    
-    this.vouchers = [
-      {
-        id: 'v-1234',
-        code: 'GIFT-12345',
-        amount: 100,
-        initialAmount: 100,
-        currencyCode: 'PLN',
-        status: 'active',
-        createdAt: now.toISOString(),
-        expiresAt: sixMonthsLater.toISOString(),
-        ownerId: 1
-      },
-      {
-        id: 'v-5678',
-        code: 'GIFT-56789',
-        amount: 50,
-        initialAmount: 50,
-        currencyCode: 'PLN',
-        status: 'active',
-        createdAt: now.toISOString(),
-        expiresAt: sixMonthsLater.toISOString(),
-        ownerId: 1,
-        sentTo: 'friend@example.com',
-        sentAt: now.toISOString()
-      },
-      {
-        id: 'v-9012',
-        code: 'GIFT-90123',
-        amount: 0,
-        initialAmount: 200,
-        currencyCode: 'PLN',
-        status: 'used',
-        createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
-        expiresAt: new Date(now.getTime() + 150 * 24 * 60 * 60 * 1000).toISOString(), // 150 days from now
-        ownerId: 1
-      }
-    ];
   }
 
   onAmountSelect(amount: number): void {
     this.purchaseForm.patchValue({ 
-      amount: amount,
-      customAmount: null
+      amount: amount
     });
+    this.customAmountControl.setValue(null);
   }
 
   onCustomAmountChange(): void {
-    const customAmount = this.purchaseForm.get('customAmount')?.value;
+    const customAmount = this.customAmountControl.value;
     if (customAmount) {
       this.purchaseForm.patchValue({ amount: customAmount });
     }
@@ -157,42 +117,22 @@ export class GiftVouchersComponent implements OnInit {
     this.isLoading = true;
     const amount = this.purchaseForm.get('amount')?.value;
     
-    // For demo purposes, let's use the simulate method
-    this.voucherService.simulatePurchase(amount).subscribe({
-      next: (voucher) => {
-        this.snackBar.open(`Gift voucher successfully purchased for ${amount} PLN!`, 'Close', {
-          duration: 5000
-        });
-        
-        this.vouchers.unshift(voucher); // Add to the beginning of the list
-        this.purchaseForm.reset({amount: 100}); // Reset form
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error purchasing voucher:', error);
-        this.snackBar.open('Failed to purchase voucher. Please try again later.', 'Close', {
-          duration: 5000
-        });
-        this.isLoading = false;
-      }
-    });
-    
-    // When backend is ready, use this instead:
-    /*
+    // Call the backend API
     this.voucherService.purchaseVoucher({
       amount: amount,
       currencyCode: 'PLN'
     }).subscribe({
-      next: (voucher) => {
+      next: (voucher: Voucher) => {
         this.snackBar.open(`Gift voucher successfully purchased for ${amount} PLN!`, 'Close', {
           duration: 5000
         });
         
         this.vouchers.unshift(voucher); // Add to the beginning of the list
         this.purchaseForm.reset({amount: 100}); // Reset form
+        this.customAmountControl.setValue(null);
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error purchasing voucher:', error);
         this.snackBar.open('Failed to purchase voucher. Please try again later.', 'Close', {
           duration: 5000
@@ -200,7 +140,6 @@ export class GiftVouchersComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    */
   }
 
   copyVoucherCode(code: string): void {
@@ -246,19 +185,23 @@ export class GiftVouchersComponent implements OnInit {
         });
         */
 
-        // For demo purposes, just update the local voucher
+        // For demo purposes, update the local voucher
         const index = this.vouchers.findIndex(v => v.id === voucher.id);
         if (index !== -1) {
-          this.vouchers[index] = {
-            ...voucher,
-            sentTo: result.email,
-            sentAt: new Date().toISOString()
-          };
+          const updatedVoucher = { ...this.vouchers[index] };
+          updatedVoucher.sentTo = result.email;
+          updatedVoucher.sentAt = new Date().toISOString();
+          
+          // Save the updated voucher to localStorage
+          this.voucherService.updateVoucher(updatedVoucher).subscribe({
+            next: (updated) => {
+              this.vouchers[index] = updated;
+              this.snackBar.open('Voucher sent successfully!', 'Close', {
+                duration: 3000
+              });
+            }
+          });
         }
-        
-        this.snackBar.open('Voucher sent successfully!', 'Close', {
-          duration: 3000
-        });
       }
     });
   }
@@ -284,5 +227,66 @@ export class GiftVouchersComponent implements OnInit {
 
   isExpired(voucher: Voucher): boolean {
     return voucher.status === 'expired' || new Date(voucher.expiresAt) < new Date();
+  }
+
+  redeemVoucher(): void {
+    if (this.voucherCodeInput.invalid) {
+      return;
+    }
+    
+    const voucherCode = this.voucherCodeInput.value || '';
+    
+    // First check if this voucher code already exists in the user's vouchers
+    const existingVoucher = this.vouchers.find(v => v.code === voucherCode);
+    if (existingVoucher) {
+      this.snackBar.open('You already have this voucher in your account!', 'Close', {
+        duration: 5000
+      });
+      return;
+    }
+    
+    this.redeemLoading = true;
+    
+    // Call the API to redeem the voucher
+    this.voucherService.redeemVoucher({ code: voucherCode }).subscribe({
+      next: (response) => {
+        this.redeemLoading = false;
+        
+        if (response.success && response.voucher) {
+          // API redemption was successful
+          this.vouchers.unshift(response.voucher);
+          this.voucherCodeInput.reset();
+          
+          this.snackBar.open(`Voucher redeemed successfully! Added ${response.amount} PLN to your account.`, 'Close', {
+            duration: 5000
+          });
+        } else {
+          // API returned success: false
+          const errorMessage = response.error || 'Failed to redeem voucher. Please try a different code.';
+          
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000
+          });
+        }
+      },
+      error: (error: any) => {
+        this.redeemLoading = false;
+        console.error('Error redeeming voucher:', error);
+        
+        // Handle specific error for "already own this voucher"
+        if (error.error && (
+            error.error.includes("already belongs to this user") || 
+            error.error.includes("already own this voucher")
+        )) {
+          this.snackBar.open('You already own this voucher!', 'Close', {
+            duration: 5000
+          });
+        } else {
+          this.snackBar.open('Failed to redeem voucher. Please try again later.', 'Close', {
+            duration: 5000
+          });
+        }
+      }
+    });
   }
 } 
