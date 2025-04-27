@@ -159,7 +159,7 @@
                 (click)="editEvent(eventWithDetails, $event)"
               >
                 <div class="event-time">
-                  {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
+                  {{ formatTime(eventWithDetails.event.start_hour ) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
                 </div>
                 <div class="event-title">{{ eventWithDetails.event.title }}</div>
                 <div class="event-location" *ngIf="eventWithDetails.event.place">
