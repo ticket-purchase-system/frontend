@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
 import { BasketService } from '../basket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReportIssueDialogComponent } from '../report-issue-dialog/report-issue-dialog.component'; // create this
+
 
 import { OrdersListComponent } from '../orders/orders-list.component';
 
@@ -340,6 +342,14 @@ export class CalendarComponent implements OnInit {
       error: (err) => {
         console.error('Error adding event:', err);
       },
+    });
+  }
+
+  openReportDialog(event: any, eventClick: MouseEvent): void {
+    eventClick.stopPropagation(); // prevent clicking the event to edit
+    this.dialog.open(ReportIssueDialogComponent, {
+      data: { event },
+      width: '400px'
     });
   }
 

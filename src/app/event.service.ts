@@ -30,6 +30,7 @@ export interface EventDetails {
 export interface EventWithDetails {
   event: Event;
   details: EventDetails;
+  showReport?: boolean; 
 }
 
 @Injectable({

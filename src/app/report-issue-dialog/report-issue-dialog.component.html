@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Report Issue for "{{ data.event.title }}"</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Describe the issue</mat-label>
+    <textarea matInput [(ngModel)]="issueText" rows="4"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="warn" (click)="submitReport()">Submit</button>
+</mat-dialog-actions>
