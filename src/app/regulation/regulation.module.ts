@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 const routes: Routes = [{ path: '', component: RegulationComponent }];
 
 
@@ -14,6 +16,7 @@ const routes: Routes = [{ path: '', component: RegulationComponent }];
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    FormsModule,
     RouterModule.forChild(routes)
   ]
 })

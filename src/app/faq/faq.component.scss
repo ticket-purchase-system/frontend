@@ -1,43 +1,135 @@
+
 .faq-wrapper {
-    max-width: 800px;
-    margin: 2rem auto;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .faq-search {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-list {
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+
+
+  .faq-item {
+    background-color: #f9f9f9;
+    border-radius: 8px;
     padding: 1rem;
-  
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
     }
-  
-    .faq-search {
+
+    p {
+      margin: 0;
+    }
+  }
+
+  button {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .faq-bottom-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    button:first-child {
+      margin-right: auto;
+    }
+
+    button.full-width-btn {
+      flex-grow: 1;
+      margin-left: 1rem;
+    }
+  }
+
+  .propose-question {
+    margin-top: 1rem;
+
+    .faq-propose-field {
       width: 100%;
-      margin-bottom: 1.5rem;
-    }
-  
-    .faq-item {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      padding: 1rem;
       margin-bottom: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  
-      h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.1rem;
-      }
-  
-      p {
-        margin: 0;
-      }
     }
+
+    .full-width-btn {
+      width: 100%;
+    }
+  }
+
+
+
+
+
+}
+
+
+.faq-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem 1.5rem; /* wider horizontal padding */
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .faq-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 90%; /* 👈 limit the width so text stays centered */
+    margin: 0 auto; /* 👈 center inside faq-item */
+  }
+
+  .faq-text {
+    flex-grow: 1;
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+      word-break: break-word;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+  }
+
+  .faq-vote {
+    cursor: pointer; /* Cursor becomes pointer on hover */
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #1976d2; /* Nice blue */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    margin-top: 0.5rem;
   
-    button {
-      margin-top: 2rem;
-      display: flex;
-      align-items: center;
-  
-      mat-icon {
-        margin-right: 0.5rem;
-      }
+    &:hover {
+      background-color: #e3f2fd; /* light blue on hover */
+      color: #0d47a1; /* darker blue */
+      border-color: #90caf9; /* lighter border */
     }
   }
   
+}
+
