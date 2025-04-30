@@ -56,6 +56,11 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./faq/faq.module').then((m) => m.FaqModule),
   },
+  {
+    path: 'favorites',
+    loadChildren: () =>
+      import('./favorites/favorites.module').then((m) => m.FavoritesModule),
+  },
 
   // Default route redirects to the login page
   { path: '', redirectTo: '/doctors', pathMatch: 'full' },

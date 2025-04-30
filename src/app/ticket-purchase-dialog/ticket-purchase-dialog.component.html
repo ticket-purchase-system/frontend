@@ -16,8 +16,18 @@
     <mat-checkbox formControlName="is_group">Group reservation</mat-checkbox>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions [style.display]="'flex'" [style.justify-content]="'space-between'">
+  <div>
+    <button mat-button (click)="onAddFavorite()" *ngIf="!isFavorite">
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button mat-button (click)="onRemoveFavorite()" *ngIf="isFavorite">
+      <mat-icon [style.color]="'#e91e63'">favorite</mat-icon>
+    </button>
+    <button mat-button (click)="openReportDialog(eventData.eventDetails.event, $event)">
+      <mat-icon>report_problem</mat-icon>
+    </button>
+  </div>
   <a mat-button [routerLink]="['/calendar/event', eventId]">Details</a>
-  <button mat-button (click)="onCancel()">Cancel</button>
   <button mat-raised-button color="primary" (click)="onPurchase()">Buy</button>
 </mat-dialog-actions>

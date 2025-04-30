@@ -50,10 +50,15 @@
         Cart
       </button>
 
+      <button mat-raised-button color="accent" *ngIf="currentUser && currentUser.role !== 'admin'" routerLink="/favorites">
+        Favorites
+        <mat-icon>favorite</mat-icon>
+      </button>
+
       <!-- Add Event Button -->
       <button mat-raised-button color="primary" (click)="selectDate()" *ngIf="currentUser && currentUser.role === 'admin'">
         <mat-icon>add</mat-icon>
-        Add Event
+        Add event
       </button>
 
       <!-- User Menu Button -->
@@ -158,30 +163,26 @@
               *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"
               class="event-card"
               [style.background-color]="getColorForEventType(eventWithDetails.event.type)"
+              [style.display]="'flex'"
+              [style.justify-content]="'space-between'"
               (click)="editEvent(eventWithDetails, $event)"
               (mouseenter)="eventWithDetails.showReport = true"
               (mouseleave)="eventWithDetails.showReport = false"
             >
-              <div class="event-time">
-                {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
+              <div>
+                <div class="event-time">
+                  {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
+                </div>
+                <div class="event-title">{{ eventWithDetails.event.title }}</div>
+                <div class="event-location" *ngIf="eventWithDetails.event.place">
+                  {{ eventWithDetails.event.place }}
+                </div>
               </div>
-              <div class="event-title">{{ eventWithDetails.event.title }}</div>
-              <div class="event-location" *ngIf="eventWithDetails.event.place">
-                {{ eventWithDetails.event.place }}
-              </div>
-            
-              <!-- Report Issue button (only visible on hover) -->
-              <button
-                *ngIf="eventWithDetails.showReport"
-                class="report-issue-btn"
-                (click)="openReportDialog(eventWithDetails.event, $event)"
-                mat-stroked-button
-                color="warn"
-              >
-                <mat-icon>report_problem</mat-icon>
-              </button>
+              <mat-icon *ngIf="eventWithDetails.event.id && favorites.includes(Number(eventWithDetails.event.id))" style="color: #e91e63;">
+                favorite
+              </mat-icon>
             </div>
-          
+
             </div>
           </div>
         </div>

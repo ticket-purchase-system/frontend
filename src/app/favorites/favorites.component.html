@@ -1,0 +1,50 @@
+<div class="favorites-container">
+  <h2 class="favorites-title">My favorite events</h2>
+
+  <div *ngIf="!currentUser" class="login-prompt">
+    <p>Please log in to view your favorite events.</p>
+  </div>
+
+  <div *ngIf="currentUser && currentUser.role === 'admin'" class="admin-notice">
+    <p>Admin users don't have favorite events.</p>
+  </div>
+
+  <div *ngIf="events.length === 0 && currentUser && currentUser.role !== 'admin'" class="no-favorites">
+    <p>You don't have any favorite events yet.</p>
+    <button routerLink="/events" class="browse-button">Browse events</button>
+  </div>
+  <div *ngIf="events.length > 0" class="favorites-list">
+    <div *ngFor="let eventItem of events" class="event-card">
+      <div class="event-header">
+        <h3 class="event-title">{{ eventItem.event.title }}</h3>
+        <span class="event-type">{{ eventItem.event.type }}</span>
+      </div>
+
+      <div class="event-details">
+        <div class="event-date-time">
+          <p class="event-date">{{ eventItem.event.date | date:'longDate' }}</p>
+          <p *ngIf="eventItem.event.start_hour" class="event-time">
+            {{ eventItem.event.start_hour }} - {{ eventItem.event.end_hour }}
+          </p>
+        </div>
+
+        <div class="event-location" *ngIf="eventItem.event.place || eventItem.details.location">
+          <p>Location: {{ eventItem.event.place || eventItem.details.location }}</p>
+        </div>
+
+        <div class="event-price">
+          <p>Price: {{ eventItem.event.price | currency }}</p>
+        </div>
+
+        <div class="event-description" *ngIf="eventItem.event.description">
+          <p>{{ eventItem.event.description }}</p>
+        </div>
+      </div>
+
+      <div class="event-actions">
+        <button [routerLink]="['/events', eventItem.event.id]" class="details-button">View details</button>
+        <button (click)="onRemoveFavorite(eventItem.event.id)" class="remove-button">Remove from favorites</button>
+      </div>
+    </div>
+  </div>
+</div>

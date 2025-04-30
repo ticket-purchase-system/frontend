@@ -12,6 +12,7 @@ import { ReportIssueDialogComponent } from '../report-issue-dialog/report-issue-
 
 
 import { OrdersListComponent } from '../orders/orders-list.component';
+import {FavoriteService} from "../favorite-service.service";
 
 export enum CalendarView {
   Month = 'month',
@@ -37,6 +38,7 @@ export class CalendarComponent implements OnInit {
   now: Date = new Date();
   weeks: Date[][] = [];
   eventColors: Map<number, string> = new Map();
+  favorites: number[] = [];
 
   parseId(id: string | undefined): number {
     return id ? Number(id) : -1;
@@ -50,7 +52,8 @@ export class CalendarComponent implements OnInit {
     private eventService: EventService,
     private authService: AuthService,
     private basketService: BasketService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private favoriteService: FavoriteService,
   ) {
     this.generateView(this.currentView, this.viewDate);
     this.generateTimeSlots();
@@ -61,6 +64,11 @@ export class CalendarComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
+      if (this.currentUser && this.currentUser.role !== 'admin') {
+        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe((favorites) => {
+          this.favorites = favorites;
+        })
+      }
     });
   }
 
@@ -512,7 +520,12 @@ export class CalendarComponent implements OnInit {
         // UŻYTKOWNIK -> otwiera formularz zakupu biletu
         const dialogRef = this.dialog.open(TicketPurchaseDialogComponent, {
           width: '400px',
-          data: event,
+          data: {
+            event: event,
+            eventDetails: eventWithDetails,
+            user: this.currentUser.id,
+            isFavorite: this.favorites.includes(Number(eventWithDetails.event.id)),
+          },
         });
 
         dialogRef.afterClosed().subscribe((result) => {
@@ -539,4 +552,6 @@ export class CalendarComponent implements OnInit {
       panelClass: 'dialog-container'
     });
   }
+
+  protected readonly Number = Number;
 }
