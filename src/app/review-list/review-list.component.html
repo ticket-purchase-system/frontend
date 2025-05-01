@@ -1,0 +1,42 @@
+<div class="reviews-container">
+  <div *ngIf="showHeader && reviews && reviews.length > 0" class="reviews-header">
+    <div class="reviews-summary">
+      <div class="avg-rating">
+        <div class="rating-value">{{ avgRating | number:'1.1-1' }}</div>
+        <app-star-rating [rating]="avgRating" [editable]="false"></app-star-rating>
+        <div class="reviews-count">{{ reviews.length }} {{ reviews.length === 1 ? 'review' : 'reviews' }}</div>
+      </div>
+
+      <div class="rating-bars">
+        <div *ngFor="let star of [5, 4, 3, 2, 1]" class="rating-bar">
+          <span class="star-label">{{ star }}</span>
+          <div class="progress-container">
+            <div class="progress-bar" [style.width.%]="getRatingPercentage(star.toString())"></div>
+          </div>
+          <span class="count-label">{{ ratingDistribution[star.toString()] || 0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!reviews || reviews.length === 0" class="no-reviews">
+    No reviews yet. Be the first to leave a review!
+  </div>
+
+  <mat-divider *ngIf="showHeader && reviews && reviews.length > 0"></mat-divider>
+
+  <div *ngIf="reviews && reviews.length > 0" class="reviews-list">
+    <mat-card *ngFor="let review of displayedReviews" class="review-card">
+      <mat-card-content>
+        <div class="review-header">
+          <app-star-rating [rating]="+review.numberOfStars" [editable]="false" size="small"></app-star-rating>
+          <span class="review-date">{{ review.date | date }}</span>
+        </div>
+
+        <div class="review-content">
+          {{ review.comment }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

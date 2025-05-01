@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Review' : 'Add Review' }}</h2>
+<div mat-dialog-content>
+  <form [formGroup]="reviewForm">
+    <div class="rating-container">
+      <div class="rating-label">Rating:</div>
+      <div class="stars-container">
+        <mat-icon
+          *ngFor="let star of [1,2,3,4,5]; let i = index"
+          [ngStyle]="{'color': getStarColor(i)}"
+          (click)="setRating(i+1)">
+          {{ getStarIcon(i) }}
+        </mat-icon>
+      </div>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Your Review</mat-label>
+      <textarea matInput formControlName="comment" rows="5" placeholder="Share your experience..."></textarea>
+      <mat-error *ngIf="reviewForm.get('comment')?.hasError('required')">
+        Comment is required
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="reviewForm.invalid" (click)="onSubmit()">
+    {{ isEditMode ? 'Update' : 'Submit' }}
+  </button>
+</div>

@@ -1,0 +1,15 @@
+<div class="star-rating"
+     [ngClass]="{'editable': editable}"
+     (mouseleave)="onStarLeave()">
+  <mat-icon *ngFor="let star of stars"
+            [ngStyle]="{
+              'width': getIconSize().width,
+              'height': getIconSize().height,
+              'font-size': getIconSize().fontSize,
+              'color': color
+            }"
+            (mouseenter)="onStarHover(star)"
+            (click)="onStarClick(star)">
+    {{ getStarIcon(star) }}
+  </mat-icon>
+</div>

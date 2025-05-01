@@ -549,6 +549,7 @@ export class CalendarComponent implements OnInit {
   openOrders(): void {
     this.dialog.open(OrdersListComponent, {
       width: '1000px',
+      height: '2000px',
       panelClass: 'dialog-container'
     });
   }

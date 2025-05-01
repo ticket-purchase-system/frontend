@@ -1,56 +1,158 @@
-<div class="basket-container">
-    <h2 class="basket-title">Your orders</h2>
-  
-    <div *ngIf="loading" class="empty-basket">Loading...</div>
-    <div *ngIf="error" class="empty-basket">{{ error }}</div>
-  
-    <div *ngIf="!loading && !error && !selectedOrder">
-      <div *ngIf="orders && orders.length > 0; else noOrders">
-        <div class="basket-scroll">
-          <div class="basket-card" *ngFor="let order of orders" (click)="selectOrder(order)" style="cursor: pointer;">
-            <mat-list-item class="list-item">
-              <mat-icon>receipt_long</mat-icon>
-              <div class="appointment-details">
-                <h3>Order #{{ order.id }}</h3>
-                <p><strong>Date:</strong> {{ order.date | date:'fullDate' }}</p>
-                <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}</p>
+<div class="orders-container">
+  <h2 class="orders-title">Orders</h2>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading your orders...</p>
+  </div>
+
+  <div *ngIf="error" class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error && !selectedOrder">
+    <div *ngIf="orders && orders.length > 0; else noOrders">
+      <div class="orders-scroll">
+        <div class="order-card" *ngFor="let order of orders" (click)="selectOrder(order)">
+          <div class="order-header">
+            <div class="order-icon">
+              <mat-icon>shopping_bag</mat-icon>
+            </div>
+            <div class="order-id">
+              <span>Order #{{ order.id }}</span>
+            </div>
+            <div *ngIf="order.review" class="review-badge">
+              <span class="stars">{{ getStarRating(order.review) }}</span>
+            </div>
+          </div>
+
+          <div class="order-content">
+            <div class="order-info">
+              <div class="info-item">
+                <mat-icon>event</mat-icon>
+                <span>{{ order.date | date:'MMM d, yyyy' }}</span>
               </div>
-            </mat-list-item>
+              <div class="info-item">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ order.address }}, {{ order.city }}</span>
+              </div>
+            </div>
+            <div class="order-action">
+              <mat-icon>chevron_right</mat-icon>
+            </div>
           </div>
         </div>
       </div>
-      <ng-template #noOrders>
-        <p class="empty-basket">No orders.</p>
-      </ng-template>
     </div>
-  
-    <div *ngIf="selectedOrder" class="basket-card" style="margin-top: 20px;">
-      <div class="appointment-details">
-        <h3>Order #{{ selectedOrder.id }}</h3>
-        <ul>
-            <li *ngFor="let product of selectedOrder.products">
-            {{ product.description }} - {{ product.price }}$
-            </li>
-        </ul>
-        <p><strong>Date:</strong> {{ selectedOrder.date | date:'fullDate' }}</p>
-        <p><strong>Address:</strong> {{ selectedOrder.address }}, {{ selectedOrder.city }}</p>
-        <p><strong>Price:</strong> {{ selectedOrder.price }}$</p>
-        <p><strong>Email:</strong> {{ selectedOrder.email }}</p>
-        <p><strong>Phone number:</strong> {{ selectedOrder.phoneNumber }}</p>
+    <ng-template #noOrders>
+      <div class="empty-orders">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>You don't have any orders yet.</p>
+        <button mat-flat-button color="primary">Start shopping</button>
       </div>
-  
-      <div style="margin-top: 15px;">
-        <button mat-flat-button color="primary" (click)="downloadTicketPdf(selectedOrder)">Download Ticket PDF</button>
-        <button mat-stroked-button (click)="sendTicketByEmail(selectedOrder)">Send Ticket by Email</button>
-        <button mat-stroked-button color="primary" (click)="submitReview(selectedOrder)">Leave a Review</button>
-        <button mat-stroked-button color="primary" (click)="requestRefund(selectedOrder)">Request a Refund</button>
-        <button mat-stroked-button color="warn" (click)="reportIssue(selectedOrder)">Report an Issue</button>
-        <button mat-button (click)="clearSelection()">
-          <mat-icon>arrow_back</mat-icon> Back to List
+    </ng-template>
+  </div>
+
+  <div *ngIf="selectedOrder" class="selected-order-container">
+    <div class="order-detail-card">
+      <div class="order-detail-header">
+        <h3>Order #{{ selectedOrder.id }}</h3>
+        <span class="order-date">{{ selectedOrder.date | date:'MMMM d, yyyy' }}</span>
+      </div>
+
+      <div class="order-products">
+        <h4>Products</h4>
+        <ul>
+          <li *ngFor="let product of selectedOrder.products" class="product-item">
+            <div class="product-info">
+              <span class="product-name">{{ product.description }}</span>
+              <span class="product-price">{{ product.price }}$</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="order-details">
+        <div class="detail-section">
+          <h4>Delivery Details</h4>
+          <div class="detail-item">
+            <mat-icon>location_on</mat-icon>
+            <div>
+              <span class="detail-label">Address</span>
+              <span class="detail-value">{{ selectedOrder.address }}, {{ selectedOrder.city }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <mat-icon>email</mat-icon>
+            <div>
+              <span class="detail-label">Email</span>
+              <span class="detail-value">{{ selectedOrder.email }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <mat-icon>phone</mat-icon>
+            <div>
+              <span class="detail-label">Phone</span>
+              <span class="detail-value">{{ selectedOrder.phoneNumber }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="price-summary">
+          <div class="total-price">
+            <span>Total</span>
+            <span class="price-value">{{ selectedOrder.price }}$</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedOrder.review" class="review-section">
+        <h4>Your review</h4>
+        <div class="review-content">
+          <div class="review-header">
+            <div class="review-stars">{{ getStarRating(selectedOrder.review) }}</div>
+            <div class="review-date">{{ selectedOrder.review.date | date:'MMM d, yyyy' }}</div>
+          </div>
+          <div class="review-comment">{{ selectedOrder.review.comment }}</div>
+          <div class="review-actions">
+            <button mat-button color="primary" (click)="submitReview(selectedOrder)">
+              <mat-icon>edit</mat-icon> Edit
+            </button>
+            <button mat-button color="warn" (click)="deleteReview(selectedOrder)">
+              <mat-icon>delete</mat-icon> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-actions">
+        <button mat-flat-button color="primary" class="main-action" (click)="downloadTicketPdf(selectedOrder)">
+          <mat-icon>download</mat-icon> Download PDF
         </button>
-        
+
+        <div class="secondary-actions">
+          <button mat-stroked-button (click)="sendTicketByEmail(selectedOrder)">
+            <mat-icon>email</mat-icon> Send by email
+          </button>
+
+          <button *ngIf="!selectedOrder.review" mat-stroked-button color="accent" (click)="submitReview(selectedOrder)">
+            <mat-icon>rate_review</mat-icon> Write review
+          </button>
+
+          <button mat-stroked-button color="primary" (click)="requestRefund(selectedOrder)">
+            <mat-icon>money</mat-icon> Request refund
+          </button>
+
+          <button mat-stroked-button color="warn" (click)="reportIssue(selectedOrder)">
+            <mat-icon>report_problem</mat-icon> Report issue
+          </button>
+        </div>
+
+        <button mat-button class="back-button" (click)="clearSelection()">
+          <mat-icon>arrow_back</mat-icon> Back to orders
+        </button>
+      </div>
     </div>
   </div>
 </div>
-
-
