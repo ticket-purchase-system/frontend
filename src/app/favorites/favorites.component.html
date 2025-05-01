@@ -28,10 +28,6 @@
           </p>
         </div>
 
-        <div class="event-location" *ngIf="eventItem.event.place || eventItem.details.location">
-          <p>Location: {{ eventItem.event.place || eventItem.details.location }}</p>
-        </div>
-
         <div class="event-price">
           <p>Price: {{ eventItem.event.price | currency }}</p>
         </div>
@@ -42,7 +38,7 @@
       </div>
 
       <div class="event-actions">
-        <button [routerLink]="['/events', eventItem.event.id]" class="details-button">View details</button>
+        <button [routerLink]="['/calendar/event', eventItem.event.id]" class="details-button">View details</button>
         <button (click)="onRemoveFavorite(eventItem.event.id)" class="remove-button">Remove from favorites</button>
       </div>
     </div>

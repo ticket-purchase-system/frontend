@@ -37,6 +37,7 @@ export class FavoritesComponent implements OnInit {
     if (this.currentUser && this.currentUser.role !== 'admin' && id) {
       this.favoriteService.removeFavorite(this.currentUser?.id, Number(id)).subscribe({
         next: () => {
+          this.events = this.events.filter(e => e.event.id !== id);
           console.log('Unmarked favorite')
         }
       })
