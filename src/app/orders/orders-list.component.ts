@@ -13,6 +13,8 @@ import { httpHelper } from '../utils/HttpHelper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {Review, ReviewService} from "../review-service.service";
 import {ReviewDialogComponent} from "../review-dialog/review-dialog.component";
+import { RequestRefundDialogComponent } from './request-refund-dialog/request-refund-dialog.component';
+import { ReportIssueDialogComponent } from './report-issue-dialog/report-issue-dialog.component';
 
 @Component({
   selector: 'app-orders-list',
@@ -131,7 +133,22 @@ export class OrdersListComponent implements OnInit {
   }
 
   reportIssue(order: Order): void {
-    alert(`Zgłaszanie nieprawidłowości dla zamówienia #${order.id}`);
+    const dialogRef = this.dialog.open(ReportIssueDialogComponent, {
+      data: { description: '' }
+    });
+    dialogRef.afterClosed().subscribe(description => {
+      if (description) {
+        const headers = httpHelper.getAuthHeaders();
+        const url = `${environment.apiUrl}/orders/${order.id}/report-issue/`;
+        this.http.post(url, {opis: description }, { headers }).subscribe({
+          next: () => this.snackBar.open('Zgłoszenie problemu zostało wysłane.', 'Zamknij', { duration: 5000 }),
+          error: (err) => {
+            console.error('Error reporting issue:', err);
+            this.snackBar.open('Wystąpił błąd podczas zgłaszania problemu.', 'Zamknij', { duration: 5000 });
+          }
+        });
+      }
+    });
   }
 
   sendTicketByEmail(order: Order): void {
@@ -163,13 +180,54 @@ export class OrdersListComponent implements OnInit {
     });
   }
 
-  requestRefund(order: Order): void {
-    alert(`Wniosek o zwrot pieniędzy dla zamówienia #${order.id} został złożony.`);
+requestRefund(order: Order): void {
+    const dialogRef = this.dialog.open(RequestRefundDialogComponent, {
+      data: { reason: '' }
+    });
+    dialogRef.afterClosed().subscribe(reason => {
+      if (reason) {
+        const headers = httpHelper.getAuthHeaders();
+        const url = `${environment.apiUrl}/orders/${order.id}/refund/`;
+        this.http.post(url, { reason }, { headers }).subscribe({
+          next: () => this.snackBar.open('Wniosek o zwrot został wysłany.', 'Zamknij', { duration: 5000 }),
+          error: (err) => {
+            console.error('Error requesting refund:', err);
+            this.snackBar.open('Wystąpił błąd podczas składania wniosku o zwrot.', 'Zamknij', { duration: 5000 });
+          }
+        });
+      }
+    });
+    
   }
 
-  downloadTicketPdf(order: Order): void {
-    alert(`Bilet z opisem dla zamówienia #${order.id} został pobrany.`);
-  }
+downloadTicketPdf(order: Order): void {
+  const url = `${environment.apiUrl}/orders/${order.id}/download-pdf/`;
+  const headers = httpHelper.getAuthHeaders();
+
+  
+
+  this.http.get(url, {
+    headers,
+    responseType: 'blob'
+  }).subscribe({
+    next: (blob) => {
+      const file = new Blob([blob], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+
+      const a = document.createElement('a');
+      a.href = fileURL;
+      a.download = `zamowienie_${order.id}.pdf`;
+      a.click();
+
+      URL.revokeObjectURL(fileURL);
+      this.snackBar.open('PDF został pobrany.', 'Zamknij', { duration: 3000 });
+    },
+    error: (err) => {
+      console.error('Błąd pobierania PDF-a:', err);
+      this.snackBar.open('Nie udało się pobrać PDF-a.', 'Zamknij', { duration: 3000 });
+    }
+  });
+}
 
   getStarRating(review: Review | null): string {
     if (!review) return '';
