@@ -30,6 +30,7 @@ export interface EventDetails {
 export interface EventWithDetails {
   event: Event;
   details: EventDetails;
+  showReport?: boolean;
 }
 
 @Injectable({
@@ -61,13 +62,11 @@ export class EventService {
     return this.http.get<EventWithDetails>(url, { headers: httpHelper.getAuthHeaders() });
   }
 
-  // Create a new event
   createEvent(event: Event): Observable<Event> {
     const url = `${this.apiUrl}/create_event/`;
     return this.http.post<Event>(url, event, { headers: httpHelper.getAuthHeaders() });
   }
 
-  // Update an existing event
   updateEvent(event: Event): Observable<Event> {
     const url = `${this.apiUrl}/${event.id}/update_event/`;
     return this.http.put<Event>(url, event, { headers: httpHelper.getAuthHeaders() });

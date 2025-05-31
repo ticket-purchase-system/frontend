@@ -1,0 +1,34 @@
+.full-width {
+  width: 100%;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  .rating-label {
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .stars-container {
+    display: flex;
+
+    mat-icon {
+      cursor: pointer;
+      font-size: 28px;
+      height: 28px;
+      width: 28px;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+mat-dialog-content {
+  min-height: 200px;
+  min-width: 400px;
+}

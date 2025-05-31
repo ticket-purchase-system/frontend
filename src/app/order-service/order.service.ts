@@ -1,37 +1,29 @@
-
+import {Review} from "../review-service.service";
 
 export interface Order {
     products: Product[];
-    id: Number;
+    id: number;
     date: Date;
-    price: Number;
-    rabatCode: String;
+    price: number;
+    rabatCode: string;
     review: Review | null;
-    phoneNumber: String;
-    email: String;
-    city: String;
-    address: String;
+    phoneNumber: string;
+    email: string;
+    city: string;
+    address: string;
   }
-  
+
   export interface Product{
-    price: Number;
-    id: Number;
-    description: String;
+    price: number;
+    id: number;
+    description: string;
   }
-  
+
   export interface Tickets extends  Product{
-    sector: String;
-    seat: Number | null;
+    sector: string;
+    seat: number | null;
   }
-  
-  export interface Review{
-    id: Number;
-    numberOfStars: Opinion;
-    comment: String;
-    date: Date;
-    rating: Number;
-  }
-  
+
   export enum Opinion {
     ONE_STAR = 1,
     TWO_STARS = 2,

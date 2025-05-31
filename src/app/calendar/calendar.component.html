@@ -50,10 +50,15 @@
         Cart
       </button>
 
+      <button mat-raised-button color="accent" *ngIf="currentUser && currentUser.role !== 'admin'" routerLink="/favorites">
+        Favorites
+        <mat-icon>favorite</mat-icon>
+      </button>
+
       <!-- Add Event Button -->
       <button mat-raised-button color="primary" (click)="selectDate()" *ngIf="currentUser && currentUser.role === 'admin'">
         <mat-icon>add</mat-icon>
-        Add Event
+        Add event
       </button>
 
       <!-- User Menu Button -->
@@ -154,12 +159,17 @@
               }"
               (click)="selectDate(day, timeSlot)"
             >
-              <div
-                *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"
-                class="event-card"
-                [style.background-color]="getColorForEventType(eventWithDetails.event.type)"
-                (click)="editEvent(eventWithDetails, $event)"
-              >
+            <div
+              *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"
+              class="event-card"
+              [style.background-color]="getColorForEventType(eventWithDetails.event.type)"
+              [style.display]="'flex'"
+              [style.justify-content]="'space-between'"
+              (click)="editEvent(eventWithDetails, $event)"
+              (mouseenter)="eventWithDetails.showReport = true"
+              (mouseleave)="eventWithDetails.showReport = false"
+            >
+              <div>
                 <div class="event-time">
                   {{ formatTime(eventWithDetails.event.start_hour) }} - {{ formatTime(eventWithDetails.event.end_hour) }}
                 </div>
@@ -168,6 +178,11 @@
                   {{ eventWithDetails.event.place }}
                 </div>
               </div>
+              <mat-icon *ngIf="eventWithDetails.event.id && favorites.includes(Number(eventWithDetails.event.id))" style="color: #e91e63;">
+                favorite
+              </mat-icon>
+            </div>
+
             </div>
           </div>
         </div>

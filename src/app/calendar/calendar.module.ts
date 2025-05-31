@@ -12,7 +12,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EventDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { BasketComponent } from '../basket/basket.component';
 import {AbsenceComponent} from '../absence/absence.component'
-import { AppComponent } from '../app.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -35,8 +34,13 @@ import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import {EventDetailsComponent} from "../event-details/event-details.component";
+import {ReviewListComponent} from "../review-list/review-list.component";
 
-const routes: Routes = [{ path: '', component: CalendarComponent }];
+const routes: Routes = [
+  { path: '', component: CalendarComponent },
+  { path: 'event/:id', component: EventDetailsComponent }  // Add this nested route
+];
 
 @NgModule({
   declarations: [
@@ -72,6 +76,8 @@ const routes: Routes = [{ path: '', component: CalendarComponent }];
     MatCheckboxModule,
     ReactiveFormsModule,
     HttpClientModule,
+    EventDetailsComponent,
+    ReviewListComponent
   ],
   providers: [
     {

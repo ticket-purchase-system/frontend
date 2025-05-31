@@ -1,15 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {EventDialogComponent} from '../appointment-dialog/appointment-dialog.component';
-import {BasketComponent} from '../basket/basket.component';
-import {EventService, Event as CustomEvent, EventWithDetails} from '../event.service';
-import {AuthService, User} from '../auth/auth.service';
-import {Router} from '@angular/router';
-import {TicketPurchaseDialogComponent} from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
-import {BasketService} from '../basket.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { EventDialogComponent } from '../appointment-dialog/appointment-dialog.component';
+import { BasketComponent } from '../basket/basket.component';
+import { EventService, Event as CustomEvent, EventWithDetails } from '../event.service';
+import { AuthService, User } from '../auth/auth.service';
+import { Router } from '@angular/router';
+import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import { BasketService } from '../basket.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReportIssueDialogComponent } from '../report-issue-dialog/report-issue-dialog.component'; // create this
 
-import {OrdersListComponent} from '../orders/orders-list.component';
+
+import { OrdersListComponent } from '../orders/orders-list.component';
+import {FavoriteService} from "../favorite-service.service";
 
 export enum CalendarView {
   Month = 'month',
@@ -35,6 +38,7 @@ export class CalendarComponent implements OnInit {
   now: Date = new Date();
   weeks: Date[][] = [];
   eventColors: Map<number, string> = new Map();
+  favorites: number[] = [];
 
   parseId(id: string | undefined): number {
     return id ? Number(id) : -1;
@@ -48,7 +52,8 @@ export class CalendarComponent implements OnInit {
     private eventService: EventService,
     private authService: AuthService,
     private basketService: BasketService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private favoriteService: FavoriteService,
   ) {
     this.generateView(this.currentView, this.viewDate);
     this.generateTimeSlots();
@@ -59,6 +64,11 @@ export class CalendarComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
+      if (this.currentUser && this.currentUser.role !== 'admin') {
+        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe((favorites) => {
+          this.favorites = favorites;
+        })
+      }
     });
   }
 
@@ -84,7 +94,7 @@ export class CalendarComponent implements OnInit {
       case 'festival':
         return 'rgb(240, 212, 169)';
       case 'theather':
-        return 'rgb(244, 143, 107)';
+        return 'rgb(244, 143, 107)';;
       default:
         return '#9E9E9E';
     }
@@ -343,12 +353,22 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  openReportDialog(event: any, eventClick: MouseEvent): void {
+    eventClick.stopPropagation(); // prevent clicking the event to edit
+    this.dialog.open(ReportIssueDialogComponent, {
+      data: { event },
+      width: '400px'
+    });
+  }
+
   openDialog(): void {
     // Check if user is logged in
     if (!this.currentUser) {
       this.router.navigate(['/auth/login']);
       return;
     }
+
+    if (this.currentUser.role !== 'admin') return;
 
     const hour = new Date().getHours();
     const minutes = new Date().getMinutes();
@@ -455,64 +475,69 @@ export class CalendarComponent implements OnInit {
 
     const event = eventWithDetails.event;
 
-    if (this.currentUser.role == 'admin') {
-      const dialogRef = this.dialog.open(EventDialogComponent, {
-        width: '500px',
-        panelClass: 'dialog-container',
-        data: {
-          id: event.id,
-          title: event.title,
-          type: event.type,
-          date: event.date,
-          start_hour: event.start_hour,
-          end_hour: event.end_hour,
-          place: event.place,
-          price: event.price,
-          seats_no: event.seats_no,
-          description: event.description,
-          created_by: event.created_by,
-          artists: event.artists,
-          events: this.events.map(e => e.event)
-        },
-      });
-
-
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          if (result.remove) {
-            // Handle deleted event
-            this.events = this.events.filter(e => e.event.id !== result.id);
-          } else {
-            // Refresh events list after update
-            this.fetchEvents();
-          }
-        }
-      });
-    } else {
-
-      if (this.isPastDate(event.date)) {
-        this.snackBar.open('Nie można kupić biletu na wydarzenie z przeszłości.', 'Zamknij', {
-          duration: 3000,
+    if(this.currentUser.role =='admin'){
+        const dialogRef = this.dialog.open(EventDialogComponent, {
+          width: '500px',
+          panelClass: 'dialog-container',
+          data: {
+            id: event.id,
+            title: event.title,
+            type: event.type,
+            date: event.date,
+            start_hour: event.start_hour,
+            end_hour: event.end_hour,
+            place: event.place,
+            price: event.price,
+            seats_no: event.seats_no,
+            description: event.description,
+            created_by: event.created_by,
+            artists: event.artists,
+            events: this.events.map(e => e.event)
+          },
         });
-        return;
-      }
 
-      // UŻYTKOWNIK -> otwiera formularz zakupu biletu
-      const dialogRef = this.dialog.open(TicketPurchaseDialogComponent, {
-        width: '400px',
-        data: event,
-      });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          this.basketService.addToBasket({
-            event: result.event,           // <- tylko ID!
-            seat: result.seat,
-            quantity: result.quantity,
-            is_group: result.is_group
-          }).subscribe(() => {
-            this.snackBar.open('Bilet dodany do koszyka!', 'Zamknij', {duration: 3000});
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            if (result.remove) {
+              // Handle deleted event
+              this.events = this.events.filter(e => e.event.id !== result.id);
+            } else {
+              // Refresh events list after update
+              this.fetchEvents();
+            }
+          }
+        });
+      } else {
+
+        if (this.isPastDate(event.date)) {
+          this.snackBar.open('Nie można kupić biletu na wydarzenie z przeszłości.', 'Zamknij', {
+            duration: 3000,
           });
+          return;
+        }
+
+        // UŻYTKOWNIK -> otwiera formularz zakupu biletu
+        const dialogRef = this.dialog.open(TicketPurchaseDialogComponent, {
+          width: '400px',
+          data: {
+            event: event,
+            eventDetails: eventWithDetails,
+            user: this.currentUser.id,
+            isFavorite: this.favorites.includes(Number(eventWithDetails.event.id)),
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            this.basketService.addToBasket({
+              event: result.event,           // <- tylko ID!
+              seat: result.seat,
+              quantity: result.quantity,
+              is_group: result.is_group
+            }).subscribe(() => {
+              this.snackBar.open('Bilet dodany do koszyka!', 'Zamknij', { duration: 3000 });
+            });
         }
       });
       dialogRef.afterClosed().subscribe((result) => {
@@ -524,7 +549,10 @@ export class CalendarComponent implements OnInit {
   openOrders(): void {
     this.dialog.open(OrdersListComponent, {
       width: '1000px',
+      height: '2000px',
       panelClass: 'dialog-container'
     });
   }
+
+  protected readonly Number = Number;
 }

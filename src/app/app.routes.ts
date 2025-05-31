@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guard/auth.guard';
+import {EventDetailsComponent} from "./event-details/event-details.component";
 
 
 export const routes: Routes = [
@@ -55,12 +56,15 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./faq/faq.module').then((m) => m.FaqModule),
   },
-  
+  {
+    path: 'favorites',
+    loadChildren: () =>
+      import('./favorites/favorites.module').then((m) => m.FavoritesModule),
+  },
+
   // Default route redirects to the login page
   { path: '', redirectTo: '/doctors', pathMatch: 'full' },
 
   // { path: 'regulations', component: RegulationsComponent },
   // { path: 'faq', component: FaqComponent }
-
-
 ];

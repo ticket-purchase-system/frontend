@@ -41,69 +41,178 @@ export interface VoucherRedeemRequest {
 export class VoucherService {
   private apiUrl = `${environment.apiUrl}/vouchers`;
 
-  constructor(private http: HttpClient) { }
-
-  // Get all vouchers for the current user
+  constructor(private http: HttpClient) {}
+  
+  // Get user vouchers from API
   getUserVouchers(): Observable<Voucher[]> {
-    return this.http.get<Voucher[]>(`${this.apiUrl}/user`, { headers: httpHelper.getAuthHeaders() })
-      .pipe(
-        catchError(error => {
-          console.error('Error fetching user vouchers', error);
-          return of([]);
-        })
-      );
+    console.log('Getting vouchers from API...');
+    return this.http.get<any[]>(`${this.apiUrl}/user`, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      map(response => {
+        console.log('API response:', response);
+        // Transform the backend response to match our frontend model
+        return response.map(item => ({
+          id: item.id?.toString(),
+          code: item.code,
+          amount: item.amount,
+          initialAmount: item.initial_amount,
+          currencyCode: item.currency_code,
+          status: item.status,
+          createdAt: item.created_at,
+          expiresAt: item.expires_at,
+          ownerId: item.owner_id,
+          sentTo: item.sent_to,
+          sentAt: item.sent_at
+        }));
+      }),
+      catchError(error => {
+        console.error('Error fetching vouchers from API:', error);
+        // Return empty array on error
+        return of([]);
+      })
+    );
   }
 
   // Purchase a new voucher
   purchaseVoucher(request: VoucherPurchaseRequest): Observable<Voucher> {
-    return this.http.post<Voucher>(`${this.apiUrl}/purchase`, request, { headers: httpHelper.getAuthHeaders() });
+    return this.http.post<any>(`${this.apiUrl}/purchase`, {
+      amount: request.amount,
+      currency_code: request.currencyCode
+    }, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      map(response => ({
+        id: response.id?.toString(),
+        code: response.code,
+        amount: response.amount,
+        initialAmount: response.initial_amount,
+        currencyCode: response.currency_code,
+        status: response.status,
+        createdAt: response.created_at,
+        expiresAt: response.expires_at,
+        ownerId: response.owner_id,
+        sentTo: response.sent_to,
+        sentAt: response.sent_at
+      })),
+      catchError(error => {
+        console.error('Error purchasing voucher:', error);
+        throw error;
+      })
+    );
   }
 
   // Send a voucher as a gift
   sendVoucher(request: VoucherSendRequest): Observable<Voucher> {
-    return this.http.post<Voucher>(`${this.apiUrl}/send`, request, { headers: httpHelper.getAuthHeaders() });
+    return this.http.post<Voucher>(`${this.apiUrl}/${request.voucherId}/send`, {
+      recipientEmail: request.recipientEmail,
+      recipientName: request.recipientName,
+      message: request.message
+    }, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      catchError(error => {
+        console.error('Error sending voucher:', error);
+        throw error;
+      })
+    );
   }
 
   // Validate a voucher code
   validateVoucher(code: string): Observable<{ valid: boolean, amount?: number }> {
-    return this.http.get<Voucher>(`${this.apiUrl}/validate/${code}`, { headers: httpHelper.getAuthHeaders() })
-      .pipe(
-        map(voucher => ({ valid: true, amount: voucher.amount })),
-        catchError(error => {
-          console.error('Error validating voucher', error);
-          return of({ valid: false });
-        })
-      );
+    return this.http.get<{ valid: boolean, amount?: number }>(`${this.apiUrl}/validate/${code}`, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      catchError(error => {
+        console.error('Error validating voucher:', error);
+        return of({ valid: false });
+      })
+    );
   }
 
   // Redeem a voucher
-  redeemVoucher(request: VoucherRedeemRequest): Observable<{ success: boolean, amount?: number }> {
-    return this.http.post<{ success: boolean, amount?: number }>(`${this.apiUrl}/redeem`, request, { headers: httpHelper.getAuthHeaders() })
-      .pipe(
-        catchError(error => {
-          console.error('Error redeeming voucher', error);
-          return of({ success: false });
-        })
-      );
+  redeemVoucher(request: VoucherRedeemRequest): Observable<{ success: boolean, amount?: number, voucher?: Voucher, error?: string }> {
+    return this.http.post<any>(`${this.apiUrl}/redeem`, request, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      map(response => {
+        if (response.success && response.voucher) {
+          return {
+            success: true,
+            amount: response.amount,
+            voucher: {
+              id: response.voucher.id?.toString(),
+              code: response.voucher.code,
+              amount: response.voucher.amount,
+              initialAmount: response.voucher.initial_amount,
+              currencyCode: response.voucher.currency_code,
+              status: response.voucher.status,
+              createdAt: response.voucher.created_at,
+              expiresAt: response.voucher.expires_at,
+              ownerId: response.voucher.owner_id,
+              sentTo: response.voucher.sent_to,
+              sentAt: response.voucher.sent_at
+            }
+          };
+        } else {
+          return {
+            success: false,
+            error: response.error || 'Failed to redeem voucher'
+          };
+        }
+      }),
+      catchError(error => {
+        console.error('Error redeeming voucher:', error);
+        
+        // Extract error message from different possible error response formats
+        let errorMessage = 'An error occurred while redeeming the voucher';
+        
+        if (error.error) {
+          if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          } else if (error.error.error) {
+            errorMessage = error.error.error;
+          } else if (error.error.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          }
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        return of({ 
+          success: false, 
+          error: errorMessage
+        });
+      })
+    );
+  }
+  
+  // Apply a voucher to a purchase
+  applyVoucher(voucherId: string, amount: number): Observable<{ success: boolean, amountUsed?: number, remaining?: number }> {
+    return this.http.post<any>(`${this.apiUrl}/apply`, {
+      voucher_id: voucherId,
+      amount: amount
+    }, { 
+      headers: httpHelper.getAuthHeaders() 
+    }).pipe(
+      catchError(error => {
+        console.error('Error applying voucher:', error);
+        return of({ success: false });
+      })
+    );
   }
 
-  // For demo purposes - simulate voucher purchase response
-  simulatePurchase(amount: number): Observable<Voucher> {
-    const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 6); // 6 months validity
-    
-    const voucher: Voucher = {
-      id: 'v-' + Math.floor(Math.random() * 10000),
-      code: 'GIFT-' + Math.floor(Math.random() * 100000),
-      amount: amount,
-      initialAmount: amount,
-      currencyCode: 'PLN',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      expiresAt: expirationDate.toISOString(),
-      ownerId: 1 // Assuming current user id is 1
-    };
-    
-    return of(voucher);
+  // Update a voucher
+  updateVoucher(updatedVoucher: Voucher): Observable<Voucher> {
+    return this.http.put<Voucher>(`${this.apiUrl}/${updatedVoucher.id}`, updatedVoucher, {
+      headers: httpHelper.getAuthHeaders()
+    }).pipe(
+      catchError(error => {
+        console.error('Error updating voucher:', error);
+        throw error;
+      })
+    );
   }
 } 

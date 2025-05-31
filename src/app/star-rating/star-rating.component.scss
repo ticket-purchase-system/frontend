@@ -1,0 +1,17 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+
+  mat-icon {
+    margin-right: 2px;
+    transition: transform 0.1s ease;
+  }
+
+  &.editable {
+    cursor: pointer;
+
+    mat-icon:hover {
+      transform: scale(1.2);
+    }
+  }
+}

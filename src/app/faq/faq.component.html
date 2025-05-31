@@ -1,25 +1,53 @@
 <div class="faq-wrapper">
-    <h1>Frequently Asked Questions</h1>
+  <h1>Frequently Asked Questions</h1>
+
+  <mat-form-field appearance="outline" class="faq-search">
+    <mat-label>Search questions...</mat-label>
+    <input matInput [(ngModel)]="searchTerm" placeholder="Type to filter..." />
+    <button mat-icon-button matSuffix *ngIf="searchTerm" (click)="searchTerm = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of filteredFaqs">
+      <div class="faq-item-content">
+        <div class="faq-text">
+          <h3>{{ faq.question }}</h3>
+          <p>{{ faq.answer }}</p>
+        </div>
   
-    <mat-form-field appearance="outline" class="faq-search">
-      <mat-label>Search questions...</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Type to filter..." />
-      <button mat-icon-button matSuffix *ngIf="searchTerm" (click)="searchTerm = ''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
+        <div class="faq-vote" (click)="likeFaq(faq)">
+          <!-- <button mat-icon-button color="primary">
+            <mat-icon>thumb_up</mat-icon>
+          </button> -->
+          <span>({{ faq.likes }}) <mat-icon>thumb_up</mat-icon></span>
+        </div>
   
-    <div class="faq-list">
-      <div class="faq-item" *ngFor="let faq of filteredFaqs">
-        <h3>{{ faq.question }}</h3>
-        <p>{{ faq.answer }}</p>
       </div>
-      <p *ngIf="filteredFaqs.length === 0">No questions matched your search.</p>
     </div>
   
+    <p *ngIf="filteredFaqs.length === 0">No questions matched your search.</p>
+  </div>
+
+  <div class="faq-bottom-controls">
     <button mat-raised-button color="primary" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-      Back
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+
+    <button mat-raised-button color="accent" (click)="toggleProposeMode()" class="full-width-btn">
+      <mat-icon>question_answer</mat-icon> Propose Your Question
     </button>
   </div>
-  
+
+  <div *ngIf="isProposing" class="propose-question">
+    <mat-form-field appearance="outline" class="faq-propose-field">
+      <mat-label>Your Question</mat-label>
+      <textarea matInput [(ngModel)]="proposedQuestion" placeholder="Type your question..." rows="4"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="warn" class="full-width-btn" (click)="submitProposedQuestion()">
+      <mat-icon>send</mat-icon> Send Proposal
+    </button>
+  </div>
+</div>
