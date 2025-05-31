@@ -140,13 +140,25 @@
             <mat-icon>rate_review</mat-icon> Write review
           </button>
 
-          <button mat-stroked-button color="primary" (click)="requestRefund(selectedOrder)">
-            <mat-icon>money</mat-icon> Request refund
-          </button>
+          <div matTooltip="Refund already requested"
+              [matTooltipDisabled]="!hasRefundMap[selectedOrder.id]"
+              class="tooltip-wrapper">
+            <button mat-stroked-button color="primary"
+                    [disabled]="hasRefundMap[selectedOrder.id]"
+                    (click)="requestRefund(selectedOrder)">
+              <mat-icon>money</mat-icon> Request refund
+            </button>
+          </div>
 
-          <button mat-stroked-button color="warn" (click)="reportIssue(selectedOrder)">
-            <mat-icon>report_problem</mat-icon> Report issue
-          </button>
+          <div matTooltip="Issue already reported"
+              [matTooltipDisabled]="!hasIssueMap[selectedOrder.id]"
+              class="tooltip-wrapper">
+            <button mat-stroked-button color="warn"
+                    [disabled]="hasIssueMap[selectedOrder.id]"
+                    (click)="reportIssue(selectedOrder)">
+              <mat-icon>report_problem</mat-icon> Report issue
+            </button>
+          </div>
         </div>
 
         <button mat-button class="back-button" (click)="clearSelection()">

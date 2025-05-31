@@ -399,6 +399,35 @@
   text-align: center;
 }
 
+.secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  justify-content: space-between;
+}
+
+.secondary-actions button,
+.secondary-actions .tooltip-wrapper {
+  flex: 1 1 48%;
+  min-width: 140px;
+  max-width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.tooltip-wrapper button[disabled] {
+  pointer-events: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .order-detail-header {

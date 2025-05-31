@@ -11,23 +11,23 @@ import { MatInputModule } from '@angular/material/input';
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
   template: `
   <div class="basket-container">
-    <h2 class="basket-title">Wystaw opinię</h2>
+    <h2 class="basket-title">Submit a Review</h2>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
       <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Ocena (1-5)</mat-label>
+        <mat-label>Rating (1-5)</mat-label>
         <input matInput type="number" formControlName="stars" min="1" max="5" required />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Komentarz</mat-label>
+        <mat-label>Comment</mat-label>
         <textarea matInput formControlName="comment"></textarea>
       </mat-form-field>
 
-      <p class="note-required">* - pola oznaczone gwiazdką są obowiązkowe</p>
+      <p class="note-required">* - fields marked with an asterisk are required</p>
 
       <div class="dialog-actions">
-        <button mat-button type="button" (click)="dialogRef.close()">Anuluj</button>
-        <button mat-flat-button color="primary" type="submit">Wyślij</button>
+        <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit">Submit</button>
       </div>
     </form>
   </div>

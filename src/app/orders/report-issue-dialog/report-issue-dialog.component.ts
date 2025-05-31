@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -11,18 +11,18 @@ import { MatInputModule } from '@angular/material/input';
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
   template: `
 <div class="basket-container">
-    <h2 class="basket-title">Zgłoś problem</h2>
+    <h2 class="basket-title">Report an Issue</h2>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
       <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Opis problemu</mat-label>
+        <mat-label>Issue description</mat-label>
         <textarea matInput formControlName="description" required></textarea>
       </mat-form-field>
 
-      <p class="note-required">* - pola oznaczone gwiazdką są obowiązkowe</p>
+      <p class="note-required">* - fields marked with an asterisk are required</p>
 
       <div class="dialog-actions">
-        <button mat-button type="button" (click)="dialogRef.close()">Anuluj</button>
-        <button mat-flat-button color="primary" type="submit">Wyślij</button>
+        <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit">Submit</button>
       </div>
     </form>
   </div>
@@ -76,7 +76,9 @@ export class ReportIssueDialogComponent {
     public dialogRef: MatDialogRef<ReportIssueDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { description: string }
   ) {
-    this.form = this.fb.group({ description: [data.description] });
+    this.form = this.fb.group({
+    description: [data.description, Validators.required]
+  });
   }
 
   onSubmit(): void {
