@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guard/auth.guard';
-import {EventDetailsComponent} from "./event-details/event-details.component";
-
 
 export const routes: Routes = [
   // Lazy load the Calendar Module
@@ -61,8 +59,10 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./favorites/favorites.module').then((m) => m.FavoritesModule),
   },
-
-  // Default route redirects to the login page
+  {
+    path: 'previous-editions',
+    loadComponent: () => import('./previous-editions/previous-editions.component').then(m => m.PreviousEditionsComponent)
+  },
   { path: '', redirectTo: '/doctors', pathMatch: 'full' },
 
   // { path: 'regulations', component: RegulationsComponent },
