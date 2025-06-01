@@ -75,7 +75,7 @@ interface ApiResponse {
     MatDialogModule
   ],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-10">
+    <div class="min-h-screen bg-gray-50 p-10">
       <div class="max-w-7xl mx-auto">
         <div class="mb-8">
           <div class="flex items-center gap-3 mb-6">
@@ -152,11 +152,11 @@ interface ApiResponse {
 
               <div class="p-6 border-b border-gray-100">
                 <div class="flex items-start gap-4">
-                  <div class="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm">
+                  <div class="p-3 bg-blue-500 rounded-xl shadow-sm">
                     <mat-icon class="text-white text-2xl">event</mat-icon>
                   </div>
 
-                  <div class="flex-1 min-w-0">
+                  <div class="flex-1 min-w-0 pt-1">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">{{ eventData.event.title }}</h3>
 
                     <div class="flex flex-wrap gap-4 text-sm">
@@ -207,10 +207,10 @@ interface ApiResponse {
 
                 <div class="mb-6" *ngIf="eventData.photos && eventData.photos.length > 0">
                   <div class="flex items-center gap-2 mb-4">
-                    <mat-icon class="text-purple-600">photo_library</mat-icon>
-                    <h4 class="text-lg font-semibold text-gray-900">
-                      Event Photos ({{ eventData.photo_count }})
-                    </h4>
+                    <mat-icon class="text-blue-500">photo_library</mat-icon>
+                    <h6 class="font-semibold text-gray-900 mb-3 pt-3">
+                      Event photos ({{ eventData.photo_count }})
+                    </h6>
                   </div>
 
                   <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -242,17 +242,16 @@ interface ApiResponse {
                           (click)="viewAllPhotos(eventData.photos)"
                           *ngIf="eventData.photos.length > 4"
                           class="text-blue-600 border-blue-300 hover:bg-blue-50">
-                    View All {{ eventData.photos.length }} Photos
+                    View all {{ eventData.photos.length }} photos
                   </button>
                 </div>
 
                 <div class="mb-6" *ngIf="canUploadPhotos(eventData.event)">
-                  <button mat-raised-button
-                          color="accent"
+                  <button mat-button
                           (click)="openPhotoUploadDialog(eventData.event)"
-                          class="bg-purple-600 hover:bg-purple-700 text-white">
+                          class="bg-blue-500 text-white">
                     <mat-icon class="mr-2">add_photo_alternate</mat-icon>
-                    Add Photos
+                    Add photos
                   </button>
                 </div>
 
@@ -368,6 +367,8 @@ export class PreviousEditionsComponent implements OnInit {
       next: (response) => {
         this.pastEvents = response.past_events_with_reviews;
         this.loading = false;
+
+        console.log(this.pastEvents);
       },
       error: (error) => {
         this.error = 'Failed to load past events. Please try again.';

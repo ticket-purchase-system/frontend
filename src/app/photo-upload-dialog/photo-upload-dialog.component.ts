@@ -575,7 +575,7 @@ export class PhotoUploadDialogComponent implements OnInit, OnDestroy {
       const url = `${environment.apiUrl}/events/${this.data.eventId}/upload_photo/`;
 
       this.http.post(url, formData, {
-        headers: httpHelper.getAuthHeaders(),
+        headers: httpHelper.getAuthHeaderWithoutContentType(),
         reportProgress: true,
         observe: 'events'
       }).pipe(
