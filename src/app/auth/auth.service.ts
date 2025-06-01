@@ -153,6 +153,13 @@ export class AuthService {
     });
   }
 
+  resetPassword(username: string, newPassword: string): Observable<any> {
+    return this.http.post('http://localhost:8000/api/users/reset-password/', {
+      username: username,
+      new_password: newPassword
+    });
+  }
+
   logout(): void {
     // Clear tokens from localStorage
     localStorage.removeItem('access_token');
@@ -180,6 +187,4 @@ export class AuthService {
       });
     });
   }
-  
-  
 }

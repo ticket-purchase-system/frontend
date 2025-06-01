@@ -25,6 +25,17 @@
         Login
       </button>
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      
+      <!-- Add Change Password button when there's an error -->
+      <button
+        *ngIf="errorMessage"
+        mat-button
+        color="accent"
+        class="change-password-button"
+        routerLink="/auth/reset-password"
+      >
+        Change Password
+      </button>
     </form>
 
     <!-- Signup and Guest Buttons -->
