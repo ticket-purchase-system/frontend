@@ -7,6 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { EventService, Event, EventWithDetails } from '../../event.service';
 import { DatePipe } from '@angular/common';
 
@@ -24,65 +30,108 @@ import { DatePipe } from '@angular/common';
     MatProgressSpinnerModule,
     MatDividerModule,
     MatTooltipModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    ReactiveFormsModule,
     DatePipe
   ],
   providers: [DatePipe]
 })
 export class RecommendedEventsComponent implements OnInit {
   isLoading = true;
-  recommendedEvents: EventWithDetails[] = [];
+  popularEvents: EventWithDetails[] = [];
+  personalizedEvents: EventWithDetails[] = [];
+  filtersForm: FormGroup;
+  
+  availableEventTypes = ['FESTIVAL', 'CONCERT', 'THEATER', 'SPORTS', 'COMEDY', 'EXHIBITION'];
+  selectedKeywords: string[] = [];
   
   constructor(
     private eventService: EventService,
-    private datePipe: DatePipe
-  ) {}
-
-  ngOnInit(): void {
-    this.loadRecommendedEvents();
+    private datePipe: DatePipe,
+    private fb: FormBuilder
+  ) {
+    this.filtersForm = this.fb.group({
+      eventTypes: [[]],
+      keywords: ['']
+    });
   }
 
-  loadRecommendedEvents(): void {
+  ngOnInit(): void {
+    this.loadPopularEvents();
+    this.loadPersonalizedEvents();
+  }
 
-    const currentDate = new Date();
-
-    const sixMonthsLater = new Date();
-    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-
-    const startDate = this.formatDate(currentDate);
-    const endDate = this.formatDate(sixMonthsLater);
-    
+  loadPopularEvents(): void {
     this.isLoading = true;
-
-    this.eventService.getEvents(undefined, startDate, endDate).subscribe({
-      next: (events) => {
-        this.recommendedEvents = this.simulateRecommendations(events);
+    this.eventService.getPopularEvents(7).subscribe({
+      next: (events: EventWithDetails[]) => {
+        this.popularEvents = events;
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error fetching recommended events:', error);
+      error: (error: any) => {
+        console.error('Error fetching popular events:', error);
         this.isLoading = false;
       }
     });
   }
-  
-  private simulateRecommendations(events: EventWithDetails[]): EventWithDetails[] {
-    if (!events || events.length === 0) return [];
 
-    events.sort((a, b) => {
-      const dateA = new Date(a.event.date);
-      const dateB = new Date(b.event.date);
-      return dateA.getTime() - dateB.getTime();
-    });
+  loadPersonalizedEvents(): void {
+    const formValue = this.filtersForm.value;
+    const params: any = {};
     
-    return events.slice(0, 5);
+    if (formValue.eventTypes && formValue.eventTypes.length > 0) {
+      params.types = formValue.eventTypes;
+    }
+    
+    if (this.selectedKeywords.length > 0) {
+      params.keywords = this.selectedKeywords;
+    }
+
+    this.eventService.getPersonalizedEvents(params, 10).subscribe({
+      next: (events: EventWithDetails[]) => {
+        this.personalizedEvents = events;
+      },
+      error: (error: any) => {
+        console.error('Error fetching personalized events:', error);
+      }
+    });
   }
-  
-  private formatDate(date: Date): string {
-    return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
+
+  addKeyword(): void {
+    const keywordInput = this.filtersForm.get('keywords');
+    const keyword = keywordInput?.value?.trim();
+    
+    if (keyword && !this.selectedKeywords.includes(keyword)) {
+      this.selectedKeywords.push(keyword);
+      keywordInput?.setValue('');
+      this.loadPersonalizedEvents();
+    }
+  }
+
+  removeKeyword(keyword: string): void {
+    const index = this.selectedKeywords.indexOf(keyword);
+    if (index >= 0) {
+      this.selectedKeywords.splice(index, 1);
+      this.loadPersonalizedEvents();
+    }
+  }
+
+  onEventTypesChange(): void {
+    this.loadPersonalizedEvents();
+  }
+
+  onKeywordKeyPress(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addKeyword();
+    }
   }
   
   getEventImageUrl(eventType: string): string {
-
     const type = eventType.toLowerCase();
     
     if (type.includes('concert')) {
@@ -95,8 +144,9 @@ export class RecommendedEventsComponent implements OnInit {
       return 'assets/images/comedy.jpg';
     } else if (type.includes('exhibition')) {
       return 'assets/images/exhibition.jpg';
+    } else if (type.includes('festival')) {
+      return 'assets/images/festival.jpg';
     }
-    
     
     return 'assets/images/event.jpg';
   }

@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -40,7 +39,6 @@ interface MembershipTier {
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
@@ -107,14 +105,6 @@ export class LoyaltyProgramComponent implements OnInit {
     { value: 'sms', viewValue: 'SMS' },
     { value: 'push', viewValue: 'Push Notification' }
   ];
-  
-  eventCategories = [
-    { value: 'concerts', viewValue: 'Concerts' },
-    { value: 'theater', viewValue: 'Theater' },
-    { value: 'sports', viewValue: 'Sports' },
-    { value: 'comedy', viewValue: 'Comedy' },
-    { value: 'exhibitions', viewValue: 'Exhibitions' }
-  ];
 
   constructor(
     private loyaltyService: LoyaltyProgramService,
@@ -124,8 +114,7 @@ export class LoyaltyProgramComponent implements OnInit {
     this.preferencesForm = this.fb.group({
       emailNotifications: [true],
       smsNotifications: [false],
-      pushNotifications: [true],
-      preferredCategories: [['concerts', 'sports']]
+      pushNotifications: [true]
     });
     
     this.joinForm = this.fb.group({
@@ -138,7 +127,6 @@ export class LoyaltyProgramComponent implements OnInit {
         sms: [false],
         push: [false]
       }),
-      preferredCategories: [[]],
       acceptTerms: [false, Validators.requiredTrue]
     });
   }
@@ -174,8 +162,7 @@ export class LoyaltyProgramComponent implements OnInit {
           this.preferencesForm.patchValue({
             emailNotifications: membership.preferences['emailNotifications'] ?? true,
             smsNotifications: membership.preferences['smsNotifications'] ?? false,
-            pushNotifications: membership.preferences['pushNotifications'] ?? true,
-            preferredCategories: membership.preferences['preferredCategories'] ?? ['concerts', 'sports']
+            pushNotifications: membership.preferences['pushNotifications'] ?? true
           });
         }
         this.isLoading = false;
@@ -199,7 +186,6 @@ export class LoyaltyProgramComponent implements OnInit {
       email: this.joinForm.value.email,
       phoneNumber: this.joinForm.value.phoneNumber,
       notifications: this.joinForm.value.notifications,
-      preferredCategories: this.joinForm.value.preferredCategories,
       acceptTerms: this.joinForm.value.acceptTerms
     };
 
@@ -238,8 +224,7 @@ export class LoyaltyProgramComponent implements OnInit {
     const preferences = {
       emailNotifications: this.preferencesForm.value.emailNotifications,
       smsNotifications: this.preferencesForm.value.smsNotifications,
-      pushNotifications: this.preferencesForm.value.pushNotifications,
-      preferredCategories: this.preferencesForm.value.preferredCategories
+      pushNotifications: this.preferencesForm.value.pushNotifications
     };
 
     this.loyaltyService.updatePreferences(preferences).subscribe({
