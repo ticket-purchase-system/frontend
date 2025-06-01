@@ -5,6 +5,7 @@ import { EventService, EventWithDetails } from '../event.service';
 import { OrdersService } from '../order-service/order.service';
 import { MockPaymentDialogComponent } from '../mock-payment-dialog/mock-payment-dialog.component';
 import { AuthService } from '../auth/auth.service';
+import { Order } from '../order-service/order.service';
 
 @Component({
   selector: 'app-basket',
@@ -70,57 +71,65 @@ export class BasketComponent implements OnInit {
     const firstTicketUserId = this.events[0].user;
 
     const productCreations = this.events.map(event => {
-      const productPayload = {
-        price: event.event?.price ?? 0,
-        description: event.event?.title ?? 'Brak nazwy',
-        event: event.event?.id,
-        sector: 'A',
-        seat: null
+      const payload = {
+        price: event.event?.price,
+        description: event.event?.title,
+        event: event.event?.id
       };
 
-
-      return this.ordersService.createProduct(productPayload).toPromise();
+      return this.ordersService.createProduct(payload).toPromise();
     });
 
     Promise.all(productCreations)
-      .then(createdProducts => {
-        console.log('[PRODUCTS] Utworzone produkty:', createdProducts);
+  .then(async (products: any[]) => {
+    console.log('[PRODUCTS] Utworzone produkty:', products);
 
-        const orderPayload = {
-          id: 0,
-          user: firstTicketUserId,
-          date: new Date(),
-          price: this.getTotalPrice(),
-          rabatCode: '',
-          phoneNumber: '123456789',
-          email: 'user@example.com',
-          city: 'Miasto',
-          address: 'Ulica 1',
-          review: null,
-          products: createdProducts.map((p: any) => ({
-            id: p.id,
-            price: p.price,
-            description: p.description
-          }))
-        };
+    const orderPayload = {
+      id: 0,
+      user: this.currentAppUserId,
+      date: new Date(),
+      price: this.getTotalPrice(),
+      rabatCode: '',
+      phoneNumber: '123456789',
+      email: 'user@example.com',
+      city: 'Miasto',
+      address: 'Ulica 1',
+      review: null,
+      products: [] 
+    };
 
-        this.ordersService.createOrder(orderPayload).subscribe({
-          next: (createdOrder) => {
-            console.log('[ORDER] Utworzono:', createdOrder);
-            this.orders.unshift(createdOrder);
-            this.clearBasket();
-          },
-          error: err => {
-            console.error('[ORDER ERROR]', err);
-          }
+    const requestPayload = {
+      ...orderPayload,
+      date: orderPayload.date.toISOString(), 
+    };
+
+    this.ordersService.createOrder(requestPayload as any).subscribe({
+      next: (createdOrder: any) => {
+        console.log('[ORDER] Stworzono zamówienie:', createdOrder);
+
+        const addProductPromises = products.map((prod, index) => {
+          return this.ordersService.addProductToOrder(createdOrder.id, {
+            product_id: prod.id,
+            quantity: this.events[index].quantity || 1
+          }).toPromise();
         });
-      })
-      .catch(err => {
-        console.error('[PRODUCT CREATION ERROR]', err);
-      });
+
+        Promise.all(addProductPromises)
+          .then(() => {
+            console.log('[ORDER PRODUCTS] Wszystkie dodane');
+            this.clearBasket();
+          })
+          .catch(err => console.error('[ORDER PRODUCTS ERROR]', err));
+      },
+      error: (err: any) => {
+        console.error('[ORDER ERROR]', err);
+      }
+    });
+  })
+  .catch(err => console.error('[PRODUCT CREATION ERROR]', err));
   }
 
-  // 🔁 Ręczne usuwanie ticketu z koszyka
+  // Ręczne usuwanie ticketu z koszyka
   removeTicket(ticket: any): void {
     const ticketId = ticket.id;
     this.basketService.removeFromBasket(ticketId).subscribe({

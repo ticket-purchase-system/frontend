@@ -1,7 +1,7 @@
 import {Review} from "../review-service.service";
 
 export interface Order {
-    products: Product[];
+    products?: Product[];
     id: number;
     date: Date;
     price: number;
@@ -107,6 +107,11 @@ createProduct(product: any): Observable<any> {
   );
 }
 
+addProductToOrder(orderId: number, payload: { product_id: number, quantity: number }): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/orders/${orderId}/add-product/`, payload, {
+    headers: httpHelper.getAuthHeaders()
+  });
+}
 
 
 }

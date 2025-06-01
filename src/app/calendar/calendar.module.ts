@@ -27,6 +27,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from '../auth/auth.interceptor'; // zmień ścieżkę jeśli inna
 import { MockPaymentDialogComponent } from '../mock-payment-dialog/mock-payment-dialog.component';
 
+import { FormsModule } from '@angular/forms';
+
 
 
 // firebase
@@ -79,7 +81,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     EventDetailsComponent,
-    ReviewListComponent
+    ReviewListComponent,
+    FormsModule
   ],
   providers: [
     {
