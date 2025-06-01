@@ -85,7 +85,7 @@
         <mat-divider class="section-divider"></mat-divider>
 
         <div class="preferences-section">
-          <h3>Preferences</h3>
+          <h3>Notification Preferences</h3>
           <form [formGroup]="preferencesForm" (ngSubmit)="updatePreferences()">
             <div class="form-row">
               <mat-checkbox formControlName="emailNotifications">
@@ -103,17 +103,6 @@
               <mat-checkbox formControlName="pushNotifications">
                 Push notifications
               </mat-checkbox>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Preferred Event Categories</mat-label>
-                <mat-select formControlName="preferredCategories" multiple>
-                  <mat-option *ngFor="let category of eventCategories" [value]="category.value">
-                    {{ category.viewValue }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
             </div>
 
             <div class="form-actions">
@@ -202,17 +191,6 @@
                     Push notifications
                   </mat-checkbox>
                 </div>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Preferred Event Categories</mat-label>
-                  <mat-select formControlName="preferredCategories" multiple>
-                    <mat-option *ngFor="let category of eventCategories" [value]="category.value">
-                      {{ category.viewValue }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
               </div>
             </div>
 

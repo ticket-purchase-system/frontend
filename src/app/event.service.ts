@@ -29,7 +29,7 @@ export interface EventDetails {
 
 export interface EventWithDetails {
   event: Event;
-  details: EventDetails;
+  details?: EventDetails;
   showReport?: boolean;
 }
 
@@ -75,5 +75,37 @@ export class EventService {
   deleteEvent(id: string): Observable<any> {
     const url = `${this.apiUrl}/${id}/`;
     return this.http.delete(url, { headers: httpHelper.getAuthHeaders() });
+  }
+
+  getPopularEvents(limit: number = 7): Observable<EventWithDetails[]> {
+    const url = `${this.apiUrl}/popular/`;
+    const params: Record<string, string> = { limit: limit.toString() };
+    
+    return this.http.get<EventWithDetails[]>(url, { params, headers: httpHelper.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching popular events', error);
+        return of([]);
+      })
+    );
+  }
+
+  getPersonalizedEvents(filters: any = {}, limit: number = 10): Observable<EventWithDetails[]> {
+    const url = `${this.apiUrl}/personalized/`;
+    const params: Record<string, string | string[]> = { limit: limit.toString() };
+    
+    if (filters.types && filters.types.length > 0) {
+      params['types'] = filters.types;
+    }
+    
+    if (filters.keywords && filters.keywords.length > 0) {
+      params['keywords'] = filters.keywords;
+    }
+    
+    return this.http.get<EventWithDetails[]>(url, { params, headers: httpHelper.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching personalized events', error);
+        return of([]);
+      })
+    );
   }
 }

@@ -42,6 +42,81 @@
   padding: 2rem;
 }
 
+// Tabs styling
+.recommendation-tabs {
+  margin-top: 1rem;
+
+  ::ng-deep .mat-mdc-tab-group {
+    .mat-mdc-tab-header {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .mat-mdc-tab-labels {
+      justify-content: center;
+    }
+
+    .mat-mdc-tab-label {
+      min-width: 150px;
+      padding: 0 2rem;
+    }
+  }
+}
+
+.tab-content {
+  padding: 2rem 0;
+}
+
+// Filters styling
+.filters-card {
+  margin-bottom: 2rem;
+  
+  .filters-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .filters-form {
+    .filter-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      
+      .filter-field {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+  }
+  
+  .keywords-section {
+    margin-top: 1rem;
+    
+    h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .keywords-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      
+      mat-chip {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        
+        mat-icon {
+          color: #1976d2;
+        }
+      }
+    }
+  }
+}
+
 .section-title {
   font-size: 1.5rem;
   font-weight: 500;
@@ -135,6 +210,7 @@ mat-card-actions {
 .empty-state {
   text-align: center;
   padding: 2rem;
+  margin: 2rem 0;
 }
 
 .empty-state-content {
@@ -159,5 +235,39 @@ mat-card-actions {
     margin-bottom: 1.5rem;
     color: #666;
     max-width: 400px;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .recommended-events-container {
+    padding: 0 0.5rem;
+  }
+  
+  .top-nav-bar {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .nav-right {
+      button {
+        margin: 0 0.25rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  .filters-form .filter-row {
+    flex-direction: column;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .recommendation-tabs {
+    ::ng-deep .mat-mdc-tab-label {
+      min-width: 120px;
+      padding: 0 1rem;
+    }
   }
 } 
