@@ -37,69 +37,189 @@
   </div>
 
   <div *ngIf="!isLoading">
-    <!-- No events message -->
-    <mat-card *ngIf="recommendedEvents.length === 0" class="empty-state">
-      <mat-card-content>
-        <div class="empty-state-content">
-          <mat-icon class="empty-icon">event_busy</mat-icon>
-          <h3>No Recommended Events</h3>
-          <p>We don't have any recommended events for you at the moment. Check back later!</p>
-          <button mat-raised-button color="primary" [routerLink]="['/calendar']">Browse All Events</button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <mat-tab-group mat-align-tabs="center" class="recommendation-tabs">
+      <!-- Popular Events Tab -->
+      <mat-tab label="Popular Events">
+        <div class="tab-content">
+          <!-- No events message for popular -->
+          <mat-card *ngIf="popularEvents.length === 0" class="empty-state">
+            <mat-card-content>
+              <div class="empty-state-content">
+                <mat-icon class="empty-icon">trending_up</mat-icon>
+                <h3>No Popular Events</h3>
+                <p>There are no popular events available at the moment. Check back later!</p>
+                <button mat-raised-button color="primary" [routerLink]="['/calendar']">Browse All Events</button>
+              </div>
+            </mat-card-content>
+          </mat-card>
 
-    <!-- Events list -->
-    <div *ngIf="recommendedEvents.length > 0" class="events-section">
-      <h3 class="section-title">Events You Might Like</h3>
-      <p class="section-subtitle">Based on your preferences and activity</p>
-      
-      <div class="events-grid">
-        <mat-card *ngFor="let eventItem of recommendedEvents" class="event-card">
-          <div class="event-image" [style.background-image]="'url(' + getEventImageUrl(eventItem.event.type) + ')'">
-            <div class="event-price">
-              {{ eventItem.event.price | currency }}
+          <!-- Popular events list -->
+          <div *ngIf="popularEvents.length > 0" class="events-section">
+            <h3 class="section-title">Most Popular Events</h3>
+            <p class="section-subtitle">Based on ticket sales and user interest</p>
+            
+            <div class="events-grid">
+              <mat-card *ngFor="let eventItem of popularEvents" class="event-card">
+                <div class="event-image" [style.background-image]="'url(' + getEventImageUrl(eventItem.event.type) + ')'">
+                  <div class="event-price">
+                    {{ eventItem.event.price | currency }}
+                  </div>
+                </div>
+                
+                <mat-card-content>
+                  <h3 class="event-title">{{ eventItem.event.title }}</h3>
+                  
+                  <div class="event-info">
+                    <div class="info-row">
+                      <mat-icon>event</mat-icon>
+                      <span>{{ eventItem.event.date | date:'fullDate' }}</span>
+                    </div>
+                    
+                    <div class="info-row" *ngIf="eventItem.event.start_hour">
+                      <mat-icon>access_time</mat-icon>
+                      <span>{{ eventItem.event.start_hour }} - {{ eventItem.event.end_hour }}</span>
+                    </div>
+                    
+                    <div class="info-row" *ngIf="eventItem.event.place">
+                      <mat-icon>place</mat-icon>
+                      <span>{{ eventItem.event.place }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <mat-icon>label</mat-icon>
+                      <span>{{ eventItem.event.type }}</span>
+                    </div>
+                  </div>
+                  
+                  <p class="event-description" *ngIf="eventItem.event.description">
+                    {{ eventItem.event.description | slice:0:100 }}{{ eventItem.event.description.length > 100 ? '...' : '' }}
+                  </p>
+                </mat-card-content>
+                
+                <mat-card-actions>
+                  <button mat-raised-button color="primary" [routerLink]="['/calendar']" 
+                          [queryParams]="{eventId: eventItem.event.id}">
+                    Book event
+                  </button>
+                </mat-card-actions>
+              </mat-card>
             </div>
           </div>
-          
-          <mat-card-content>
-            <h3 class="event-title">{{ eventItem.event.title }}</h3>
+        </div>
+      </mat-tab>
+
+      <!-- For You Events Tab -->
+      <mat-tab label="For You">
+        <div class="tab-content">
+          <!-- Filter Controls -->
+          <mat-card class="filters-card">
+            <mat-card-content>
+              <h3 class="filters-title">Customize Your Recommendations</h3>
+              <form [formGroup]="filtersForm" class="filters-form">
+                <div class="filter-row">
+                  <mat-form-field appearance="outline" class="filter-field">
+                    <mat-label>Event Types</mat-label>
+                    <mat-select formControlName="eventTypes" multiple (selectionChange)="onEventTypesChange()">
+                      <mat-option *ngFor="let type of availableEventTypes" [value]="type">
+                        {{ type }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="filter-field">
+                    <mat-label>Add Keywords (artists, etc.)</mat-label>
+                    <input matInput 
+                           formControlName="keywords" 
+                           placeholder="e.g., gaga, bieber, jazz"
+                           (keypress)="onKeywordKeyPress($event)">
+                    <button mat-icon-button matSuffix (click)="addKeyword()" type="button">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <!-- Selected Keywords -->
+                <div *ngIf="selectedKeywords.length > 0" class="keywords-section">
+                  <h4>Selected Keywords:</h4>
+                  <mat-chip-set class="keywords-chips">
+                    <mat-chip *ngFor="let keyword of selectedKeywords" 
+                              (removed)="removeKeyword(keyword)"
+                              [removable]="true">
+                      {{ keyword }}
+                      <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- No events message for personalized -->
+          <mat-card *ngIf="personalizedEvents.length === 0" class="empty-state">
+            <mat-card-content>
+              <div class="empty-state-content">
+                <mat-icon class="empty-icon">recommend</mat-icon>
+                <h3>No Matching Events</h3>
+                <p>Try adjusting your filters to find events that match your preferences.</p>
+                <button mat-raised-button color="primary" [routerLink]="['/calendar']">Browse All Events</button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Personalized events list -->
+          <div *ngIf="personalizedEvents.length > 0" class="events-section">
+            <h3 class="section-title">Events Just For You</h3>
+            <p class="section-subtitle">Based on your selected preferences</p>
             
-            <div class="event-info">
-              <div class="info-row">
-                <mat-icon>event</mat-icon>
-                <span>{{ eventItem.event.date | date:'fullDate' }}</span>
-              </div>
-              
-              <div class="info-row" *ngIf="eventItem.event.start_hour">
-                <mat-icon>access_time</mat-icon>
-                <span>{{ eventItem.event.start_hour }} - {{ eventItem.event.end_hour }}</span>
-              </div>
-              
-              <div class="info-row" *ngIf="eventItem.event.place">
-                <mat-icon>place</mat-icon>
-                <span>{{ eventItem.event.place }}</span>
-              </div>
-              
-              <div class="info-row">
-                <mat-icon>label</mat-icon>
-                <span>{{ eventItem.event.type }}</span>
-              </div>
+            <div class="events-grid">
+              <mat-card *ngFor="let eventItem of personalizedEvents" class="event-card">
+                <div class="event-image" [style.background-image]="'url(' + getEventImageUrl(eventItem.event.type) + ')'">
+                  <div class="event-price">
+                    {{ eventItem.event.price | currency }}
+                  </div>
+                </div>
+                
+                <mat-card-content>
+                  <h3 class="event-title">{{ eventItem.event.title }}</h3>
+                  
+                  <div class="event-info">
+                    <div class="info-row">
+                      <mat-icon>event</mat-icon>
+                      <span>{{ eventItem.event.date | date:'fullDate' }}</span>
+                    </div>
+                    
+                    <div class="info-row" *ngIf="eventItem.event.start_hour">
+                      <mat-icon>access_time</mat-icon>
+                      <span>{{ eventItem.event.start_hour }} - {{ eventItem.event.end_hour }}</span>
+                    </div>
+                    
+                    <div class="info-row" *ngIf="eventItem.event.place">
+                      <mat-icon>place</mat-icon>
+                      <span>{{ eventItem.event.place }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <mat-icon>label</mat-icon>
+                      <span>{{ eventItem.event.type }}</span>
+                    </div>
+                  </div>
+                  
+                  <p class="event-description" *ngIf="eventItem.event.description">
+                    {{ eventItem.event.description | slice:0:100 }}{{ eventItem.event.description.length > 100 ? '...' : '' }}
+                  </p>
+                </mat-card-content>
+                
+                <mat-card-actions>
+                  <button mat-raised-button color="primary" [routerLink]="['/calendar']" 
+                          [queryParams]="{eventId: eventItem.event.id}">
+                    Book event
+                  </button>
+                </mat-card-actions>
+              </mat-card>
             </div>
-            
-            <p class="event-description" *ngIf="eventItem.event.description">
-              {{ eventItem.event.description | slice:0:100 }}{{ eventItem.event.description.length > 100 ? '...' : '' }}
-            </p>
-          </mat-card-content>
-          
-          <mat-card-actions>
-            <button mat-raised-button color="primary" [routerLink]="['/calendar']" 
-                    [queryParams]="{eventId: eventItem.event.id}">
-              Book event
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-    </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div> 
