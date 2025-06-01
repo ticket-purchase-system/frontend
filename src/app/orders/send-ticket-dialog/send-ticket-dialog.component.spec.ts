@@ -58,4 +58,9 @@ describe('SendTicketDialogComponent', () => {
     form.triggerEventHandler('ngSubmit', {});
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
   });
+
+  it('should mark form as invalid if email is empty', () => {
+  component.form.setValue({ email: '' });
+  expect(component.form.invalid).toBeTrue();
+});
 });
