@@ -72,4 +72,37 @@ export class LoyaltyProgramService {
       })
     );
   }
+
+  // Award points for a purchase
+  awardPoints(amount: number): Observable<{ 
+    points_awarded: number, 
+    total_points: number, 
+    old_tier: string, 
+    new_tier: string, 
+    tier_advanced: boolean, 
+    membership: LoyaltyProgram 
+  } | null> {
+    return this.http.post<any>(`${this.apiUrl}/award_points`, { amount }, { headers: httpHelper.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error awarding points:', error);
+        return of(null);
+      })
+    );
+  }
+
+  // Calculate discount percentage based on tier
+  getDiscountPercentage(tier: string): number {
+    switch (tier) {
+      case 'bronze':
+        return 5;
+      case 'silver':
+        return 7;
+      case 'gold':
+        return 10;
+      case 'platinum':
+        return 15;
+      default:
+        return 0;
+    }
+  }
 }

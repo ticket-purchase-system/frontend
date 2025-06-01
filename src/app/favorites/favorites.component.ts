@@ -22,13 +22,17 @@ export class FavoritesComponent implements OnInit {
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
       if (this.currentUser && this.currentUser.role !== 'admin') {
-        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe((favorites) => {
+        // Load favorites initially
+        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe();
+        
+        // Subscribe to reactive favorites and events
+        this.favoriteService.favorites$.subscribe((favorites) => {
           this.eventService.getEvents().subscribe({
             next: (events) => {
               this.events = events.filter(e => favorites.includes(e ? Number(e.event.id) : -1));
             }
-          })
-        })
+          });
+        });
       }
     });
   }
@@ -37,7 +41,7 @@ export class FavoritesComponent implements OnInit {
     if (this.currentUser && this.currentUser.role !== 'admin' && id) {
       this.favoriteService.removeFavorite(this.currentUser?.id, Number(id)).subscribe({
         next: () => {
-          this.events = this.events.filter(e => e.event.id !== id);
+          // The reactive state will update automatically, no need to manually filter
           console.log('Unmarked favorite')
         }
       })

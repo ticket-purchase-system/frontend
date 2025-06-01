@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Send Gift Voucher</h2>
+<p class="dialog-subtitle">Send a ${{ data.voucher.amount }} voucher to someone as a gift</p>
+
 <mat-dialog-content>
-  <p class="dialog-subtitle">Send a {{ data.voucher.amount }} PLN voucher to someone as a gift</p>
-  
   <form [formGroup]="sendForm" class="send-form">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Recipient's Name</mat-label>
@@ -24,19 +24,17 @@
   
   <div class="voucher-preview">
     <h4>Voucher Details</h4>
-    <div class="preview-details">
-      <div class="preview-row">
-        <span class="label">Amount:</span>
-        <span class="value">{{ data.voucher.amount }} PLN</span>
-      </div>
-      <div class="preview-row">
-        <span class="label">Code:</span>
-        <span class="value code">{{ data.voucher.code }}</span>
-      </div>
-      <div class="preview-row">
-        <span class="label">Expires:</span>
-        <span class="value">{{ data.voucher.expiresAt | date:'mediumDate' }}</span>
-      </div>
+    <div class="preview-item">
+      <span class="label">Code:</span>
+      <span class="value">{{ data.voucher.code }}</span>
+    </div>
+    <div class="preview-item">
+      <span class="label">Amount:</span>
+      <span class="value">${{ data.voucher.amount }}</span>
+    </div>
+    <div class="preview-row">
+      <span class="label">Expires:</span>
+      <span class="value">{{ data.voucher.expiresAt | date:'mediumDate' }}</span>
     </div>
   </div>
 </mat-dialog-content>

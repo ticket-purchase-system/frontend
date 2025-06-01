@@ -11,7 +11,7 @@
         <div class="event-info">
           <div class="event-title">{{ticket.event.title}}</div>
           <div class="event-type">{{ticket.event.type}}</div>
-          <div>{{ ticket.event.title }} – {{ ticket.event.price }} PLN x {{ ticket.quantity || 1 }}</div>
+          <div>{{ ticket.event.title }} – ${{ ticket.event.price }} x {{ ticket.quantity || 1 }}</div>
         </div>
         <button mat-icon-button color="warn" (click)="removeTicket(ticket)">
           <mat-icon>delete</mat-icon>
@@ -22,7 +22,7 @@
     <div class="basket-actions">
       <div class="basket-summary">
           <div class="total-label">Suma do zapłaty: </div>
-          <div class="total-amount">{{ getTotalPrice() | currency:'PLN ':'symbol' }}</div>
+          <div class="total-amount">${{ getTotalPrice() }}</div>
         </div>
       <button mat-raised-button color="primary" class="payment-button" (click)="startPayment()">
         Proceed to Payment

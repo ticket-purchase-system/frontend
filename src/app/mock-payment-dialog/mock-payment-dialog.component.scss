@@ -1,0 +1,306 @@
+.payment-dialog {
+  max-width: 500px;
+  
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    
+    mat-icon {
+      color: #3f51b5;
+    }
+  }
+}
+
+mat-dialog-content {
+  padding: 0 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+// Order Summary
+.order-summary {
+  margin-bottom: 1rem;
+  
+  .order-items {
+    margin-bottom: 1rem;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    .item-quantity {
+      color: #666;
+      margin: 0 0.5rem;
+    }
+    
+    .item-price {
+      font-weight: 500;
+      color: #3f51b5;
+    }
+  }
+  
+  .price-breakdown {
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+    
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      
+      &.discount {
+        color: #4caf50;
+        font-weight: 500;
+      }
+      
+      &.total {
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-top: 1px solid #ddd;
+        padding-top: 0.5rem;
+        margin-top: 0.5rem;
+        color: #3f51b5;
+      }
+    }
+  }
+}
+
+// Voucher Section
+.voucher-section {
+  margin-bottom: 1rem;
+  
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    mat-icon {
+      color: #ff9800;
+    }
+  }
+  
+  .loading-vouchers {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+  }
+  
+  .no-vouchers {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .voucher-select {
+    width: 100%;
+  }
+}
+
+// Loyalty Info
+.loyalty-info {
+  margin-bottom: 1rem;
+  background-color: #f3e5f5;
+  
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    mat-icon {
+      color: #ffd700;
+    }
+  }
+  
+  .loyalty-member {
+    .tier-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      
+      .tier-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        
+        &.bronze {
+          background-color: #cd7f32;
+          color: white;
+        }
+        
+        &.silver {
+          background-color: #c0c0c0;
+          color: #333;
+        }
+        
+        &.gold {
+          background-color: #ffd700;
+          color: #333;
+        }
+        
+        &.platinum {
+          background-color: #e5e4e2;
+          color: #333;
+        }
+      }
+      
+      .discount-info {
+        color: #4caf50;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+    }
+    
+    .points-preview {
+      color: #7b1fa2;
+      font-size: 0.9rem;
+    }
+  }
+  
+  .loyalty-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7b1fa2;
+    
+    mat-icon {
+      color: #2196f3;
+    }
+  }
+}
+
+// Payment Success
+.payment-success {
+  text-align: center;
+  padding: 2rem 0;
+  
+  .success-icon {
+    font-size: 4rem;
+    height: 4rem;
+    width: 4rem;
+    color: #4caf50;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    color: #4caf50;
+    margin-bottom: 1.5rem;
+  }
+  
+  .success-details {
+    text-align: left;
+    
+    p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
+    
+    .voucher-used,
+    .points-awarded,
+    .tier-advancement {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .voucher-used {
+      background-color: #e8f5e8;
+      color: #2e7d32;
+      
+      mat-icon {
+        color: #ff9800;
+      }
+    }
+    
+    .points-awarded {
+      background-color: #fff3e0;
+      color: #f57c00;
+      
+      mat-icon {
+        color: #ffd700;
+      }
+    }
+    
+    .tier-advancement {
+      background-color: #e3f2fd;
+      color: #1976d2;
+      
+      mat-icon {
+        color: #4caf50;
+      }
+      
+      .tier-upgrade {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Dialog Actions
+mat-dialog-actions {
+  padding: 16px 24px;
+  
+  .payment-actions,
+  .success-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .pay-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    
+    .button-spinner {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 600px) {
+  .payment-dialog {
+    max-width: 90vw;
+  }
+  
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .payment-actions,
+  .success-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

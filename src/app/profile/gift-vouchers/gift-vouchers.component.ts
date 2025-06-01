@@ -120,10 +120,10 @@ export class GiftVouchersComponent implements OnInit {
     // Call the backend API
     this.voucherService.purchaseVoucher({
       amount: amount,
-      currencyCode: 'PLN'
+      currencyCode: 'USD'
     }).subscribe({
       next: (voucher: Voucher) => {
-        this.snackBar.open(`Gift voucher successfully purchased for ${amount} PLN!`, 'Close', {
+        this.snackBar.open(`Gift voucher successfully purchased for $${amount}!`, 'Close', {
           duration: 5000
         });
         
@@ -257,7 +257,7 @@ export class GiftVouchersComponent implements OnInit {
           this.vouchers.unshift(response.voucher);
           this.voucherCodeInput.reset();
           
-          this.snackBar.open(`Voucher redeemed successfully! Added ${response.amount} PLN to your account.`, 'Close', {
+          this.snackBar.open(`Voucher redeemed successfully! Added $${response.amount} to your account.`, 'Close', {
             duration: 5000
           });
         } else {

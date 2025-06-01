@@ -26,6 +26,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from '../auth/auth.interceptor'; // zmień ścieżkę jeśli inna
 import { MockPaymentDialogComponent } from '../mock-payment-dialog/mock-payment-dialog.component';
+import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
+import {EventDetailsComponent} from "../event-details/event-details.component";
+import {ReviewListComponent} from "../review-list/review-list.component";
 
 import { FormsModule } from '@angular/forms';
 
@@ -36,9 +39,6 @@ import { AngularFireModule } from "@angular/fire/compat";
 import { environment } from '../../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import { TicketPurchaseDialogComponent } from '../ticket-purchase-dialog/ticket-purchase-dialog.component';
-import {EventDetailsComponent} from "../event-details/event-details.component";
-import {ReviewListComponent} from "../review-list/review-list.component";
 
 const routes: Routes = [
   { path: '', component: CalendarComponent },
@@ -49,8 +49,7 @@ const routes: Routes = [
   declarations: [
     CalendarComponent,
     BasketComponent,
-    TicketPurchaseDialogComponent,
-    MockPaymentDialogComponent
+    TicketPurchaseDialogComponent
   ],
   imports: [
     AngularFirestoreModule,
@@ -82,7 +81,8 @@ const routes: Routes = [
     HttpClientModule,
     EventDetailsComponent,
     ReviewListComponent,
-    FormsModule
+    FormsModule,
+    MockPaymentDialogComponent
   ],
   providers: [
     {

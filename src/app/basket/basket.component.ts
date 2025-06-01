@@ -3,9 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { BasketService } from './../basket.service';
 import { EventService, EventWithDetails } from '../event.service';
 import { OrdersService } from '../order-service/order.service';
-import { MockPaymentDialogComponent } from '../mock-payment-dialog/mock-payment-dialog.component';
+import { MockPaymentDialogComponent, PaymentDialogData } from '../mock-payment-dialog/mock-payment-dialog.component';
 import { AuthService } from '../auth/auth.service';
 import { Order } from '../order-service/order.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-basket',
@@ -23,6 +24,7 @@ export class BasketComponent implements OnInit {
     private dialog: MatDialog,
     private ordersService: OrdersService,
     private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -53,16 +55,34 @@ export class BasketComponent implements OnInit {
   }
 
   startPayment(): void {
+    if (!this.events.length) {
+      console.error('[PAYMENT ERROR] Brak eventów w koszyku!');
+      return;
+    }
+
+    // Prepare payment dialog data
+    const paymentData: PaymentDialogData = {
+      totalAmount: this.getTotalPrice(),
+      items: this.events.map(event => ({
+        title: event.event?.title || 'Event',
+        price: (event.event?.price || 0) * (event.quantity || 1),
+        quantity: event.quantity
+      }))
+    };
+
     const dialogRef = this.dialog.open(MockPaymentDialogComponent, {
-      width: '400px'
+      width: '600px',
+      data: paymentData
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.completeMockPurchase();
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.paymentCompleted) {
+        this.completeMockPurchase(result);
+      }
     });
   }
 
-  private completeMockPurchase(): void {
+  private completeMockPurchase(paymentResult: any): void {
     if (!this.events.length) {
       console.error('[ORDER ERROR] Brak eventów w koszyku!');
       return;
@@ -118,6 +138,7 @@ export class BasketComponent implements OnInit {
           .then(() => {
             console.log('[ORDER PRODUCTS] Wszystkie dodane');
             this.clearBasket();
+            this.showOrderSuccessMessage(paymentResult);
           })
           .catch(err => console.error('[ORDER PRODUCTS ERROR]', err));
       },
@@ -127,6 +148,27 @@ export class BasketComponent implements OnInit {
     });
   })
   .catch(err => console.error('[PRODUCT CREATION ERROR]', err));
+  }
+
+  private showOrderSuccessMessage(paymentResult: any): void {
+    let message = 'Order completed successfully! ';
+    
+    if (paymentResult.voucherUsed > 0) {
+      message += `$${paymentResult.voucherUsed} voucher discount applied. `;
+    }
+    
+    if (paymentResult.loyaltyPointsAwarded > 0) {
+      message += `${paymentResult.loyaltyPointsAwarded} loyalty points earned! `;
+    }
+    
+    if (paymentResult.tierAdvanced) {
+      message += `Congratulations! You've advanced to ${paymentResult.newTier} tier! `;
+    }
+
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['success-snackbar']
+    });
   }
 
   // Ręczne usuwanie ticketu z koszyka

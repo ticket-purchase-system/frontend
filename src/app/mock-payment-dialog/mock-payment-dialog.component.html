@@ -1,7 +1,156 @@
-<h2 mat-dialog-title>Mock Payment</h2>
-<mat-dialog-content>
-  <p>Payment was successful!</p>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button color="primary" (click)="close()">Close</button>
-</mat-dialog-actions>
+<div class="payment-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>payment</mat-icon>
+    Complete Your Purchase
+  </h2>
+
+  <mat-dialog-content>
+    <div *ngIf="!paymentCompleted">
+      <!-- Order Summary -->
+      <mat-card class="order-summary">
+        <mat-card-header>
+          <mat-card-title>Order Summary</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="order-items">
+            <div *ngFor="let item of data.items" class="order-item">
+              <span class="item-name">{{ item.title }}</span>
+              <span class="item-quantity" *ngIf="item.quantity && item.quantity > 1">× {{ item.quantity }}</span>
+              <span class="item-price">${{ item.price }}</span>
+            </div>
+          </div>
+          
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Subtotal:</span>
+              <span>${{ originalAmount }}</span>
+            </div>
+            
+            <div class="price-row discount" *ngIf="loyaltyDiscount > 0">
+              <span>Loyalty Discount ({{ loyaltyMembership?.tier | titlecase }}):</span>
+              <span>-${{ loyaltyDiscount.toFixed(2) }}</span>
+            </div>
+            
+            <div class="price-row discount" *ngIf="voucherDiscount > 0">
+              <span>Voucher Discount:</span>
+              <span>-${{ voucherDiscount }}</span>
+            </div>
+            
+            <div class="price-row total">
+              <span>Total:</span>
+              <span>${{ finalAmount.toFixed(2) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Voucher Selection -->
+      <mat-card class="voucher-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>card_giftcard</mat-icon>
+            Apply Gift Voucher
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="isLoading" class="loading-vouchers">
+            <mat-spinner diameter="24"></mat-spinner>
+            <span>Loading your vouchers...</span>
+          </div>
+          
+          <div *ngIf="!isLoading && availableVouchers.length === 0" class="no-vouchers">
+            <mat-icon>info</mat-icon>
+            <span>You don't have any available vouchers</span>
+          </div>
+          
+          <mat-form-field *ngIf="!isLoading && availableVouchers.length > 0" appearance="fill" class="voucher-select">
+            <mat-label>Select a voucher (optional)</mat-label>
+            <mat-select [(ngModel)]="selectedVoucherId" (selectionChange)="onVoucherSelected()">
+              <mat-option value="">No voucher</mat-option>
+              <mat-option *ngFor="let voucher of availableVouchers" [value]="voucher.id">
+                {{ voucher.code }} - ${{ voucher.amount }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Loyalty Program Info -->
+      <mat-card class="loyalty-info">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>stars</mat-icon>
+            Loyalty Program
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="loyaltyMembership && loyaltyMembership.is_active" class="loyalty-member">
+            <div class="tier-info">
+              <span class="tier-badge" [class]="loyaltyMembership.tier">{{ loyaltyMembership.tier | titlecase }}</span>
+              <span class="discount-info">{{ loyaltyService.getDiscountPercentage(loyaltyMembership.tier) }}% discount applied</span>
+            </div>
+            <div class="points-preview">
+              <span>You'll earn {{ originalAmount * 10 }} loyalty points from this purchase!</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!loyaltyMembership || !loyaltyMembership.is_active" class="loyalty-preview">
+            <mat-icon>info</mat-icon>
+            <span>Join our loyalty program to earn points and get discounts!</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Payment Success -->
+    <div *ngIf="paymentCompleted" class="payment-success">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <h3>Payment Successful!</h3>
+      
+      <div class="success-details">
+        <p>Your order has been processed successfully.</p>
+        
+        <div *ngIf="voucherDiscount > 0" class="voucher-used">
+          <mat-icon>card_giftcard</mat-icon>
+          <span>Voucher applied: ${{ voucherDiscount }} discount</span>
+        </div>
+        
+        <div *ngIf="loyaltyPointsAwarded > 0" class="points-awarded">
+          <mat-icon>stars</mat-icon>
+          <span>{{ loyaltyPointsAwarded }} loyalty points earned!</span>
+        </div>
+        
+        <div *ngIf="tierAdvanced" class="tier-advancement">
+          <mat-icon>trending_up</mat-icon>
+          <span class="tier-upgrade">Congratulations! You've advanced to {{ newTier | titlecase }} tier!</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <div *ngIf="!paymentCompleted" class="payment-actions">
+      <button mat-button (click)="close()" [disabled]="isProcessingPayment">
+        Cancel
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="processPayment()" 
+        [disabled]="isProcessingPayment"
+        class="pay-button"
+      >
+        <mat-spinner *ngIf="isProcessingPayment" diameter="20" class="button-spinner"></mat-spinner>
+        <mat-icon *ngIf="!isProcessingPayment">payment</mat-icon>
+        {{ isProcessingPayment ? 'Processing...' : ('Pay $' + finalAmount) }}
+      </button>
+    </div>
+    
+    <div *ngIf="paymentCompleted" class="success-actions">
+      <button mat-raised-button color="primary" (click)="close()">
+        <mat-icon>check</mat-icon>
+        Done
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>
