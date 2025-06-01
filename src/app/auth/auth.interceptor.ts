@@ -13,6 +13,7 @@ console.log('[INTERCEPTOR DZIAŁA]');
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('[INTERCEPTOR] Intercepted URL:', req.url);
     const token = localStorage.getItem('access_token');
     console.log('[INTERCEPTOR DZIAŁA] token:', token);
   
