@@ -120,7 +120,7 @@
             'current-month': isCurrentMonth(day),
             'not-current-month': !isCurrentMonth(day)
           }"
-          (click)="selectDate(day)"
+          (click)="currentUser && currentUser.role === 'admin' ? selectDate(day) : null"
         >
           <div class="day-number">{{ day.getDate() }}</div>
           <div class="event-count" *ngIf="getEventCountForDay(day) > 0">
@@ -170,7 +170,7 @@
               [ngClass]="{
                 'current-time': isToday(day) && isCurrentTimeSlot(timeSlot)
               }"
-              (click)="selectDate(day, timeSlot)"
+              (click)="currentUser && currentUser.role === 'admin' ? selectDate(day, timeSlot) : null"
             >
             <div
               *ngFor="let eventWithDetails of getEventsForDateTime(day, timeSlot)"

@@ -64,10 +64,22 @@ export class CalendarComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
+      console.log('[Calendar] Current user loaded:', this.currentUser);
+      
       if (this.currentUser && this.currentUser.role !== 'admin') {
-        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe((favorites) => {
+        // Load favorites initially
+        this.favoriteService.getUserFavorites(this.currentUser.id).subscribe();
+        
+        // Subscribe to reactive favorites changes
+        this.favoriteService.favorites$.subscribe((favorites) => {
           this.favorites = favorites;
-        })
+        });
+      }
+      
+      // If no user is logged in, redirect to login
+      if (!this.currentUser) {
+        console.log('[Calendar] No user logged in, redirecting to login');
+        this.router.navigate(['/auth/login']);
       }
     });
   }

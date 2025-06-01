@@ -67,11 +67,14 @@
             <li *ngIf="membership.tier === 'bronze'">
               <mat-icon>stars</mat-icon> 5% discount on all events
             </li>
-            <li *ngIf="membership.tier === 'silver' || membership.tier === 'gold' || membership.tier === 'platinum'">
+            <li *ngIf="membership.tier === 'silver'">
+              <mat-icon>stars</mat-icon> 7% discount on all events
+            </li>
+            <li *ngIf="membership.tier === 'gold'">
               <mat-icon>stars</mat-icon> 10% discount on all events
             </li>
-            <li *ngIf="membership.tier === 'gold' || membership.tier === 'platinum'">
-              <mat-icon>priority_high</mat-icon> Priority booking for popular events
+            <li *ngIf="membership.tier === 'platinum'">
+              <mat-icon>stars</mat-icon> 15% discount on all events
             </li>
             <li *ngIf="membership.tier === 'platinum'">
               <mat-icon>diamond</mat-icon> Free companion ticket once a year
@@ -136,7 +139,6 @@
           <ul class="benefits-list">
             <li><mat-icon>stars</mat-icon> Earn points with every purchase</li>
             <li><mat-icon>discount</mat-icon> Get discounts on events</li>
-            <li><mat-icon>priority_high</mat-icon> Priority booking for popular events</li>
             <li><mat-icon>card_giftcard</mat-icon> Special birthday offers</li>
           </ul>
 

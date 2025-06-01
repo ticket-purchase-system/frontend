@@ -26,31 +26,30 @@ export class AuthService {
     const token = localStorage.getItem('access_token');
     console.log('[AuthService] Zapisano token:', localStorage.getItem('access_token'));
     if (token) {
-      // If we have a token, fetch the user data
+      // For now, just verify the token is valid by making an authenticated request
+      // If it fails, we'll clear the token. If it succeeds, we set currentUser to null
+      // and require explicit login to establish proper user identity
       this.http.get<any[]>(this.apiUrl, {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         })
       }).subscribe({
-        next: (users) => {
-          // Find the current user (we don't know their username yet, so just take the first one that matches)
-          if (users && users.length > 0) {
-            const userData: User = {
-              id: users[0].id,
-              username: users[0].user.username,
-              password: '', // Don't store password
-              role: users[0].role
-            };
-            this.currentUserSubject.next(userData);
-          }
+        next: (response) => {
+          // Token is valid but we don't know which user it belongs to
+          // Set currentUser to null to force proper authentication flow
+          this.currentUserSubject.next(null);
+          console.log('[AuthService] Token valid but user identity unclear - forcing login');
         },
         error: (err) => {
-          console.error('Error initializing user from token:', err);
-          // If there's an error loading the user, clear the tokens
+          console.error('Error verifying token:', err);
+          // If there's an error, the token is invalid - clear it
           this.logout();
         }
       });
+    } else {
+      // No token, ensure user is null
+      this.currentUserSubject.next(null);
     }
   }
 

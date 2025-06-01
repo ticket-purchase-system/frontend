@@ -180,13 +180,11 @@ export class LoyaltyProgramComponent implements OnInit {
     }
 
     this.isSubmitting = true;
+    // Only send notification preferences to the loyalty program
     const preferences = {
-      firstName: this.joinForm.value.firstName,
-      lastName: this.joinForm.value.lastName,
-      email: this.joinForm.value.email,
-      phoneNumber: this.joinForm.value.phoneNumber,
-      notifications: this.joinForm.value.notifications,
-      acceptTerms: this.joinForm.value.acceptTerms
+      emailNotifications: this.joinForm.value.notifications.email,
+      smsNotifications: this.joinForm.value.notifications.sms,
+      pushNotifications: this.joinForm.value.notifications.push
     };
 
     this.loyaltyService.joinProgram(preferences).subscribe({
@@ -197,7 +195,11 @@ export class LoyaltyProgramComponent implements OnInit {
           });
           this.isMember = true;
           this.membership = result;
-          this.preferencesForm.patchValue(preferences);
+          this.preferencesForm.patchValue({
+            emailNotifications: preferences.emailNotifications,
+            smsNotifications: preferences.smsNotifications,
+            pushNotifications: preferences.pushNotifications
+          });
         } else {
           this.snackBar.open('Failed to join the loyalty program. Please try again.', 'Close', {
             duration: 5000

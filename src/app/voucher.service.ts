@@ -192,7 +192,7 @@ export class VoucherService {
   // Apply a voucher to a purchase
   applyVoucher(voucherId: string, amount: number): Observable<{ success: boolean, amountUsed?: number, remaining?: number }> {
     return this.http.post<any>(`${this.apiUrl}/apply`, {
-      voucher_id: voucherId,
+      voucher_id: parseInt(voucherId),
       amount: amount
     }, { 
       headers: httpHelper.getAuthHeaders() 
