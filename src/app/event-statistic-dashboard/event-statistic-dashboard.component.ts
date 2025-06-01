@@ -32,7 +32,7 @@ Chart.register(...registerables);
                   <path *ngIf="isUsingSyntheticData" d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z"/>
                 </svg>
                 <div>
-                  <h4 class="text-lg font-semibold text-gray-900">Data Source</h4>
+                  <h4 class="text-lg font-semibold text-gray-900">Data source</h4>
                   <p class="text-sm text-gray-600">
                     {{ isUsingSyntheticData ? 'Currently using synthetic demo data' : 'Connected to live database' }}
                   </p>
