@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { EventStatisticsService, EventStats } from "../event-statistics.service";
+import { Subscription } from 'rxjs';
 
 Chart.register(...registerables);
 
@@ -16,6 +17,73 @@ Chart.register(...registerables);
         <div class="mb-8">
           <h3 class="font-bold text-gray-900 mb-2">Event ticket sales analytics</h3>
           <p class="text-gray-600">Comprehensive insights into event ticket sales performance</p>
+        </div>
+
+        <!-- Data Source Toggle Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4"
+             [class.border-green-500]="!isUsingSyntheticData"
+             [class.border-blue-500]="isUsingSyntheticData">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center">
+                <svg class="h-8 w-8 mr-3" [class.text-green-600]="!isUsingSyntheticData"
+                     [class.text-blue-600]="isUsingSyntheticData" fill="currentColor" viewBox="0 0 20 20">
+                  <path *ngIf="!isUsingSyntheticData" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <path *ngIf="isUsingSyntheticData" d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z"/>
+                </svg>
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-900">Data Source</h4>
+                  <p class="text-sm text-gray-600">
+                    {{ isUsingSyntheticData ? 'Currently using synthetic demo data' : 'Connected to live database' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <!-- Toggle Switch -->
+              <div class="flex items-center">
+                <span class="text-sm text-gray-700 mr-3">
+                  {{ isUsingSyntheticData ? 'Demo' : 'Live' }}
+                </span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    class="sr-only peer"
+                    [checked]="isUsingSyntheticData"
+                    (change)="toggleDataSource()"
+                    [disabled]="toggleLoading">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+                <span class="text-sm text-gray-700 ml-3">
+                  {{ isUsingSyntheticData ? 'Real' : 'Demo' }}
+                </span>
+              </div>
+
+              <!-- Status Indicator -->
+              <div class="flex items-center">
+                <div class="h-3 w-3 rounded-full mr-2"
+                     [class.bg-green-400]="!isUsingSyntheticData"
+                     [class.bg-blue-400]="isUsingSyntheticData"
+                     [class.animate-pulse]="toggleLoading"></div>
+                <span class="text-sm font-medium"
+                      [class.text-green-600]="!isUsingSyntheticData"
+                      [class.text-blue-600]="isUsingSyntheticData">
+                  {{ toggleLoading ? 'Switching...' : (isUsingSyntheticData ? 'Demo Data' : 'Live Data') }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="dataSourceMessage" class="mt-4 p-3 rounded-md"
+               [class.bg-blue-50]="isUsingSyntheticData"
+               [class.bg-green-50]="!isUsingSyntheticData">
+            <p class="text-sm"
+               [class.text-blue-700]="isUsingSyntheticData"
+               [class.text-green-700]="!isUsingSyntheticData">
+              {{ dataSourceMessage }}
+            </p>
+          </div>
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-4 mb-6">
@@ -313,6 +381,28 @@ Chart.register(...registerables);
     canvas {
       max-height: 300px;
     }
+
+    /* Custom toggle switch styling */
+    .peer:checked ~ .slider {
+      background-color: #3B82F6;
+    }
+
+    .peer:focus ~ .slider {
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+    }
+
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .5;
+      }
+    }
   `]
 })
 export class EventStatisticsComponent implements OnInit, OnDestroy {
@@ -327,15 +417,64 @@ export class EventStatisticsComponent implements OnInit, OnDestroy {
   selectedTimeframe = 'all';
   selectedEventType = 'all';
 
+  // Data source properties
+  isUsingSyntheticData = true;
+  toggleLoading = false;
+  dataSourceMessage = '';
+
   private charts: { [key: string]: Chart } = {};
+  private dataSourceSubscription?: Subscription;
 
   constructor(private eventStatisticsService: EventStatisticsService) {
   }
 
   ngOnInit(): void {
-    this.loadStatistics();
+    this.dataSourceSubscription = this.eventStatisticsService.dataSource$.subscribe(
+      (isUsingSynthetic) => {
+        this.isUsingSyntheticData = isUsingSynthetic;
+      }
+    );
+
+    this.initializeDataSource();
   }
 
+  ngOnDestroy(): void {
+    this.destroyCharts();
+    if (this.dataSourceSubscription) {
+      this.dataSourceSubscription.unsubscribe();
+    }
+  }
+
+  async initializeDataSource(): Promise<void> {
+    try {
+      const status = await this.eventStatisticsService.checkDataSourceStatus();
+      this.dataSourceMessage = status.message;
+      this.isUsingSyntheticData = status.use_synthetic_data;
+    } catch (error) {
+      console.error('Error checking data source status:', error);
+      this.dataSourceMessage = 'Using default synthetic data';
+    } finally {
+      this.loadStatistics();
+    }
+  }
+
+  async toggleDataSource(): Promise<void> {
+    this.toggleLoading = true;
+    this.error = null;
+
+    try {
+      const status = await this.eventStatisticsService.toggleDataSource();
+      this.dataSourceMessage = status.message;
+      this.isUsingSyntheticData = status.use_synthetic_data;
+
+      await this.loadStatistics();
+    } catch (error) {
+      this.error = 'Failed to switch data source. Please try again.';
+      console.error('Error toggling data source:', error);
+    } finally {
+      this.toggleLoading = false;
+    }
+  }
 
   async loadStatistics(): Promise<void> {
     this.loading = true;
@@ -347,7 +486,6 @@ export class EventStatisticsComponent implements OnInit, OnDestroy {
         eventType: this.selectedEventType
       });
 
-      // Create charts after data is loaded and view is initialized
       setTimeout(() => {
         this.createCharts();
       }, 100);
@@ -373,16 +511,12 @@ export class EventStatisticsComponent implements OnInit, OnDestroy {
 
     this.destroyCharts();
 
-    // Monthly Trends Chart
     this.createMonthlyTrendsChart();
 
-    // Event Type Chart
     this.createEventTypeChart();
 
-    // Daily Sales Chart
     this.createDailySalesChart();
 
-    // Price Range Chart
     this.createPriceRangeChart();
   }
 
@@ -591,7 +725,7 @@ export class EventStatisticsComponent implements OnInit, OnDestroy {
           },
           tooltip: {
             callbacks: {
-              afterLabel: function(context) {
+              afterLabel: function (context) {
                 const index = context.dataIndex;
                 const stats = (context.chart as any).config._config.data.stats;
                 if (stats) {
@@ -618,11 +752,6 @@ export class EventStatisticsComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Store stats reference for tooltip
     (this.charts['priceRange'] as any).config._config.data.stats = this.stats;
-  }
-
-  ngOnDestroy(): void {
-    this.destroyCharts();
   }
 }
