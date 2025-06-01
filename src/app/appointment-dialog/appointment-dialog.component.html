@@ -1,6 +1,6 @@
 <div class="dialog-content">
-  <h5 mat-dialog-title *ngIf="!data.id">Add New Event</h5>
-  <h5 mat-dialog-title *ngIf="data.id">Edit Event</h5>
+  <h5 mat-dialog-title *ngIf="!data.id">Add new event</h5>
+  <h5 mat-dialog-title *ngIf="data.id">Edit event</h5>
   <div [formGroup]="eventForm">
     <div mat-dialog-content class="scrollable-form" >
       <!-- Title -->
@@ -98,53 +98,52 @@
 
       <a *ngIf="data.id" mat-button [routerLink]="['/calendar/event', data.id]">Specify event details (optional)</a>
 
-    </div>
+      <div mat-dialog-actions align="end">
 
-    <div mat-dialog-actions align="end">
+        <!-- Edit Button -->
+        <button
+          *ngIf="data.id"
+          type="submit"
+          mat-flat-button
+          color="primary"
+          (click)="onEditClick()"
+          [disabled]="eventForm.invalid"
+        >
+          Update Event
+        </button>
 
-      <!-- Edit Button -->
-      <button
-        *ngIf="data.id"
-        type="submit"
-        mat-flat-button
-        color="primary"
-        (click)="onEditClick()"
-        [disabled]="eventForm.invalid"
-      >
-        Update Event
-      </button>
+        <!-- Add Button -->
+        <button
+          *ngIf="!data.id"
+          type="submit"
+          mat-flat-button
+          color="primary"
+          (click)="onSaveClick()"
+          [disabled]="eventForm.invalid"
+        >
+          Add Event
+        </button>
 
-      <!-- Add Button -->
-      <button
-        *ngIf="!data.id"
-        type="submit"
-        mat-flat-button
-        color="primary"
-        (click)="onSaveClick()"
-        [disabled]="eventForm.invalid"
-      >
-        Add Event
-      </button>
+        <!-- Delete Button -->
+        <button
+          *ngIf="data.id"
+          mat-stroked-button
+          color="warn"
+          (click)="onDeleteClick()"
+          style="margin-left: 10px"
+        >
+          Delete
+        </button>
 
-      <!-- Delete Button -->
-      <button
-        *ngIf="data.id"
-        mat-stroked-button
-        color="warn"
-        (click)="onDeleteClick()"
-        style="margin-left: 10px"
-      >
-        Delete
-      </button>
-
-      <!-- Cancel Button -->
-      <button
-        mat-stroked-button
-        (click)="onNoClick()"
-        style="margin-left: 10px"
-      >
-        Cancel
-      </button>
+        <!-- Cancel Button -->
+        <button
+          mat-stroked-button
+          (click)="onNoClick()"
+          style="margin-left: 10px"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
 </div>
