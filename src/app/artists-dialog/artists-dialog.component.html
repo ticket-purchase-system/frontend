@@ -4,7 +4,7 @@
   <div mat-dialog-content>
     <!-- Artist Name -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Artist Name</mat-label>
+      <mat-label>Artist name</mat-label>
       <input matInput formControlName="name" placeholder="Enter artist name">
       <mat-error *ngIf="artistForm.get('name')?.hasError('required')">
         Artist name is required

@@ -89,6 +89,10 @@ export class CalendarComponent implements OnInit {
     this.router.navigate(['/previous-editions']);
   }
 
+  navigateToStatistics(): void {
+    this.router.navigate(['/statistics']);
+  }
+
   getColorForEventType(type: string): string {
     switch (type.toLowerCase()) {
       case 'concert':

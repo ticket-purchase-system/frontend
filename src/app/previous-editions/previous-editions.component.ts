@@ -75,201 +75,258 @@ interface ApiResponse {
     MatDialogModule
   ],
   template: `
-    <div class="previous-editions-container">
-      <div class="header">
-        <h2>
-          <mat-icon>history</mat-icon>
-          Past events & reviews
-        </h2>
-
-        <!-- Search and Filter Controls -->
-        <div class="controls">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search events</mat-label>
-            <input matInput
-                   [(ngModel)]="searchQuery"
-                   (keyup.enter)="onSearch()"
-                   placeholder="Search by event title">
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="limit-field">
-            <mat-label>Show</mat-label>
-            <mat-select [(value)]="limit" (selectionChange)="onLimitChange()">
-              <mat-option [value]="5">5 events</mat-option>
-              <mat-option [value]="10">10 events</mat-option>
-              <mat-option [value]="20">20 events</mat-option>
-              <mat-option [value]="50">50 events</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <button mat-raised-button color="primary" (click)="onSearch()">
-            <mat-icon>search</mat-icon>
-            Search
-          </button>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div *ngIf="loading" class="loading-container">
-        <mat-spinner></mat-spinner>
-        <p>Loading past events...</p>
-      </div>
-
-      <!-- Error State -->
-      <div *ngIf="error && !loading" class="error-container">
-        <mat-icon color="warn">error</mat-icon>
-        <p>{{ error }}</p>
-        <button mat-button color="primary" (click)="loadPastEvents()">
-          <mat-icon>refresh</mat-icon>
-          Try Again
-        </button>
-      </div>
-
-      <!-- Events List -->
-      <div *ngIf="!loading && !error" class="events-list">
-        <div *ngIf="pastEvents.length === 0" class="no-events">
-          <mat-icon>event_busy</mat-icon>
-          <h3>No past events found</h3>
-          <p>Try adjusting your search criteria.</p>
-        </div>
-
-        <mat-card *ngFor="let eventData of pastEvents" class="event-card">
-          <!-- Event Header -->
-          <mat-card-header>
-            <div mat-card-avatar class="event-avatar">
-              <mat-icon>event</mat-icon>
+    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-blue-100 rounded-lg">
+              <mat-icon class="text-blue-600">history</mat-icon>
             </div>
-            <mat-card-title>{{ eventData.event.title }}</mat-card-title>
-            <mat-card-subtitle>
-              <div class="event-meta">
-                <span class="event-type">
-                  <mat-icon>category</mat-icon>
-                  {{ eventData.event.type }}
-                </span>
-                <span class="event-date">
-                  <mat-icon>calendar_today</mat-icon>
-                  {{ formatDate(eventData.event.date) }}
-                </span>
-                <span class="event-price">
-                  <mat-icon>attach_money</mat-icon>
-                  {{ eventData.event.price }}
-                </span>
+            <h3 class="font-bold text-gray-900 pt-3">Past events & reviews</h3>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex flex-wrap gap-4 items-center">
+              <div class="flex-1 min-w-80">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Search events</mat-label>
+                  <input matInput
+                         [(ngModel)]="searchQuery"
+                         (keyup.enter)="onSearch()"
+                         placeholder="Search by event title"
+                         class="text-gray-700">
+                  <mat-icon matSuffix class="text-gray-400">search</mat-icon>
+                </mat-form-field>
               </div>
-            </mat-card-subtitle>
-          </mat-card-header>
 
-          <!-- Event Details -->
-          <mat-card-content>
-            <div class="event-details">
-              <p class="event-description">{{ eventData.event.description }}</p>
-
-              <div class="event-info" *ngIf="eventData.event.place || eventData.event.start_hour">
-                <div *ngIf="eventData.event.place" class="info-item">
-                  <mat-icon>place</mat-icon>
-                  <span>{{ eventData.event.place }}</span>
-                </div>
-                <div *ngIf="eventData.event.start_hour" class="info-item">
-                  <mat-icon>access_time</mat-icon>
-                  <span>{{ eventData.event.start_hour }}
-                    <span *ngIf="eventData.event.end_hour">- {{ eventData.event.end_hour }}</span>
-                  </span>
-                </div>
-                <div *ngIf="eventData.event.seats_no" class="info-item">
-                  <mat-icon>event_seat</mat-icon>
-                  <span>{{ eventData.event.seats_no }} seats</span>
-                </div>
+              <div class="min-w-32">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Show</mat-label>
+                  <mat-select [(value)]="limit" (selectionChange)="onLimitChange()">
+                    <mat-option [value]="5">5 events</mat-option>
+                    <mat-option [value]="10">10 events</mat-option>
+                    <mat-option [value]="20">20 events</mat-option>
+                    <mat-option [value]="50">50 events</mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
-            </div>
 
-            <!-- Photos Section -->
-            <div class="photos-section" *ngIf="eventData.photos && eventData.photos.length > 0">
-              <h4>
-                <mat-icon>photo_library</mat-icon>
-                Event Photos ({{ eventData.photo_count }})
-              </h4>
-
-              <div class="photo-preview">
-                <div class="preview-photos">
-                  <div *ngFor="let photo of getPreviewPhotos(eventData.photos); let i = index"
-                       class="photo-thumbnail"
-                       (click)="openPhotoDialog(eventData.photos, i)">
-                    <img [src]="photo.url"
-                         [alt]="photo.caption || 'Event photo'"
-                         (error)="onImageError($event)">
-                    <div class="photo-overlay">
-                      <mat-icon>zoom_in</mat-icon>
-                    </div>
-                  </div>
-
-                  <!-- Show more photos indicator -->
-                  <div *ngIf="eventData.photos.length > 4"
-                       class="more-photos"
-                       (click)="viewAllPhotos(eventData.photos)">
-                    <div class="more-photos-content">
-                      <mat-icon>add</mat-icon>
-                      <span>+{{ eventData.photos.length - 4 }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button mat-button
-                        class="view-all-photos-btn"
-                        (click)="viewAllPhotos(eventData.photos)"
-                        *ngIf="eventData.photos.length > 4">
-                  View All {{ eventData.photos.length }} Photos
-                </button>
-              </div>
-            </div>
-
-            <!-- Add Photos Button (Conditional) -->
-            <div class="photo-upload-section" *ngIf="canUploadPhotos(eventData.event)">
               <button mat-raised-button
-                      color="accent"
-                      (click)="openPhotoUploadDialog(eventData.event)">
-                <mat-icon>add_photo_alternate</mat-icon>
-                Add Photos
+                      color="primary"
+                      (click)="onSearch()"
+                      class="h-14 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition-colors">
+                <mat-icon class="mr-2">search</mat-icon>
+                Search
               </button>
             </div>
+          </div>
+        </div>
 
-            <!-- Reviews Section -->
-            <div class="reviews-section" *ngIf="eventData.review_count > 0">
-              <div class="reviews-header">
-                <h4>
-                  <mat-icon>rate_review</mat-icon>
-                  Reviews ({{ eventData.review_count }})
-                </h4>
+        <div *ngIf="loading" class="flex flex-col items-center justify-center py-16">
+          <mat-spinner class="mb-4"></mat-spinner>
+          <p class="text-gray-600 text-lg">Loading past events...</p>
+        </div>
+
+        <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+          <mat-icon class="text-red-500 text-4xl mb-4">error</mat-icon>
+          <p class="text-red-700 text-lg mb-4">{{ error }}</p>
+          <button mat-raised-button
+                  color="primary"
+                  (click)="loadPastEvents()"
+                  class="bg-red-600 hover:bg-red-700 text-white">
+            <mat-icon class="mr-2">refresh</mat-icon>
+            Try Again
+          </button>
+        </div>
+
+        <div *ngIf="!loading && !error">
+          <div *ngIf="pastEvents.length === 0" class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+            <mat-icon class="text-gray-400 text-6xl mb-4">event_busy</mat-icon>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No past events found</h3>
+            <p class="text-gray-600">Try adjusting your search criteria.</p>
+          </div>
+
+          <div class="space-y-6">
+            <div *ngFor="let eventData of pastEvents"
+                 class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+
+              <div class="p-6 border-b border-gray-100">
+                <div class="flex items-start gap-4">
+                  <div class="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm">
+                    <mat-icon class="text-white text-2xl">event</mat-icon>
+                  </div>
+
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ eventData.event.title }}</h3>
+
+                    <div class="flex flex-wrap gap-4 text-sm">
+                      <div class="flex items-center gap-1 text-gray-600">
+                        <mat-icon class="text-base">category</mat-icon>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
+                          {{ eventData.event.type }}
+                        </span>
+                      </div>
+
+                      <div class="flex items-center gap-1 text-gray-600">
+                        <mat-icon class="text-base">calendar_today</mat-icon>
+                        <span>{{ formatDate(eventData.event.date) }}</span>
+                      </div>
+
+                      <div class="flex items-center gap-1 text-gray-600">
+                        <mat-icon class="text-base">attach_money</mat-icon>
+                        <span class="font-semibold text-green-600">{{ eventData.event.price }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div class="reviews-list">
-                <div *ngFor="let review of eventData.reviews" class="review-item">
-                  <div class="review-header">
-                    <div class="review-stars">
-                      <mat-icon
-                        *ngFor="let star of getStarArray(review.numberOfStars)"
-                        [class.filled]="star === 1"
-                        class="star">
-                        star
-                      </mat-icon>
+              <div class="p-6">
+                <div class="mb-6">
+                  <p class="text-gray-700 leading-relaxed mb-4">{{ eventData.event.description }}</p>
+
+                  <div class="flex flex-wrap gap-4 text-sm" *ngIf="eventData.event.place || eventData.event.start_hour">
+                    <div *ngIf="eventData.event.place" class="flex items-center gap-2 text-gray-600">
+                      <mat-icon class="text-base">place</mat-icon>
+                      <span>{{ eventData.event.place }}</span>
                     </div>
-                    <span class="review-date">{{ formatDateTime(review.date) }}</span>
+
+                    <div *ngIf="eventData.event.start_hour" class="flex items-center gap-2 text-gray-600">
+                      <mat-icon class="text-base">access_time</mat-icon>
+                      <span>{{ eventData.event.start_hour }}
+                        <span *ngIf="eventData.event.end_hour"> - {{ eventData.event.end_hour }}</span>
+                      </span>
+                    </div>
+
+                    <div *ngIf="eventData.event.seats_no" class="flex items-center gap-2 text-gray-600">
+                      <mat-icon class="text-base">event_seat</mat-icon>
+                      <span>{{ eventData.event.seats_no }} seats</span>
+                    </div>
                   </div>
-                  <p class="review-comment">{{ review.comment }}</p>
+                </div>
+
+                <div class="mb-6" *ngIf="eventData.photos && eventData.photos.length > 0">
+                  <div class="flex items-center gap-2 mb-4">
+                    <mat-icon class="text-purple-600">photo_library</mat-icon>
+                    <h4 class="text-lg font-semibold text-gray-900">
+                      Event Photos ({{ eventData.photo_count }})
+                    </h4>
+                  </div>
+
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    <div *ngFor="let photo of getPreviewPhotos(eventData.photos); let i = index"
+                         class="relative group cursor-pointer rounded-lg overflow-hidden aspect-square"
+                         (click)="openPhotoDialog(eventData.photos, i)">
+                      <img [src]="photo.url"
+                           [alt]="photo.caption || 'Event photo'"
+                           (error)="onImageError($event)"
+                           class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                      <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                        <mat-icon class="text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                          zoom_in
+                        </mat-icon>
+                      </div>
+                    </div>
+
+                    <div *ngIf="eventData.photos.length > 4"
+                         class="relative cursor-pointer rounded-lg overflow-hidden aspect-square bg-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors"
+                         (click)="viewAllPhotos(eventData.photos)">
+                      <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-blue-600 transition-colors">
+                        <mat-icon class="text-2xl mb-1">add</mat-icon>
+                        <span class="text-sm font-medium">+{{ eventData.photos.length - 4 }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button mat-stroked-button
+                          (click)="viewAllPhotos(eventData.photos)"
+                          *ngIf="eventData.photos.length > 4"
+                          class="text-blue-600 border-blue-300 hover:bg-blue-50">
+                    View All {{ eventData.photos.length }} Photos
+                  </button>
+                </div>
+
+                <div class="mb-6" *ngIf="canUploadPhotos(eventData.event)">
+                  <button mat-raised-button
+                          color="accent"
+                          (click)="openPhotoUploadDialog(eventData.event)"
+                          class="bg-purple-600 hover:bg-purple-700 text-white">
+                    <mat-icon class="mr-2">add_photo_alternate</mat-icon>
+                    Add Photos
+                  </button>
+                </div>
+
+                <div *ngIf="eventData.review_count > 0" class="border-t border-gray-100 pt-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <mat-icon class="text-yellow-500">rate_review</mat-icon>
+                    <h4 class="text-lg font-semibold text-gray-900">
+                      Reviews ({{ eventData.review_count }})
+                    </h4>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div *ngFor="let review of eventData.reviews"
+                         class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-1">
+                          <mat-icon
+                            *ngFor="let star of getStarArray(review.numberOfStars)"
+                            [class]="star === 1 ? 'text-yellow-400' : 'text-gray-300'"
+                            class="text-lg">
+                            star
+                          </mat-icon>
+                        </div>
+                        <span class="text-sm text-gray-500">{{ formatDateTime(review.date) }}</span>
+                      </div>
+                      <p class="text-gray-700 leading-relaxed">{{ review.comment }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="eventData.review_count === 0"
+                     class="flex items-center gap-2 text-gray-500 border-t border-gray-100 pt-6">
+                  <mat-icon>rate_review</mat-icon>
+                  <span>No reviews yet for this event</span>
                 </div>
               </div>
             </div>
-
-            <!-- No Reviews Message -->
-            <div *ngIf="eventData.review_count === 0" class="no-reviews">
-              <mat-icon>rate_review</mat-icon>
-              <span>No reviews yet for this event</span>
-            </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
   `,
-  styleUrls: ['./previous-editions.component.css']
+  styles: [`
+    ::ng-deep .mat-mdc-form-field {
+      .mat-mdc-text-field-wrapper {
+        background-color: white;
+      }
+
+      .mat-mdc-form-field-flex {
+        border-radius: 8px;
+      }
+    }
+
+    ::ng-deep .mat-mdc-raised-button {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+    }
+
+    ::ng-deep .mat-mdc-outlined-button {
+      font-weight: 500;
+    }
+
+    ::ng-deep .mat-mdc-card {
+      border-radius: 12px;
+    }
+
+    .bg-gradient-to-br {
+      background: linear-gradient(to bottom right, var(--tw-gradient-stops));
+    }
+
+    .aspect-square {
+      aspect-ratio: 1 / 1;
+    }
+  `]
 })
 export class PreviousEditionsComponent implements OnInit {
   pastEvents: EventWithReviews[] = [];
@@ -341,47 +398,32 @@ export class PreviousEditionsComponent implements OnInit {
     return new Date(dateString).toLocaleString();
   }
 
-  // Photo-related methods
   getPreviewPhotos(photos: Photo[]): Photo[] {
-    return photos.slice(0, 4); // Show first 4 photos
+    return photos.slice(0, 4);
   }
 
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/placeholder-image.png'; // Fallback image
+    img.src = 'assets/images/placeholder-image.png';
     img.alt = 'Image not available';
   }
 
   openPhotoDialog(photos: Photo[], startIndex = 0): void {
-    // You can implement a photo gallery dialog here
-    // For now, we'll just open the first photo in a new tab
     if (photos[startIndex]) {
       window.open(photos[startIndex].url, '_blank');
     }
   }
 
   viewAllPhotos(photos: Photo[]): void {
-    // You can implement a photo gallery dialog here
     console.log('View all photos:', photos);
-    // For now, just show a message
     this.snackBar.open(`Viewing all ${photos.length} photos`, 'Close', { duration: 2000 });
   }
 
   canUploadPhotos(event: EventObject): boolean {
-    // Implement your condition here
-    // For example: only allow photo upload if user is the event creator
-    // or if the event happened within the last 30 days
-
-    // Example condition: allow upload for events in the last 30 days
     const eventDate = new Date(event.date);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
     return eventDate >= thirtyDaysAgo;
-
-    // You can replace this with your own logic, such as:
-    // return this.currentUser.id === event.created_by;
-    // return this.userService.canUploadPhotos(event);
   }
 
   openPhotoUploadDialog(event: EventObject): void {
@@ -396,7 +438,6 @@ export class PreviousEditionsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.uploaded) {
-        // Refresh the events list to show newly uploaded photos
         this.loadPastEvents();
         this.snackBar.open(
           `${result.count} photo(s) uploaded successfully!`,

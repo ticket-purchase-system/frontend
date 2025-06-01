@@ -42,7 +42,7 @@ export class ArtistListComponent implements OnInit {
   openAddDialog(): void {
     const dialogRef = this.dialog.open(ArtistDialogComponent, {
       width: '500px',
-      data: { title: 'Add New Artist' }
+      data: { title: 'Add new artist' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -65,7 +65,7 @@ export class ArtistListComponent implements OnInit {
     const dialogRef = this.dialog.open(ArtistDialogComponent, {
       width: '500px',
       data: {
-        title: 'Edit Artist',
+        title: 'Edit artist',
         artist: artist
       }
     });

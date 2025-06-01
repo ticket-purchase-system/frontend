@@ -63,6 +63,9 @@ export const routes: Routes = [
     path: 'previous-editions',
     loadComponent: () => import('./previous-editions/previous-editions.component').then(m => m.PreviousEditionsComponent)
   },
+  { path: 'statistics',
+    loadComponent: () => import('./event-statistic-dashboard/event-statistic-dashboard.component').then(m => m.EventStatisticsComponent)
+  },
   { path: '', redirectTo: '/doctors', pathMatch: 'full' },
 
   // { path: 'regulations', component: RegulationsComponent },
