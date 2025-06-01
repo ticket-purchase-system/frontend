@@ -73,6 +73,8 @@ export class TicketPurchaseDialogComponent implements OnInit {
       quantity: formValue.quantity,
       is_group: formValue.is_group
     });
+    console.log('💳 Ktoś kliknął "Kup bilet"');
+    console.trace();
   }
 
   onAddFavorite(): void {

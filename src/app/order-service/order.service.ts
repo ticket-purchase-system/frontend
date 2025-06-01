@@ -98,4 +98,15 @@ export class OrdersService {
       { headers: httpHelper.getAuthHeaders() }
     );
   }
+
+createProduct(product: any): Observable<any> {
+  return this.http.post(
+    `${environment.apiUrl}/products/`,
+    product,
+    { headers: httpHelper.getAuthHeaders() }
+  );
+}
+
+
+
 }

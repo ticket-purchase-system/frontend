@@ -25,6 +25,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from '../auth/auth.interceptor'; // zmień ścieżkę jeśli inna
+import { MockPaymentDialogComponent } from '../mock-payment-dialog/mock-payment-dialog.component';
 
 
 
@@ -47,6 +48,7 @@ const routes: Routes = [
     CalendarComponent,
     BasketComponent,
     TicketPurchaseDialogComponent,
+    MockPaymentDialogComponent
   ],
   imports: [
     AngularFirestoreModule,
